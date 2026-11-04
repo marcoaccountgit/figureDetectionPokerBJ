@@ -1,0 +1,18 @@
+{
+  "repository": "sroot/lgd-cards-gen3",
+  "revision": "b2e9e89cc0138a70fc3ac5661922f99b4e3ae135",
+  "license": "AGPL-3.0",
+  "source_url": "https://huggingface.co/sroot/lgd-cards-gen3",
+  "files": [
+    {
+      "remote": "model.onnx",
+      "local": "lgd-cards-gen3.onnx",
+      "sha256": "8b767cdfed2c8e954a9134013ac3d2f2c53be048768d559675be01277a8a8fd1"
+    },
+    {
+      "remote": "model.classes.json",
+      "local": "lgd-cards-gen3.classes.json",
+      "sha256": "8a2d7e9dacf245aca5ef5a402cb404def919e9994e9142644d80c6d6248ee038"
+    }
+  ]
+}

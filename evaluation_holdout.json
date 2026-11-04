@@ -1,0 +1,12 @@
+{
+  "note": "Additional manually read frames first evaluated after the color and alternate-geometry change. Same recording as development; not an independent session. Identity-count evaluation only. Physical annotations include visible indices under partial hand occlusion.",
+  "cases": [
+    {"timestamp_s": 210, "scene": "stud", "digital": ["KC", "QD", "9S", "4C", "6C", "7C", "2H", "7D", "AS", "AD"], "physical": ["7C", "2H", "7D", "AS", "AD"]},
+    {"timestamp_s": 270, "scene": "stud", "digital": [], "physical": []},
+    {"timestamp_s": 390, "scene": "stud", "digital": ["9S", "8S", "5H", "8C", "KD", "10H", "7S"], "physical": ["9S", "3C", "8S", "4D", "QD", "5H", "8C", "KD", "10H", "7S"]},
+    {"timestamp_s": 870, "scene": "holdem", "digital": ["5H", "6H", "3S", "5C", "3C"], "physical": ["5H", "6H", "3S", "5C", "3C"]},
+    {"timestamp_s": 990, "scene": "holdem", "digital": ["QD", "2S", "10S", "JC", "10D"], "physical": ["QD", "2S", "10S", "JC", "10D"]},
+    {"timestamp_s": 1110, "scene": "holdem", "digital": ["KH", "8D", "AH", "2S", "10S"], "physical": ["KH", "8D", "AH", "2S", "10S"]},
+    {"timestamp_s": 1290, "scene": "holdem", "digital": ["9H", "JD", "2S", "6D", "2D", "AC", "QS", "5H", "8S"], "physical": ["9H", "JD", "2S", "6D", "2D", "AC", "QS", "5H", "8S"]}
+  ]
+}

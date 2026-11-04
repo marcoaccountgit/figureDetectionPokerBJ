@@ -1,0 +1,8 @@
+.local-deps/
+.tmp*/
+__pycache__/
+.venv/
+artifacts/
+*.mp4
+models/*.onnx
+models/*.part

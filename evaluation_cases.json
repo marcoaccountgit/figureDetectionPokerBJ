@@ -1,0 +1,8 @@
+{
+  "note": "Small manually read diagnostic checks used during development, from the same recording. These timestamps are excluded from reference construction. Identity-count evaluation only; no independent accuracy certification.",
+  "cases": [
+    {"timestamp_s": 90, "scene": "stud", "digital": [], "physical": []},
+    {"timestamp_s": 330, "scene": "stud", "digital": ["AH", "9S", "7H", "AS", "6C", "3H"], "physical": ["AH", "9S", "7H", "AS", "6C", "3H"]},
+    {"timestamp_s": 1230, "scene": "holdem", "digital": ["5H", "2D", "8H", "4S", "AS", "4D", "2S"], "physical": ["5H", "2D", "8H", "4S", "AS", "4D", "2S"]}
+  ]
+}

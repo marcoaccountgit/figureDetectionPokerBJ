@@ -1,0 +1,167 @@
+{
+  "source": "Screen Recording 2026-11-04 213508.mp4",
+  "source_sha256": "978c00f44b67aab14a4d1a6c93fd437a93b97ec753f424f57ddbf6e79e40096d",
+  "size": [
+    1778,
+    982
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        597,
+        401,
+        637,
+        479
+      ],
+      [
+        713,
+        401,
+        753,
+        479
+      ],
+      [
+        829,
+        401,
+        869,
+        479
+      ],
+      [
+        945,
+        401,
+        985,
+        479
+      ],
+      [
+        1061,
+        401,
+        1101,
+        479
+      ]
+    ],
+    "hole": [
+      [
+        650,
+        649,
+        688,
+        745
+      ],
+      [
+        690,
+        661,
+        738,
+        759
+      ]
+    ]
+  },
+  "note": "Manually reviewed 5fps fold sequence: 9D/4H visible through699.4s; no exposed indices from699.6s. Evaluation only, excluded from training and validation.",
+  "frames": [
+    {
+      "time": 698.0,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 698.2,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 698.4,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 698.6,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 698.8,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 699.0,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 699.2,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 699.4,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "9D",
+        "4H"
+      ]
+    },
+    {
+      "time": 699.6,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 699.8,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 700.0,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 700.2,
+      "hand": "fold-698",
+      "split": "test",
+      "board": [],
+      "hole": []
+    }
+  ]
+}

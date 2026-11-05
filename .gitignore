@@ -2,7 +2,10 @@
 .tmp*/
 __pycache__/
 .venv/
+.venv-training/
+Ultralytics/
 artifacts/
 *.mp4
 models/*.onnx
 models/*.part
+*.pt

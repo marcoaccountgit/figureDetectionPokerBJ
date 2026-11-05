@@ -1,0 +1,305 @@
+{
+  "source": "Screen Recording 2026-11-04 213508.mp4",
+  "source_sha256": "978c00f44b67aab14a4d1a6c93fd437a93b97ec753f424f57ddbf6e79e40096d",
+  "size": [
+    1778,
+    982
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        597,
+        401,
+        637,
+        479
+      ],
+      [
+        713,
+        401,
+        753,
+        479
+      ],
+      [
+        829,
+        401,
+        869,
+        479
+      ],
+      [
+        945,
+        401,
+        985,
+        479
+      ],
+      [
+        1061,
+        401,
+        1101,
+        479
+      ]
+    ],
+    "hole": [
+      [
+        650,
+        649,
+        688,
+        745
+      ],
+      [
+        690,
+        661,
+        738,
+        759
+      ]
+    ],
+    "opponent_upper": [
+      [
+        1516,
+        272,
+        1555,
+        353
+      ],
+      [
+        1554,
+        282,
+        1596,
+        363
+      ]
+    ],
+    "opponent_lower": [
+      [
+        1516,
+        529,
+        1555,
+        609
+      ],
+      [
+        1554,
+        539,
+        1596,
+        621
+      ]
+    ]
+  },
+  "note": "Evaluation annotation supplement: includes manually reviewed exposed opponent indices outside training crop. The training annotation file is unchanged.",
+  "frames": [
+    {
+      "time": 10,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "3C",
+        "JH",
+        "4D"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 30,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "3C",
+        "JH",
+        "4D",
+        "QH",
+        "7S"
+      ],
+      "hole": [],
+      "opponent_upper": [
+        "QS",
+        "9H"
+      ],
+      "opponent_lower": []
+    },
+    {
+      "time": 50,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "JH",
+        "2C"
+      ],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 70,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "JH",
+        "2C"
+      ],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 90,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "4S",
+        "8H",
+        "KD"
+      ],
+      "hole": [],
+      "opponent_upper": [
+        "4H",
+        "5H"
+      ],
+      "opponent_lower": [
+        "AC",
+        "9D"
+      ]
+    },
+    {
+      "time": 110,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "10D",
+        "3D"
+      ],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 130,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 150,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "5H",
+        "6H",
+        "5S",
+        "4H",
+        "4S"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 170,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "KC",
+        "7D",
+        "JH"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 190,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "7C",
+        "8D"
+      ],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 210,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "8S",
+        "AC",
+        "9D"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 230,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "8S",
+        "AC",
+        "9D",
+        "6S",
+        "3C"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 250,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 270,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "2C",
+        "5S",
+        "4S"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    },
+    {
+      "time": 290,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "2C",
+        "5S",
+        "4S",
+        "9D",
+        "7C"
+      ],
+      "hole": [],
+      "opponent_upper": [],
+      "opponent_lower": []
+    }
+  ],
+  "crop": [
+    560,
+    380,
+    1200,
+    840
+  ],
+  "excluded_from_scoring": [
+    {
+      "time": 90,
+      "bbox": [
+        877,
+        210,
+        902,
+        371
+      ],
+      "reason": "Rotating edge-on card: index too compressed to label reliably; stationary legible indices scored."
+    }
+  ]
+}

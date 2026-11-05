@@ -12,19 +12,30 @@ def file_digest(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def verified_model_files():
-    manifest = json.loads((MODEL_DIR / 'manifest.json').read_text(encoding='utf-8'))
+def model_manifest(profile='general'):
+    if profile not in ('general', 'pokerstars'):
+        raise ValueError(f'Unknown model profile: {profile}')
+    filename = 'manifest.json' if profile == 'general' else f'{profile}.manifest.json'
+    path = MODEL_DIR / filename
+    if not path.is_file():
+        raise RuntimeError(f'Modello del profilo {profile} non installato')
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def verified_model_files(profile='general'):
+    manifest = model_manifest(profile)
     files = []
     for spec in manifest['files']:
         path = MODEL_DIR / spec['local']
         if not path.is_file() or file_digest(path) != spec['sha256']:
-            raise RuntimeError('Modello mancante o non integro. Esegui: python download_model.py')
+            action = 'python download_model.py' if profile == 'general' else 'train_table_model.py con Python di training'
+            raise RuntimeError(f'Modello mancante o non integro. Esegui: {action}')
         files.append(path)
     return files
 
 
 def main():
-    manifest = json.loads((MODEL_DIR / 'manifest.json').read_text(encoding='utf-8'))
+    manifest = model_manifest()
     for spec in manifest['files']:
         destination = MODEL_DIR / spec['local']
         if destination.is_file() and file_digest(destination) == spec['sha256']:

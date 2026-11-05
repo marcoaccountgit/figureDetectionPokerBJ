@@ -2,6 +2,59 @@
 from card_detector import annotate, cv2
 
 
+def select_screen_region():
+    """Select pixels on a scaled screenshot, independent of desktop DPI scaling."""
+    import tkinter as tk
+    from PIL import ImageGrab, ImageTk
+    image = ImageGrab.grab()
+    original_width, original_height = image.size
+    thumbnail = image.copy()
+    thumbnail.thumbnail((1100, 700))
+    width, height = thumbnail.size
+    root = tk.Tk()
+    root.title('Trascina sull’area del gioco come nel video - Esc annulla')
+    tk.Label(root, text='Seleziona titolo e tavolo, escludendo browser e barre del desktop.').pack(pady=6)
+    canvas = tk.Canvas(root, width=width, height=height, highlightthickness=0)
+    canvas.pack()
+    photo = ImageTk.PhotoImage(thumbnail)
+    canvas.create_image(0, 0, image=photo, anchor='nw')
+    state = {'start': None, 'rectangle': None, 'bbox': None}
+
+    def begin(event):
+        state['start'] = (event.x, event.y)
+        if state['rectangle']:
+            canvas.delete(state['rectangle'])
+        state['rectangle'] = canvas.create_rectangle(event.x, event.y, event.x, event.y,
+                                                    outline='#00ff66', width=3)
+
+    def drag(event):
+        if state['start']:
+            canvas.coords(state['rectangle'], *state['start'], event.x, event.y)
+
+    def finish(event):
+        if state['start'] is None:
+            return
+        ax, ay = state['start']
+        x1, x2 = sorted((max(0, min(width, ax)), max(0, min(width, event.x))))
+        y1, y2 = sorted((max(0, min(height, ay)), max(0, min(height, event.y))))
+        if x2-x1 < 30 or y2-y1 < 30:
+            return
+        state['bbox'] = [round(x1*original_width/width), round(y1*original_height/height),
+                         round(x2*original_width/width), round(y2*original_height/height)]
+        root.quit()
+
+    canvas.bind('<ButtonPress-1>', begin)
+    canvas.bind('<B1-Motion>', drag)
+    canvas.bind('<ButtonRelease-1>', finish)
+    root.bind('<Escape>', lambda event: root.quit())
+    root.protocol('WM_DELETE_WINDOW', root.quit)
+    try:
+        root.mainloop()
+    finally:
+        root.destroy()
+    return state['bbox']
+
+
 class LivePreview:
     def __init__(self, title='Riconoscimento carte - Webcam'):
         try:

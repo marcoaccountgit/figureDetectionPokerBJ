@@ -1,0 +1,188 @@
+{
+  "source": "Screen Recording 2026-11-04 213508.mp4",
+  "source_sha256": "978c00f44b67aab14a4d1a6c93fd437a93b97ec753f424f57ddbf6e79e40096d",
+  "size": [
+    1778,
+    982
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        597,
+        401,
+        637,
+        479
+      ],
+      [
+        713,
+        401,
+        753,
+        479
+      ],
+      [
+        829,
+        401,
+        869,
+        479
+      ],
+      [
+        945,
+        401,
+        985,
+        479
+      ],
+      [
+        1061,
+        401,
+        1101,
+        479
+      ]
+    ],
+    "hole": [
+      [
+        650,
+        649,
+        688,
+        745
+      ],
+      [
+        690,
+        661,
+        738,
+        759
+      ]
+    ]
+  },
+  "note": "Independent recording: manually reviewed minute samples, labels fixed before inference. No training or pipeline changes using this recording. Sparse samples do not measure full-video accuracy. Boxes track the visible indices, not entire cards.",
+  "frames": [
+    {
+      "time": 0,
+      "hand": "sample-0",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 60,
+      "hand": "sample-60",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "JH",
+        "2C"
+      ]
+    },
+    {
+      "time": 120,
+      "hand": "sample-120",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10D",
+        "3D"
+      ]
+    },
+    {
+      "time": 180,
+      "hand": "sample-180",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 240,
+      "hand": "sample-240",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 300,
+      "hand": "sample-300",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 360,
+      "hand": "sample-360",
+      "split": "test",
+      "board": [
+        "9H",
+        "3D",
+        "6D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 420,
+      "hand": "sample-420",
+      "split": "test",
+      "board": [
+        "3S",
+        "7S",
+        "3H",
+        "8D",
+        "AC"
+      ],
+      "hole": []
+    },
+    {
+      "time": 480,
+      "hand": "sample-480",
+      "split": "test",
+      "board": [
+        "2S",
+        "8H",
+        "3C",
+        "7H"
+      ],
+      "hole": []
+    },
+    {
+      "time": 540,
+      "hand": "sample-540",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "5S",
+        "10D"
+      ]
+    },
+    {
+      "time": 600,
+      "hand": "sample-600",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "JD",
+        "9C"
+      ]
+    },
+    {
+      "time": 660,
+      "hand": "sample-660",
+      "split": "test",
+      "board": [
+        "JD",
+        "4H",
+        "AH"
+      ],
+      "hole": []
+    },
+    {
+      "time": 720,
+      "hand": "sample-720",
+      "split": "test",
+      "board": [
+        "QH",
+        "QS",
+        "KS"
+      ],
+      "hole": [
+        "2C",
+        "KH"
+      ]
+    }
+  ]
+}

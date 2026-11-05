@@ -22,6 +22,26 @@ all'intera immagine del gioco, normalizzata a 1480×920.
 La modalità originale a riferimenti rimane disponibile con `--detector templates`.
 La generalizzazione del modello su ogni mazzo non è garantita e va verificata.
 
+È disponibile anche il profilo **`pokerstars`**, fine-tuned sul tavolo digitale
+della registrazione `Screen Recording 2026-11-04 195129.mp4`. Riconosce solo le
+carte, ignorando i pulsanti. Il modello della webcam rimane quello generale.
+Procedura, dataset e limiti sono in [docs/training-pokerstars.md](docs/training-pokerstars.md).
+
+Per vedere il risultato sull'ultima registrazione eseguire
+**`Avvia-Video-PokerStars.cmd`**. Il modello aggiornato usa anche esempi reali
+dei 10: sui dieci fotogrammi esclusi dal nuovo addestramento passa da 37/40 a
+39/40 letture corrette, con una confusione residua tra 8S e 8C. Il controllo
+usa casi gia osservati nello sviluppo e non dimostra copertura di tutte le 52
+carte. Dataset, confronto e backup sono descritti in
+[docs/miglioramento-carte.md](docs/miglioramento-carte.md).
+
+L'ultimo aggiornamento aggiunge 135 fotogrammi reali da altre mani, portando
+il training reale a 45 delle 52 identita. Nei flussi PokerStars a frequenza
+richiesta >=2fps e attiva la conferma su letture consecutive: il primo
+fotogramma attende conferma, le carte scomparse vengono rimosse subito.
+Si puo disabilitare con `--no-temporal`. Dati, misure e limiti in
+[docs/mani-e-sequenze.md](docs/mani-e-sequenze.md).
+
 ## Installazione
 
 Python 3.11–3.14. Su Windows, dalla cartella del progetto:
@@ -240,6 +260,10 @@ arrotondati. Sei ulteriori test controllano preelaborazione RGB/letterbox del
 modello, coordinate originali, soppressione dei duplicati senza fondere indici
 separati, letture ambigue e output non valido. Totale: **26 test**. I test webcam usano
 immagini sintetiche e dispositivi simulati, senza accendere la fotocamera.
+Otto test aggiuntivi coprono il profilo del tavolo, la separazione delle mani,
+le coordinate dei ritagli, le carte dell'avversario e i bordi sovrapposti.
+Totale corrente: **34 test**. I risultati a riferimenti nelle tabelle seguenti
+restano distinti dal profilo fine-tuned del nuovo video.
 
 Le tabelle seguenti riguardano esclusivamente il rilevatore **a riferimenti**,
 non il modello YOLO. `evaluation_cases.json` contiene un controllo manuale a 01:30, 05:30 e 20:30.

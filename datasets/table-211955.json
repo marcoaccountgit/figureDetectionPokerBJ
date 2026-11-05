@@ -1,0 +1,168 @@
+{
+  "source": "Screen Recording 2026-11-04 211955.mp4",
+  "source_sha256": "ad8a1a96048cd2e6db62965cd49db1fcbe94285c75ef366b1e3675b664ea78f5",
+  "size": [
+    1764,
+    984
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        595,
+        402,
+        635,
+        480
+      ],
+      [
+        711,
+        402,
+        751,
+        480
+      ],
+      [
+        827,
+        402,
+        867,
+        480
+      ],
+      [
+        943,
+        402,
+        983,
+        480
+      ],
+      [
+        1059,
+        402,
+        1099,
+        480
+      ]
+    ],
+    "hole": [
+      [
+        648,
+        650,
+        686,
+        746
+      ],
+      [
+        688,
+        662,
+        736,
+        760
+      ]
+    ]
+  },
+  "note": "Manually reviewed visible indices. Prefix <=300s for layout diagnosis; >=480s held out until layout fix. No weight or glyph training. Sparse samples, not full-video accuracy.",
+  "frames": [
+    {
+      "time": 0,
+      "split": "val",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 60,
+      "split": "val",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 120,
+      "split": "val",
+      "board": [
+        "8S",
+        "QD",
+        "7H",
+        "2S",
+        "6S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 180,
+      "split": "val",
+      "board": [
+        "JH",
+        "KD",
+        "AD",
+        "2C"
+      ],
+      "hole": [
+        "AS",
+        "5H"
+      ]
+    },
+    {
+      "time": 240,
+      "split": "val",
+      "board": [
+        "6H",
+        "7H",
+        "JS"
+      ],
+      "hole": []
+    },
+    {
+      "time": 300,
+      "split": "val",
+      "board": [
+        "10C",
+        "10H",
+        "7C",
+        "4H",
+        "KD"
+      ],
+      "hole": []
+    },
+    {
+      "time": 480,
+      "split": "test",
+      "board": [
+        "9S",
+        "7C",
+        "9H",
+        "JH"
+      ],
+      "hole": [
+        "JS",
+        "KD"
+      ]
+    },
+    {
+      "time": 660,
+      "split": "test",
+      "board": [
+        "8C",
+        "4D",
+        "8S"
+      ],
+      "hole": [
+        "2S",
+        "QS"
+      ]
+    },
+    {
+      "time": 720,
+      "split": "test",
+      "board": [
+        "QS",
+        "2S",
+        "7S"
+      ],
+      "hole": [
+        "6S",
+        "KS"
+      ]
+    },
+    {
+      "time": 780,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "8S",
+        "2C"
+      ]
+    }
+  ]
+}

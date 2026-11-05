@@ -1,0 +1,127 @@
+{
+  "profile": "pokerstars",
+  "license": "AGPL-3.0 (Ultralytics derivative)",
+  "symbol_references": "pokerstars-symbols",
+  "source_checkpoint": {
+    "repository": "shrimantasatpati/yolov11_playing_cards_detection",
+    "revision": "7b8e6a71f0392544624dfc0b67730e679ece19ee",
+    "sha256": "2617719f994cbb91e974c9f3c3a7f63e83a5cd0d9004342636099c79260260b6",
+    "file": "detect/yolo11n_playing_cards/weights/best.pt"
+  },
+  "crop": [
+    0.3178206583427923,
+    0.4523809523809524,
+    0.681044267877412,
+    1.0
+  ],
+  "crop_reference_size": [
+    1762,
+    840
+  ],
+  "dataset_manifest": {
+    "replay_manifest_sha256": "2baf7e7471ce0622dac120ec708d7a5bca0e7f2f64456b02b27820ad10db9393",
+    "sources": [
+      {
+        "source": "Screen Recording 2026-11-04 211955.mp4",
+        "source_sha256": "ad8a1a96048cd2e6db62965cd49db1fcbe94285c75ef366b1e3675b664ea78f5",
+        "annotation": "table-211955-extra.json",
+        "annotation_sha256": "945c74444fbda3f36c2a90c994bc74443e2de97b0cd279a003af0e433db35e52"
+      },
+      {
+        "source": "Screen Recording 2026-11-04 213508.mp4",
+        "source_sha256": "978c00f44b67aab14a4d1a6c93fd437a93b97ec753f424f57ddbf6e79e40096d",
+        "annotation": "table-213508-extra.json",
+        "annotation_sha256": "f29c0cf6254c16fa4ea05dcba7f82f25b4a64aac97337b96f9cb599b624b5927"
+      }
+    ],
+    "protocol": "Additional reviewed prefix training hands; old validation/test and synthetic replay unchanged. Adjacent frames accepted only when annotated indices are virtually unchanged.",
+    "added_frames_by_split": {
+      "train": 135
+    },
+    "skipped_unstable_neighbours": 10,
+    "images_by_split": {
+      "train": 495,
+      "val": 9,
+      "test": 6
+    },
+    "real_training_codes": [
+      "10C",
+      "10D",
+      "10H",
+      "2C",
+      "2D",
+      "2S",
+      "3C",
+      "3D",
+      "3H",
+      "3S",
+      "4C",
+      "4D",
+      "4H",
+      "4S",
+      "5C",
+      "5D",
+      "5H",
+      "5S",
+      "6C",
+      "6D",
+      "6H",
+      "6S",
+      "7C",
+      "7D",
+      "7H",
+      "7S",
+      "8C",
+      "8D",
+      "8H",
+      "8S",
+      "9C",
+      "9D",
+      "9H",
+      "AC",
+      "AD",
+      "AH",
+      "AS",
+      "JC",
+      "JD",
+      "JH",
+      "JS",
+      "KC",
+      "KD",
+      "QD",
+      "QH"
+    ],
+    "missing_real_training_codes": [
+      "10S",
+      "2H",
+      "9S",
+      "KH",
+      "KS",
+      "QC",
+      "QS"
+    ]
+  },
+  "training_run": "artifacts\\training\\pokerstars-sequences-clean",
+  "epochs_requested": 8,
+  "files": [
+    {
+      "local": "pokerstars.onnx",
+      "sha256": "38cedc3f660d6168a5bac71426925dd791be34e8cfaedbb0105721f42d91d915"
+    },
+    {
+      "local": "pokerstars.classes.json",
+      "sha256": "8a2d7e9dacf245aca5ef5a402cb404def919e9994e9142644d80c6d6248ee038"
+    }
+  ],
+  "warm_start": {
+    "file": "artifacts\\training\\pokerstars-improved\\weights\\best.pt",
+    "sha256": "e6913fc444c9581eebe66d8f5fd86a702103f59a4276d739128bf174446fbdcc"
+  },
+  "epochs_completed": 7,
+  "best_epoch": 7,
+  "deployment_validation": {
+    "deployment/precision": 1.0,
+    "deployment/recall": 1.0,
+    "deployment/f1": 1.0
+  }
+}

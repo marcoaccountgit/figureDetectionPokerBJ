@@ -63,9 +63,14 @@ def main():
                         help='Template webcam detector: ordinary corner index or casino card face')
     parser.add_argument('--detector', choices=('model', 'templates'),
                         help='Default: trained model for webcam, templates for other sources')
+    parser.add_argument('--profile', choices=('general', 'pokerstars'), default='general',
+                        help='Trained model profile; pokerstars uses its calibrated table crop')
+    parser.add_argument('--temporal', action=argparse.BooleanOptionalAction, default=None,
+                        help='Confirm across frames; default on for PokerStars streams at >=2 fps')
     parser.add_argument('--preview', action=argparse.BooleanOptionalAction, default=None,
                         help='Live window; enabled by default for webcam')
     parser.add_argument('--bbox', nargs=4, type=int, metavar=('LEFT', 'TOP', 'RIGHT', 'BOTTOM'))
+    parser.add_argument('--select-region', action='store_true', help='Select the game area from a screenshot before capture')
     parser.add_argument('--start', type=float, default=0)
     parser.add_argument('--duration', type=positive)
     parser.add_argument('--fps', type=positive, default=10)
@@ -81,11 +86,31 @@ def main():
         parser.error('start and save-every must be nonnegative')
     if args.bbox and (not args.screen or args.bbox[2] <= args.bbox[0] or args.bbox[3] <= args.bbox[1]):
         parser.error('bbox requires --screen and positive dimensions')
+    if args.select_region:
+        if not args.screen or args.bbox:
+            parser.error('--select-region requires --screen and cannot be combined with --bbox')
+        from preview import select_screen_region
+        try:
+            args.bbox = select_screen_region()
+        except (RuntimeError, OSError) as error:
+            parser.exit(1, str(error) + '\n')
+        if args.bbox is None:
+            return
     detector_mode = args.detector or ('model' if is_camera else 'templates')
+    if args.profile != 'general' and detector_mode != 'model':
+        parser.error('--profile pokerstars requires --detector model')
+    temporal_enabled = args.temporal if args.temporal is not None else (
+        detector_mode == 'model' and args.profile == 'pokerstars' and not args.image and args.fps >= 2)
+    if temporal_enabled and (args.image or detector_mode != 'model' or args.fps < 2):
+        parser.error('--temporal requires a model stream and --fps >= 2')
+    temporal = None
+    if temporal_enabled:
+        from temporal_cards import TemporalCards
+        temporal = TemporalCards()
     try:
         if detector_mode == 'model':
             from learned_detector import LearnedCardDetector
-            detector = LearnedCardDetector()
+            detector = LearnedCardDetector(profile=args.profile)
         elif is_camera:
             from webcam import CameraDetector
             detector = CameraDetector(layout=args.card_layout)
@@ -126,6 +151,8 @@ def main():
         with (args.output / 'detections.jsonl').open('w', encoding='utf-8') as stream:
             for i, (timestamp, frame) in enumerate(frames):
                 result = detector.detect(frame)
+                if temporal:
+                    result = temporal.update(result, timestamp, frame.shape)
                 result['timestamp_s'] = round(timestamp, 4)
                 stream.write(json.dumps(result, allow_nan=False) + '\n')
                 stream.flush()
@@ -167,6 +194,8 @@ def main():
                'scenes': scene_counts, 'interrupted': interrupted,
                'source': 'camera' if is_camera else 'image' if args.image else 'video' if args.video else 'screen',
                'detector': detector_mode,
+               'profile': args.profile if detector_mode == 'model' else None,
+               'temporal_confirmation': temporal_enabled,
                'detection_kind': 'card_index' if detector_mode == 'model' else 'card',
                'error': failure,
                'wall_seconds': round(perf_counter() - begin, 3),

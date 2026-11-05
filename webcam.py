@@ -5,7 +5,7 @@ from threading import Event, Thread
 from time import perf_counter
 
 from card_detector import (Recognizer, choose_reading, clean_glyph, cv2, ink_color,
-                           np, ordered_quad, polygon_overlap)
+                           np, ordered_quad, polygon_overlap, stacked_index_symbols)
 
 
 def camera_frames(index, sample_fps, duration):
@@ -123,30 +123,7 @@ def card_quadrilaterals(frame):
 def corner_symbols(card):
     """Read the two vertically stacked symbols in a standard French card index."""
     # Cards have already been rectified to 200 x 280, upright.
-    region = card[6:125, 6:48]
-    gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY)
-    threshold, _ = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    mask = (gray < min(180, max(80, threshold))).astype(np.uint8)
-    count, labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
-    components = [stats[i] for i in range(1, count)
-                  if stats[i, cv2.CC_STAT_AREA] >= 8 and stats[i, cv2.CC_STAT_HEIGHT] >= 5]
-    rows = []
-    for x, y, w, h, area in sorted(components, key=lambda stat: stat[1]):
-        if rows and y < rows[-1][3] and y+h > rows[-1][1]:
-            old = rows[-1]
-            rows[-1] = [min(x, old[0]), min(y, old[1]), max(x+w, old[2]), max(y+h, old[3])]
-        else:
-            rows.append([x, y, x+w, y+h])
-    if len(rows) < 2:
-        return None
-    rank, suit = rows[:2]
-    if rank[1] > 35 or suit[1] - rank[3] > 35:
-        return None
-    x1, y1, x2, y2 = rank
-    rank_symbol = clean_glyph(mask[y1:y2, x1:x2], rank=True)
-    x1, y1, x2, y2 = suit
-    suit_symbol = clean_glyph(mask[y1:y2, x1:x2])
-    return (rank_symbol, suit_symbol), ink_color(region[y1:y2, x1:x2])
+    return stacked_index_symbols(card[6:125, 6:48])
 
 
 class CameraDetector:

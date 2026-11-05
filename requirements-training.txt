@@ -1,0 +1,5 @@
+# Isolated training environment; application runtime still uses requirements.txt.
+torch==2.8.0
+torchvision==0.23.0
+ultralytics==8.3.200
+onnx==1.18.0

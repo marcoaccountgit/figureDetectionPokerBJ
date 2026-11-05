@@ -1,0 +1,226 @@
+{
+  "source": "Screen Recording 2026-11-04 213508.mp4",
+  "source_sha256": "978c00f44b67aab14a4d1a6c93fd437a93b97ec753f424f57ddbf6e79e40096d",
+  "size": [
+    1778,
+    982
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        597,
+        401,
+        637,
+        479
+      ],
+      [
+        713,
+        401,
+        753,
+        479
+      ],
+      [
+        829,
+        401,
+        869,
+        479
+      ],
+      [
+        945,
+        401,
+        985,
+        479
+      ],
+      [
+        1061,
+        401,
+        1101,
+        479
+      ]
+    ],
+    "hole": [
+      [
+        650,
+        649,
+        688,
+        745
+      ],
+      [
+        690,
+        661,
+        738,
+        759
+      ]
+    ]
+  },
+  "note": "Additional manually reviewed prefix hands. All samples and stable temporal neighbours are training only; suffix holdout unchanged. 211955 at150s excluded due Windows menu.",
+  "frames": [
+    {
+      "time": 10,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "3C",
+        "JH",
+        "4D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 30,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "3C",
+        "JH",
+        "4D",
+        "QH",
+        "7S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 50,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "JH",
+        "2C"
+      ]
+    },
+    {
+      "time": 70,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "JH",
+        "2C"
+      ]
+    },
+    {
+      "time": 90,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "4S",
+        "8H",
+        "KD"
+      ],
+      "hole": []
+    },
+    {
+      "time": 110,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "10D",
+        "3D"
+      ]
+    },
+    {
+      "time": 130,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 150,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "5H",
+        "6H",
+        "5S",
+        "4H",
+        "4S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 170,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "KC",
+        "7D",
+        "JH"
+      ],
+      "hole": []
+    },
+    {
+      "time": 190,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "7C",
+        "8D"
+      ]
+    },
+    {
+      "time": 210,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "8S",
+        "AC",
+        "9D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 230,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "8S",
+        "AC",
+        "9D",
+        "6S",
+        "3C"
+      ],
+      "hole": []
+    },
+    {
+      "time": 250,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 270,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "2C",
+        "5S",
+        "4S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 290,
+      "hand": "213508-prefix-training",
+      "split": "train",
+      "board": [
+        "2C",
+        "5S",
+        "4S",
+        "9D",
+        "7C"
+      ],
+      "hole": []
+    }
+  ],
+  "crop": [
+    560,
+    380,
+    1200,
+    840
+  ]
+}

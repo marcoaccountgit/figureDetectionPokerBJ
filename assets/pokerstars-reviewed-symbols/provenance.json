@@ -1,0 +1,82 @@
+[
+  {
+    "source": "Screenshot 2026-11-05 192703.png",
+    "source_sha256": "801e887ae4cc9480c5527ab2f0bde516ae61ba23b18d077f376fe02a995fdd1b",
+    "preview_crop": [
+      210,
+      319,
+      1133,
+      794
+    ],
+    "slot": 1,
+    "true_card": "3C",
+    "variant": "native",
+    "canonical_index": [
+      688,
+      662,
+      736,
+      760
+    ],
+    "protocol": "Identity read visually from user screenshot; adaptation sample, not independent validation. Thresholds unchanged."
+  },
+  {
+    "source": "Screenshot 2026-11-05 192703.png",
+    "source_sha256": "801e887ae4cc9480c5527ab2f0bde516ae61ba23b18d077f376fe02a995fdd1b",
+    "preview_crop": [
+      210,
+      319,
+      1133,
+      794
+    ],
+    "slot": 1,
+    "true_card": "3C",
+    "variant": "canonical",
+    "canonical_index": [
+      688,
+      662,
+      736,
+      760
+    ],
+    "protocol": "Identity read visually from user screenshot; adaptation sample, not independent validation. Thresholds unchanged."
+  },
+  {
+    "source": "Screenshot 2026-11-05 192744.png",
+    "source_sha256": "96ea2e766a379a4693780edb5c4d64733108bf0f2a39d365765341f3d7ff8fe7",
+    "preview_crop": [
+      152,
+      234,
+      1075,
+      677
+    ],
+    "slot": 0,
+    "true_card": "4C",
+    "variant": "native",
+    "canonical_index": [
+      648,
+      650,
+      686,
+      746
+    ],
+    "protocol": "Identity read visually from user screenshot; adaptation sample, not independent validation. Thresholds unchanged."
+  },
+  {
+    "source": "Screenshot 2026-11-05 192744.png",
+    "source_sha256": "96ea2e766a379a4693780edb5c4d64733108bf0f2a39d365765341f3d7ff8fe7",
+    "preview_crop": [
+      152,
+      234,
+      1075,
+      677
+    ],
+    "slot": 0,
+    "true_card": "4C",
+    "variant": "canonical",
+    "canonical_index": [
+      648,
+      650,
+      686,
+      746
+    ],
+    "protocol": "Identity read visually from user screenshot; adaptation sample, not independent validation. Thresholds unchanged."
+  }
+]

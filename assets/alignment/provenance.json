@@ -1,0 +1,26 @@
+[
+  {
+    "name": "player-open-edge",
+    "source": "artifacts/capture10-improvement/dataset/reviewed/80.png",
+    "source_sha256": "14624f7995960bbb3e7eb4fbaa50bcc48acc2fe8719c600377ee18655d316d52",
+    "reference_width": 1762,
+    "box": [
+      1042,
+      691,
+      1094,
+      827
+    ]
+  },
+  {
+    "name": "player-folded-edge",
+    "source": "artifacts/table-211955/inspection/0000.jpg",
+    "source_sha256": "b1a5b9cb96adc01bd982600c0429532b51226b9ae64df8a4824a77c3833e0642",
+    "reference_width": 1762,
+    "box": [
+      700,
+      706,
+      742,
+      831
+    ]
+  }
+]

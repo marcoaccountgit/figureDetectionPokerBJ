@@ -1,11 +1,45 @@
 import unittest
 
-from card_detector import np
-from capture_alignment import align_capture, restore_coordinates
+from pathlib import Path
+from card_detector import cv2, np
+from capture_alignment import CaptureAligner, align_capture, restore_coordinates
 from table_layout import arrange_table
 
 
 class CaptureAlignmentTests(unittest.TestCase):
+    def shifted_frame(self, offset=0):
+        frame = np.full((1100,1762,3),(30,65,30),np.uint8)
+        path = Path(__file__).resolve().parents[1]/'assets/alignment/player-open-edge.png'
+        anchor = cv2.imread(str(path))
+        frame[691+offset:827+offset,1042:1094] = anchor
+        frame[650+offset:746+offset,648:686] = 255
+        return frame
+
+    def test_vertical_shift_is_registered_and_boxes_return_to_source_coordinates(self):
+        source = self.shifted_frame(-156)
+        aligner = CaptureAligner()
+        aligned,viewport = aligner.align(source)
+        self.assertEqual(viewport,(0,-156,1762,1100))
+        self.assertTrue(np.array_equal(aligned[650:746,648:686],source[494:590,648:686]))
+        result = restore_coordinates({'cards':[dict(card='10C',bbox=[648,650,686,746])]},viewport,source.shape)
+        self.assertEqual(result['cards'][0]['bbox'],[648,494,686,590])
+
+    def test_established_vertical_alignment_needs_three_agreeing_frames_to_change(self):
+        aligner = CaptureAligner()
+        self.assertEqual(aligner.align(self.shifted_frame())[1][1],0)
+        for _ in range(2):
+            self.assertEqual(aligner.align(self.shifted_frame(-156))[1][1],0)
+        self.assertEqual(aligner.align(self.shifted_frame(-156))[1][1],-156)
+        self.assertEqual(aligner.align(self.shifted_frame(-155))[1][1],-156)
+
+    def test_side_bar_pixel_jitter_does_not_change_the_viewport(self):
+        frame = np.zeros((984,1892,3),np.uint8)
+        frame[:,65:1827] = (30,65,30)
+        aligner = CaptureAligner()
+        first = aligner.align(frame)[1]
+        frame[:,65:67] = 0
+        self.assertEqual(aligner.align(frame)[1],first)
+
     def test_black_side_bars_are_removed_and_board_boxes_return_to_preview_coordinates(self):
         frame = np.zeros((984, 1892, 3), np.uint8)
         frame[:, 65:1827] = (40, 80, 40)

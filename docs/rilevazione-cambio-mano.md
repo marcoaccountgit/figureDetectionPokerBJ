@@ -31,8 +31,10 @@ non osservate durante le pause. Dopo una mano persa interamente nella pausa,
 il contatore puo sottostimare: per osservare ogni distribuzione occorre
 mantenere la cattura continua. Una nuova sessione di acquisizione riparte da zero.
 
-A ogni apertura/chiusura si azzera la verifica degli avversari. Dopo il ritiro
-si azzera anche la memoria temporale delle identita. Il frontend aggiunge solo
+A ogni nuova apertura si azzera la verifica degli avversari. Il ritiro delle
+carte del giocatore non azzera la conferma del board o degli altri posti ancora
+visibili: il filtro emette comunque solo carte rilevate nel campione corrente.
+Il frontend aggiunge solo
 **Mani rilevate: N**; stati tecnici, prove e transizioni restano nella diagnosi
 JSON `hand_cycle`. Fermare l'acquisizione conserva il totale a video; scegliere
 una nuova scheda avvia un nuovo contatore.

@@ -126,13 +126,14 @@ def clean_glyph(mask, rank=False):
 
 
 class Recognizer:
-    def __init__(self, assets='assets', domain='digital'):
+    def __init__(self, assets='assets', domain='digital', extra_assets=()):
         self.assets = Path(assets)
         self.domain = domain
         self.templates = {}
         for kind in ('rank', 'suit'):
             self.templates[kind] = {}
             folders = [self.assets / kind]
+            folders.extend(Path(extra)/kind for extra in extra_assets)
             if domain == 'physical':
                 folders.append(self.assets / 'physical' / kind)
             for path in sorted(path for folder in folders for path in folder.glob('*.png')):

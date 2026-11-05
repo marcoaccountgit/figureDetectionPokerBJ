@@ -1,0 +1,215 @@
+{
+  "protocol": "Manual review of preserved recording frames used during development. Cases are selected readable observations, not an independent full-video benchmark. Action labels and offered buttons are distinct. Some references overlap calibration; fields not annotated are not scored.",
+  "cases": [
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/70.png",
+      "button": "lower_left",
+      "pot": 3,
+      "stacks": {
+        "top": 50,
+        "upper_right": 28.5,
+        "hero": 46
+      },
+      "wagers": {
+        "top": 0.5,
+        "upper_right": 1,
+        "hero": 1
+      },
+      "empty": [
+        "upper_left"
+      ]
+    },
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/80.png",
+      "button": "lower_left",
+      "pot": 10,
+      "stacks": {
+        "top": 47.5,
+        "hero": 44,
+        "lower_left": 111
+      },
+      "offered": [
+        "fold",
+        "check",
+        "bet"
+      ],
+      "collected_pot": 10,
+      "street": "flop"
+    },
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/1260.png",
+      "button": "lower_left",
+      "pot": 12,
+      "stacks": {
+        "top": 55,
+        "hero": 8.5
+      },
+      "actions": {
+        "upper_left": "check"
+      },
+      "collected_pot": 12,
+      "street": "flop"
+    },
+    {
+      "file": "artifacts/table-211955/inspection/0000.jpg",
+      "button": "lower_right",
+      "pot": 2.5,
+      "actions": {
+        "top": "check"
+      },
+      "stacks": {
+        "top": 99
+      },
+      "wagers": {
+        "top": 1
+      }
+    },
+    {
+      "file": "artifacts/table-211955/inspection/0240.jpg",
+      "button": "lower_right",
+      "pot": 6.5,
+      "actions": {
+        "upper_right": "call"
+      },
+      "stacks": {
+        "upper_right": 307.5
+      },
+      "wagers": {
+        "upper_right": 1
+      }
+    },
+    {
+      "file": "artifacts/table-211955/inspection/0300.jpg",
+      "button": "lower_left",
+      "pot": 14,
+      "actions": {
+        "lower_right": "check"
+      },
+      "stacks": {
+        "lower_right": 21
+      }
+    },
+    {
+      "file": "artifacts/table-213508/inspection/0300.jpg",
+      "button": "upper_right",
+      "pot": 2.5,
+      "actions": {
+        "upper_right": "call",
+        "lower_left": "fold"
+      },
+      "wagers": {
+        "upper_right": 1,
+        "lower_left": 0.5
+      }
+    },
+    {
+      "file": "artifacts/table-213508/inspection/0420.jpg",
+      "button": "upper_left",
+      "pot": 2.5,
+      "actions": {
+        "upper_right": "check"
+      }
+    },
+    {
+      "file": "artifacts/table-213508/inspection/0480.jpg",
+      "button": "top",
+      "pot": 90,
+      "actions": {
+        "top": "raise"
+      },
+      "stacks": {
+        "top": 45
+      },
+      "wagers": {
+        "top": 45
+      }
+    },
+    {
+      "file": "artifacts/table-213508/inspection/0540.jpg",
+      "button": "lower_left",
+      "pot": 4,
+      "actions": {
+        "hero": "check"
+      },
+      "stacks": {
+        "hero": 75
+      },
+      "wagers": {
+        "hero": 1
+      }
+    },
+    {
+      "file": "artifacts/table-213508/inspection/0600.jpg",
+      "button": "upper_left",
+      "pot": 4,
+      "actions": {
+        "top": "call",
+        "upper_left": "call"
+      },
+      "stacks": {
+        "top": 147.5
+      }
+    },
+    {
+      "file": "artifacts/sequence-improvement/inspection/fold-699.6.jpg",
+      "button": "upper_right",
+      "pot": 5.5,
+      "actions": {
+        "hero": "fold"
+      },
+      "stacks": {
+        "hero": 68.5
+      }
+    },
+    {
+      "file": "artifacts/sequence-improvement/inspection/213508-transition-716.0.jpg",
+      "button": "upper_right",
+      "pot": 3,
+      "actions": {
+        "hero": "call",
+        "lower_left": "check"
+      },
+      "stacks": {
+        "hero": 67.5
+      }
+    },
+    {
+      "file": "artifacts/sequence-improvement/inspection/213508-transition-720.8.jpg",
+      "button": "upper_right",
+      "pot": 6,
+      "actions": {
+        "hero": "bet"
+      },
+      "stacks": {
+        "hero": 64.5
+      },
+      "wagers": {
+        "hero": 3
+      }
+    },
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/740.png",
+      "street": "turn",
+      "pot": 2.5,
+      "collected_pot": 2.5
+    },
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/750.png",
+      "street": "river",
+      "pot": 2.5,
+      "collected_pot": 2.5
+    },
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/960.png",
+      "street": "flop",
+      "pot": 3,
+      "collected_pot": 3
+    },
+    {
+      "file": "artifacts/capture10-improvement/dataset/reviewed/970.png",
+      "street": "turn",
+      "pot": 8.5,
+      "collected_pot": 8.5
+    }
+  ]
+}

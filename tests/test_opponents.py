@@ -11,6 +11,14 @@ def observations(active=(True,False,False,False,False)):
 
 
 class OpponentTests(unittest.TestCase):
+    def test_a_seat_outside_the_visible_capture_is_unknown_not_absent(self):
+        detector = OpponentDetector()
+        frame = np.full((1100,1762,3),(30,65,30),np.uint8)
+        seats = detector.detect(frame,visible_y=(156,1100))
+        self.assertIsNone(seats[0]['present'])
+        self.assertTrue(seats[0]['occluded'])
+        self.assertFalse(seats[1]['present'])
+
     def test_counter_requires_five_spaced_observations_and_rechecks_fold(self):
         tracker = OpponentTracker()
         hand = [dict(detected=True),dict(detected=True)]

@@ -29,11 +29,15 @@ class OpponentDetector:
             raise RuntimeError('Riferimento delle carte coperte mancante')
         self.template = features(image)
 
-    def detect(self, frame):
+    def detect(self, frame, visible_y=None):
         scale = frame.shape[1] / 1762
         canonical = cv2.resize(frame, (1762, round(frame.shape[0]/scale)))
         seats = []
         for key, label, (x, y, right, bottom) in SEATS:
+            if visible_y is not None and (y < visible_y[0] or bottom > visible_y[1]):
+                seats.append(dict(seat=key,label=label,present=None,score=0,bbox=None,
+                                  occluded=True,reason='outside_visible_capture'))
+                continue
             roi = canonical[y:bottom, x:right]
             bbox, score = None, 0.0
             if roi.shape[0] >= self.template.shape[0] and roi.shape[1] >= self.template.shape[1]:

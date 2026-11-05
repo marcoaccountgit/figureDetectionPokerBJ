@@ -386,8 +386,9 @@ chiudi la console del bot con Ctrl+C, riavvia il launcher e ricarica il pannello
 ### Conferma prudente e diagnosi live
 
 Il pannello browser richiede almeno cinque osservazioni consecutive della stessa
-carta nella stessa posizione, distribuite su almeno 300 ms e non oltre due
-secondi. Una lettura mancante, incerta o diversa interrompe la sequenza per
+carta nella stessa posizione, distribuite su almeno 300 ms. La finestra arriva
+a otto secondi per consentire cinque cicli lenti; una pausa oltre due secondi
+tra due campioni interrompe la conferma. Una lettura mancante, incerta o diversa interrompe la sequenza per
 quella carta. Il filtro non conserva carte scomparse e non corregge errori
 sistematici del modello. Gli altri comandi mantengono i parametri precedenti.
 
@@ -527,6 +528,35 @@ ridotta estratta dallo screenshot, non il fotogramma live originale. Confronto
 su 35 fotogrammi conservati: invariati 109 indici corretti, un falso positivo
 e due mancate letture; nessuna regressione misurata nel campione.
 Report: `artifacts/player-hand/missing-index-recovery.json`.
+
+### Posizioni, azioni e importi
+
+Il pannello include la sezione espandibile **Lettura tavolo**, sotto
+l'anteprima: bottone, BTN/SB/BB e altre posizioni, check/call/bet/raise/fold/all-in,
+stack, piatto, contributo visualizzato, puntate in BB e pulsanti disponibili.
+Le azioni mostrate dai giocatori sono distinte dalle opzioni ancora da premere.
+Le posizioni iniziali restano fisse dopo i fold; quelle non completamente
+verificate sono indicate esplicitamente. Gli importi illeggibili restano vuoti.
+
+La lettura usa OCR Windows locale in background e riferimenti visivi estratti
+dai materiali gia caricati. La scansione delle carte continua durante l'OCR;
+nessun dato viene inviato a servizi esterni. Non sono aggiunti equity, range,
+profili degli avversari o suggerimenti di gioco. Per attivarla dopo un
+aggiornamento, riavviare il bot e ricaricare il pannello.
+
+Verifica sui materiali conservati: 90/90 campi annotati in 18 fotogrammi,
+con sovrapposizione parziale ai riferimenti di calibrazione. Una prova HTTP
+con modello carte e OCR nativo ha verificato anche il percorso JPEG completo.
+Dettagli, requisiti, limiti e riproduzione: [Osservatore del tavolo](docs/osservatore-tavolo.md).
+
+**Piatto per fase:** la sezione distingue il totale Pot dal raccolto scritto
+sotto il board. Registra e mostra il primo totale confermato di flop, turn
+e river, senza sovrascriverlo con le puntate successive. Gli importi restano
+nelle unita visualizzate, senza una conversione automatica BB/euro.
+Sono inoltre aggiunti riferimenti per recuperare 3C/4C nelle mani degli
+screenshot 192703/192744, mantenendo le decisioni forti dei riferimenti
+originali e le soglie esistenti. Dettagli e verifiche:
+[Carte e piatto 1927](docs/carte-e-piatto-1927.md).
 
 
 ### Contatore delle mani del giocatore

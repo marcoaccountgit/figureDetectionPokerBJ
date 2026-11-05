@@ -18,12 +18,15 @@ class TemporalCards:
     classification errors can still pass this filter.
     """
     def __init__(self, required_observations=2, min_span=0, max_age=.65, window_frames=3,
-                 consecutive=False):
+                 consecutive=False, max_gap=None):
         if required_observations < 2 or window_frames < required_observations or not 0 <= min_span < max_age:
             raise ValueError('Invalid temporal confirmation settings')
         self.required_observations = required_observations
         self.min_span, self.max_age = min_span, max_age
         self.window_frames, self.consecutive = window_frames, consecutive
+        if max_gap is not None and max_gap <= 0:
+            raise ValueError('Invalid maximum observation gap')
+        self.max_gap = max_gap
         self.history = deque(maxlen=window_frames-1)
         self.shape = None
         self.last_timestamp = None
@@ -33,7 +36,8 @@ class TemporalCards:
         if not math.isfinite(timestamp):
             raise ValueError('Temporal timestamp must be finite')
         shape = tuple(shape[:2])
-        if self.shape != shape or (self.last_timestamp is not None and timestamp <= self.last_timestamp):
+        if (self.shape != shape or (self.last_timestamp is not None and
+                (timestamp <= self.last_timestamp or (self.max_gap is not None and timestamp-self.last_timestamp > self.max_gap)))):
             self.history.clear()
         self.shape, self.last_timestamp = shape, timestamp
         while self.history and timestamp-self.history[0][0] > self.max_age:
@@ -77,4 +81,5 @@ class TemporalCards:
                     temporal={'enabled': True, 'required_observations': self.required_observations,
                               'window_frames': self.window_frames, 'max_age_ms': self.max_age*1000,
                               'min_span_ms': self.min_span*1000, 'consecutive': self.consecutive,
+                              'max_gap_ms': self.max_gap*1000 if self.max_gap is not None else None,
                               'processing_ms': round(elapsed, 3)})

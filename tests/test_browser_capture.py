@@ -35,6 +35,26 @@ class BrowserCaptureTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn(b'getDisplayMedia', body)
 
+    def test_table_observer_receives_aligned_frame_and_session_context(self):
+        observer = Mock()
+        observer.submit.return_value = dict(status='error',error='OCR non disponibile')
+        self.server.RequestHandlerClass = make_handler(self.detector,'test-token',observer)
+        frame = np.zeros((984,1892,3),np.uint8)
+        frame[:,65:1827] = (30,65,30)
+        encoded = cv2.imencode('.png',frame)[1].tobytes()
+        headers = {'X-Capture-Token':'test-token','X-Capture-Session':'observed-session'}
+        status,body = self.request('POST','/frame',encoded,headers)
+        self.assertEqual(status,200)
+        result = json.loads(body)
+        self.assertEqual(result['table_observation']['status'],'error')
+        self.assertIn('hand_cycle',result)
+        game,context = observer.submit.call_args.args
+        self.assertEqual(game.shape,(984,1762,3))
+        self.assertEqual(context['viewport'],(65,0,1827,984))
+        self.assertEqual(context['capture_session'],'observed-session')
+        self.assertEqual(context['hand_id'],0)
+        self.assertEqual(context['street'],'preflop')
+
     def test_frames_require_token_and_valid_image(self):
         self.assertEqual(self.request('POST', '/frame', b'bad')[0], 403)
         headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'session-1'}
@@ -83,6 +103,28 @@ class BrowserCaptureTests(unittest.TestCase):
             status, body = self.request('POST','/frame',dealt,headers)
             self.assertEqual(status,200)
             self.assertEqual(json.loads(body)['hand_cycle']['count'],0)
+
+    def test_player_fold_does_not_reset_confirmation_of_the_visible_board(self):
+        board = dict(card='5C',accepted=True,confidence=.95,bbox=[595,402,635,480])
+        hero = [dict(card='10C',accepted=True,confidence=.95,bbox=[648,650,686,746]),
+                dict(card='QS',accepted=True,confidence=.95,bbox=[688,662,736,760])]
+        self.detector.detect.side_effect = [dict(cards=[board]+hero,processing_ms=1) for _ in range(5)] + [
+            dict(cards=[board],processing_ms=1) for _ in range(6)]
+        frame = np.full((1100,1762,3),(30,65,30),np.uint8)
+        folded = cv2.imencode('.png',frame)[1].tobytes()
+        frame[650:746,648:686] = 255
+        frame[662:760,688:736] = 255
+        dealt = cv2.imencode('.png',frame)[1].tobytes()
+        headers = {'X-Capture-Token':'test-token','X-Capture-Session':'fold-board'}
+        with patch('browser_capture.perf_counter',side_effect=[i*.04 for i in range(500)]):
+            for index,payload in enumerate([dealt]*5+[folded]*6):
+                status,body = self.request('POST','/frame',payload,headers)
+                self.assertEqual(status,200)
+                result = json.loads(body)
+                if index >= 4:
+                    self.assertEqual(result['board'][0]['card'],'5C')
+            self.assertFalse(result['hand_cycle']['active'])
+            self.assertEqual(result['hand_cycle']['count'],1)
 
 
 if __name__ == '__main__':

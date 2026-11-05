@@ -17,6 +17,15 @@ def reading(code='AS', box=None, accepted=True):
 
 
 class TemporalTests(unittest.TestCase):
+    def test_live_five_consecutive_slow_cycles_can_confirm_beyond_two_seconds(self):
+        from browser_capture import live_confirmation
+        tracker = live_confirmation()
+        results = [tracker.update({'cards':[reading()],'processing_ms':1},i*.7,(840,1762))
+                   for i in range(5)]
+        self.assertEqual([r['cards'][0]['accepted'] for r in results],[False,False,False,False,True])
+        result = tracker.update({'cards':[reading()],'processing_ms':1},5,(840,1762))
+        self.assertFalse(result['cards'][0]['accepted'])
+
     def test_live_confirmation_requires_repeated_spaced_observations(self):
         from browser_capture import live_confirmation
         tracker = live_confirmation()

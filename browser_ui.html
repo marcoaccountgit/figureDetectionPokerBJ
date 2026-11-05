@@ -1,46 +1,58 @@
 <!doctype html>
 <html lang="it">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PokerStars · Scanner locale</title>
+<title>PokerStars - Scanner locale</title>
 <style>
-[hidden]{display:none!important}
-.board.hand{grid-template-columns:repeat(2,minmax(0,1fr));max-width:420px}
-.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}.board-slot{border:1px solid #415463;border-radius:10px;padding:14px 4px;text-align:center}.board-slot small{display:block;color:#aebfc9;font-size:12px}.board-slot strong{display:block;font-size:clamp(18px,4vw,30px);margin-top:8px}.board-slot.confirmed{border-color:#70ffac;color:#70ffac}.board-slot.uncertain{border-color:#ffcf70;color:#ffcf70}
-:root{color-scheme:dark;font-family:Segoe UI,system-ui,sans-serif;background:#101820;color:#edf3f6}body{max-width:1200px;margin:32px auto;padding:0 24px}h1{margin-bottom:8px;font-size:30px}p{color:#aebfc9;line-height:1.6}.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:24px 0}button{border:1px solid #415463;border-radius:9px;padding:12px 18px;background:#243541;color:inherit;font:inherit;cursor:pointer}button.primary{background:#88e2b1;color:#10241a;border:0;font-weight:650}button:disabled{opacity:.4;cursor:default}.panel{background:#18252f;border:1px solid #30434f;border-radius:14px;padding:18px;margin:16px 0}#view{padding:0;position:relative;min-height:240px;display:grid;place-items:center;background:#080f14;overflow:hidden}canvas{display:block;width:100%;height:auto}#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}video{display:none}#view.preview video{display:block;width:100%;height:auto}#view.preview canvas{display:none}#view.preview{min-height:0}#status{font-weight:600;color:#88e2b1}#cards{font-size:24px;letter-spacing:1px}label{display:flex;gap:8px;align-items:center}a{color:#88e2b1}#downloads a{display:block;padding:8px}#empty{padding:60px 16px;text-align:center}.small{font-size:14px}#error{color:#ffb3a9;white-space:pre-wrap}
+:root{color-scheme:dark;font-family:Segoe UI,system-ui,sans-serif;background:#101820;color:#edf3f6;font-size:13px}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;padding:12px;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:10px;overflow:hidden}h1,h2,p{margin:0}h1{font-size:18px;letter-spacing:-.4px}h2{font-size:13px;font-weight:650}.muted,.small,small{color:#aebfc9}.small,small{font-size:11px}.app-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0}.brand{display:flex;align-items:center;gap:10px;white-space:nowrap}.local-tag{font-size:10px;border:1px solid #365244;padding:3px 7px;border-radius:20px;color:#88e2b1}.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}button{font:inherit;font-size:12px;color:inherit;background:#243541;border:1px solid #415463;border-radius:7px;padding:8px 11px;cursor:pointer}button.primary{background:#88e2b1;color:#10241a;border-color:#88e2b1;font-weight:650}button:disabled{opacity:.4;cursor:default}a{color:#88e2b1}label{display:flex;align-items:center;gap:7px;font-size:12px}button:focus-visible,summary:focus-visible{outline:2px solid #88e2b1;outline-offset:3px}
+.dashboard{display:grid;grid-template-columns:minmax(420px,.94fr) minmax(0,1.16fr);gap:12px;flex:1;min-height:0;max-width:1600px;width:100%;margin:0 auto}.left-column{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}.right-column{display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;gap:10px;min-width:0;min-height:0}.panel{border:1px solid #30434f;background:#18252f;border-radius:10px;padding:10px;min-width:0}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.section-heading small{font-size:10px}.status-panel{padding:8px 10px}.status-top{display:flex;align-items:center;justify-content:space-between;gap:10px}#status{color:#88e2b1;font-size:11px;font-weight:600}.hand-counter{display:flex;align-items:center;gap:8px;font-size:11px;white-space:nowrap}.hand-counter strong{font-size:23px;color:#edf3f6;line-height:1}.status-details summary{font-size:10px}.status-extra{display:flex;align-items:center;gap:8px}#error{color:#ffb3a9;font-size:11px;white-space:pre-wrap}#error:not(:empty){margin-top:6px}#source,#metrics,#cards{font-size:11px;line-height:1.5;overflow-wrap:anywhere}#cards{margin:7px 0}.card-code{display:inline-flex;align-items:center;gap:4px;margin-right:7px}.suit-icon{width:18px;height:18px;vertical-align:middle;flex-shrink:0}
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:7px}.board.hand{grid-template-columns:repeat(2,minmax(0,1fr));max-width:270px}.board-slot{border:1px solid #415463;border-radius:7px;padding:5px 3px;text-align:center;min-width:0}.board-slot small{display:block;font-size:10px}.board-slot strong{display:flex;align-items:center;justify-content:center;gap:5px;font-size:22px;min-height:28px;margin-top:3px}.board-slot.confirmed{border-color:#70ffac;color:#70ffac}.board-slot.uncertain{border-color:#ffcf70;color:#ffcf70}.opponent-line{display:flex;align-items:center;justify-content:space-between;gap:12px}.opponent-label{display:flex;align-items:center;gap:12px}.opponent-label h2{font-size:12px}#opponentCount{font-size:25px;font-weight:700;line-height:1;color:#88e2b1}.seat{display:inline-block;font-size:10px;padding:3px 5px;border-radius:4px;background:#243541}.seat.active{color:#70ffac}.seat.pending{color:#ffcf70}.seat.absent{color:#aebfc9}#opponentSeats{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}#opponentState{font-size:11px;line-height:1.5}
+.dropdown{position:relative}.dropdown>summary{cursor:pointer;color:#aebfc9;font-size:11px;list-style:none;white-space:nowrap}.dropdown>summary::after{content:' \25BE';font-size:10px}.dropdown[open]>summary{color:#edf3f6}.popover{position:absolute;z-index:30;right:0;top:calc(100% + 8px);width:320px;max-width:calc(100vw - 32px);padding:13px;background:#20313e;border:1px solid #49606f;border-radius:9px;box-shadow:0 12px 36px #0008;font-size:12px;line-height:1.5}.popover label{margin-bottom:10px}.popover p+p{margin-top:8px}.popover button{margin-top:8px}.dropdown.above .popover{top:auto;bottom:calc(100% + 8px)}.status-details .popover{right:auto;left:0}.popover-scroll{max-height:38vh;overflow:auto}
+#tableObservation{flex:1;min-height:210px;display:flex;flex-direction:column;gap:7px}#tableReadStatus{font-size:10px;color:#aebfc9;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.table-meta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10px;color:#aebfc9}.table-meta strong{font-size:11px;color:#edf3f6}.seat-table-wrap{min-height:0;flex:1;overflow:auto}.seat-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px}.seat-table th{font-weight:500;color:#aebfc9;font-size:10px;text-align:left;border-bottom:1px solid #30434f;padding:4px}.seat-table td{padding:5px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid #243541}.seat-table th:first-child{width:31%}.seat-table th:nth-child(2){width:17%}.seat-table th:nth-child(3){width:17%}.estimated{color:#ffcf70}.table-footer{display:flex;align-items:center;justify-content:space-between;gap:10px}.table-footer .popover{right:auto;left:0;width:430px}.table-footer p{margin-bottom:8px}#observedEvents{font-size:11px;line-height:1.6}
+.preview-panel{width:100%;height:100%;max-width:700px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px}.preview-panel>.section-heading{width:100%}.preview-stage{flex:1;width:100%;min-height:0;display:grid;place-items:center}.capture-view{--capture-aspect:1.94;aspect-ratio:var(--capture-aspect);position:relative;width:100%;max-width:680px;min-height:0;display:grid;place-items:center;background:#080f14;border-radius:7px;overflow:hidden}canvas{display:block;width:100%;height:auto}#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}video{display:none}#view.preview video{display:block;width:100%;height:auto}#view.preview canvas{display:none}#empty{padding:20px 18px;text-align:center;font-size:12px;min-height:0;display:grid;place-items:center;width:100%;color:#aebfc9}.preview-caption{font-size:10px;color:#aebfc9;width:100%;text-align:center}
+#potPanel{width:100%;max-width:700px}.pot-values{display:flex;align-items:center;gap:24px}.pot-values small{display:block;font-size:11px}.pot-values strong{display:block;font-size:29px;color:#88e2b1;line-height:1.25;margin-top:3px}.pot-values .secondary strong{font-size:20px;color:#edf3f6}#centerPotByStreet{font-size:12px;margin-top:7px}#potReadStatus{font-size:10px;color:#aebfc9;margin-top:5px}.support-bar{width:100%;max-width:700px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding:0 2px}#downloads a{display:block;padding:6px 0;font-size:11px;overflow-wrap:anywhere}
+@media(min-width:981px) and (max-height:700px){body{padding:8px;gap:8px}.dashboard{gap:10px}.left-column{gap:6px}.panel{padding:8px}.board{margin-top:5px}.board-slot{padding:3px}.board-slot strong{font-size:19px;min-height:23px}.board-slot small{font-size:9px}.seat-table td{padding:3px 4px}.seat-table th{padding:3px 4px}#tableObservation{min-height:185px}.preview-panel{padding:8px}.capture-view{max-width:680px}}
+@media(min-width:981px) and (max-height:600px){.left-column{gap:5px}.left-column>.panel{padding:6px 8px}.board{margin-top:4px}.board-slot{padding:2px 3px}.board-slot strong{font-size:18px;min-height:20px;line-height:1;margin-top:2px}.section-heading h2{font-size:12px}.seat-table td{padding:3px 4px}.table-meta{font-size:10px}}
+@media(max-width:980px){body{height:auto;min-height:100dvh;overflow:auto}.app-header{align-items:flex-start}.brand{flex-direction:column;align-items:flex-start;gap:4px}.dashboard{grid-template-columns:1fr}.right-column{grid-row:1;display:flex;flex-direction:column;align-items:center}.preview-panel{height:auto}.preview-stage{height:min(45vh,360px);flex:none}.left-column{min-height:600px}.capture-view{width:100%;max-width:620px}.preview-panel,#potPanel,.support-bar{max-width:660px}.support-bar{margin:0 0 8px}.toolbar{gap:5px}button{padding:7px 9px}#tableObservation{min-height:230px}}
 </style>
-<style>
-body{max-width:1100px;margin:16px auto;padding:0 16px}h1{font-size:24px;margin:0 0 4px}p{margin:8px 0;font-size:13px}.toolbar{gap:8px;margin:12px 0}button{padding:8px 12px;font-size:13px}label{font-size:12px}.panel{padding:12px;margin:10px 0;border-radius:10px}.small{font-size:12px}#source,#metrics{font-size:11px;margin:5px 0}#cards{font-size:13px;letter-spacing:0}.readings{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:10px}.readings>.panel{margin:0;min-width:0}.readings strong{font-size:14px}.board{gap:5px;margin:10px 0}.board-slot{padding:8px 2px;border-radius:7px}.board-slot small{font-size:10px}.board-slot strong{font-size:20px;margin-top:5px;display:flex;align-items:center;justify-content:center;gap:5px}.suit-icon{width:19px;height:19px;vertical-align:middle;flex-shrink:0}.card-code{display:inline-flex;align-items:center;gap:4px;margin-right:7px}#view{max-width:820px;min-height:0;margin:12px auto}#opponentCount{font-size:30px;font-weight:700;color:#88e2b1}#opponentSeats{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.seat{font-size:10px;padding:3px 5px;border-radius:4px;background:#243541}.seat.active{color:#70ffac}.seat.pending{color:#ffcf70}.seat.absent{color:#aebfc9}#opponentState{font-size:11px;color:#aebfc9}.help{max-width:820px;margin:8px auto}details summary{cursor:pointer;color:#aebfc9;font-size:12px}
-@media(max-width:760px){.readings{grid-template-columns:1fr 1fr}.readings>.panel:first-child{grid-column:1/-1}body{padding:0 10px}.toolbar{gap:6px}.readings strong{font-size:13px}}
-</style>
-<h1>Scanner del tavolo</h1>
-<p>Scegli la scheda del gioco e controlla qui cosa sta leggendo il bot. Elaborazione sul tuo PC.</p>
-<div class="toolbar">
- <button id="choose" class="primary">1. Scegli scheda</button>
- <button id="start" disabled>2. Avvia scansione</button>
- <button id="stop" disabled>Ferma acquisizione</button>
- <button id="record" disabled>Registra video</button>
- <button id="diagnose" disabled>Salva diagnosi lettura</button>
- <label><input id="recordOverlay" type="checkbox" checked>Registra anche i riquadri del bot</label>
- <label><input id="temporalNote" type="checkbox" checked disabled>Conferma temporale attiva</label>
+</head>
+<body>
+<header class="app-header"><div class="brand"><h1>Scanner del tavolo</h1><span class="local-tag">Locale</span></div>
+<div class="toolbar"><button id="choose" class="primary">Scegli scheda</button><button id="start" disabled>Avvia scansione</button><button id="stop" disabled>Ferma</button><button id="record" disabled>Registra video</button>
+<details class="dropdown"><summary>Opzioni</summary><div class="popover"><label><input id="recordOverlay" type="checkbox" checked>Registra i riquadri del bot</label><label><input id="temporalNote" type="checkbox" checked disabled>Conferma temporale attiva</label><button id="diagnose" disabled>Salva diagnosi lettura</button></div></details></div></header>
+<main class="dashboard">
+<div class="left-column">
+<section class="panel status-panel" aria-label="Stato della scansione"><div class="status-top"><div class="status-extra"><span id="status" role="status">In attesa di una scheda</span><details class="dropdown status-details"><summary>Dettagli</summary><div class="popover"><p id="source">Nessuna sorgente selezionata</p><div id="cards">&mdash;</div><p id="metrics"></p></div></details></div><div class="hand-counter">Mani giocate <strong id="handCount" role="status">0</strong></div></div><div id="error" role="alert"></div></section>
+<section class="panel" aria-label="Board, carte sul tavolo"><div class="section-heading"><h2>Board</h2><small>Flop &middot; Turn &middot; River</small></div><div id="board" class="board" aria-live="polite"></div></section>
+<section class="panel" aria-label="Mano del giocatore"><div class="section-heading"><h2>La tua mano</h2><small>Sinistra &rarr; destra</small></div><div id="playerHand" class="board hand" aria-live="polite"></div></section>
+<section class="panel" aria-label="Avversari nella mano corrente"><div class="opponent-line"><div class="opponent-label"><h2>Avversari nella mano</h2><strong id="opponentCount" role="status">&mdash;</strong></div><details class="dropdown"><summary>Affidabilit&agrave;</summary><div class="popover"><p id="opponentReliabilityValue">Nessuna verifica disponibile</p><div id="opponentState">In attesa di scansione</div><div id="opponentSeats"></div><p class="small" style="margin-top:8px">Conferma con cinque letture consecutive su almeno 300 ms. I posti non visibili restano da verificare.</p></div></details></div></section>
+<section class="panel" id="tableObservation" aria-label="Lettura tavolo"><div class="section-heading"><h2>Lettura tavolo</h2><span id="tableReadStatus">in attesa</span></div>
+<div class="table-meta"><span>Bottone: <strong id="dealerSeat">&mdash;</strong></span><span>Posizioni (?) da verificare</span></div>
+<div class="seat-table-wrap"><table class="seat-table"><thead><tr><th>Posto</th><th>Pos.</th><th>Azione</th><th>Stack</th><th>Puntata</th></tr></thead><tbody id="observedSeats"></tbody></table></div>
+<div class="table-footer"><small>Importi nelle unit&agrave; del tavolo</small><details class="dropdown above"><summary>Azioni e pulsanti</summary><div class="popover popover-scroll"><p class="small">Totale: <strong id="observedPot">&mdash;</strong> &middot; Centro: <strong id="collectedPot">&mdash;</strong> &middot; Contributo: <strong id="observedContribution">&mdash;</strong></p><p class="small">Primo totale confermato della fase: <span id="streetPots">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</span></p><p class="small" id="offeredActions"></p><div id="observedEvents"></div></div></details></div></section>
 </div>
-<div class="panel"><span id="status" role="status">In attesa di una scheda</span><span style="float:right;font-weight:600">Mani rilevate: <span id="handCount" role="status">0</span></span><p id="source" class="small">Nessuna sorgente selezionata</p><div id="cards">—</div><p id="metrics" class="small"></p><div id="error" role="alert"></div></div>
-<div class="readings">
-<section class="panel" aria-label="Carte comuni del tavolo"><strong>Carte comuni</strong><div id="board" class="board" aria-live="polite"></div><span class="small">Da sinistra a destra. ? = in verifica.</span></section>
-<section class="panel" aria-label="Mano del giocatore"><strong>La tua mano</strong><div id="playerHand" class="board hand" aria-live="polite"></div><span class="small">Le due carte in basso.</span></section>
-<section class="panel" aria-label="Avversari nella mano corrente"><strong>Avversari nella mano corrente</strong><div id="opponentCount" role="status">—</div><div id="opponentState">In attesa di scansione</div><div id="opponentSeats"></div></section>
+<div class="right-column">
+<section class="panel preview-panel" aria-label="Anteprima della scheda"><div class="section-heading"><h2>Anteprima</h2><small>Scheda acquisita</small></div><div id="previewStage" class="preview-stage"><div id="view" class="capture-view"><div id="empty">Scegli la scheda del gioco per visualizzare l'anteprima.</div><video id="video" muted playsinline></video><canvas id="image" hidden></canvas><canvas id="overlay" hidden></canvas></div></div><p class="preview-caption">Verde: confermato &middot; Giallo: in verifica &middot; Azzurro: carte coperte</p></section>
+<section id="potPanel" class="panel" aria-label="Piatto al centro del tavolo"><div class="pot-values"><div><small>Piatto al centro</small><strong id="centerPotValue" aria-live="polite">&mdash;</strong></div><div class="secondary"><small>Totale tavolo</small><strong id="tablePotValue">&mdash;</strong></div></div><div id="centerPotByStreet">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</div><p id="potReadStatus" role="status">In attesa della lettura del tavolo</p></section>
+<div class="support-bar"><details class="dropdown above"><summary>Guida</summary><div class="popover popover-scroll" style="left:0;right:auto"><p>Apri questo pannello nello stesso browser del gioco e scegli la scheda del tavolo. Il conteggio considera le coppie di carte coperte visibili, non nomi e avatar.</p><p>Il video WebM non contiene audio. Se attiva, la registrazione include i riquadri del bot. Scaricala prima di chiudere la pagina: rimane in memoria fino al download.</p></div></details><details class="dropdown above"><summary>Registrazioni</summary><div id="downloads" class="popover popover-scroll" hidden><strong>Video da scaricare</strong></div></details></div>
 </div>
-<div id="view" class="panel"><div id="empty">L’anteprima della scheda selezionata apparirà qui.</div><video id="video" muted playsinline></video><canvas id="image" hidden></canvas><canvas id="overlay" hidden></canvas></div>
-<details class="help"><summary>Guida a scansione e registrazione</summary><p class="small">Il conteggio usa le coppie di dorsi rossi visibili: nomi e avatar non vengono contati. Durante le animazioni mostra una verifica; le carte scoperte degli avversari allo showdown non sono conteggiate come dorsi.</p><p class="small">Nel selettore scegli «Scheda Chrome / Microsoft Edge / Opera» e poi la scheda del gioco. Usa preferibilmente questo pannello nello stesso browser del gioco. Il tavolo deve occupare l’area acquisita, senza pannelli laterali. Le letture verdi sono confermate; quelle gialle sono in attesa o incerte.</p>
-<p class="small">Avvia la scansione per vedere i riquadri: verdi per le carte confermate, gialli per le letture incerte. La registrazione include i riquadri se l'opzione è selezionata; disattivala per salvare la scheda originale. Il video WebM è senza audio e resta in memoria fino allo stop: scaricalo prima di chiudere questa pagina.</p>
-</details><div id="downloads" class="panel" hidden><strong>Registrazioni da scaricare</strong></div>
-
+</main>
 <script>
 'use strict';
 const $=id=>document.getElementById(id), token=new URLSearchParams(location.search).get('token');
 let stream=null, session=null, recorder=null, chunks=[], generation=0, scanning=false, pending=null;
 let lastPacket=null;
 const image=$('image'), overlay=$('overlay'), video=$('video');
+function fitCapturePreview(){
+ const stage=$('previewStage'),view=$('view');
+ if(!stage.clientWidth||!stage.clientHeight)return;
+ const aspect=parseFloat(view.style.getPropertyValue('--capture-aspect'))||1.94;
+ view.style.width=Math.min(stage.clientWidth,stage.clientHeight*aspect,680)+'px';
+}
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(fitCapturePreview).observe($('previewStage'));
+window.addEventListener('resize',fitCapturePreview);
 const suits={
  S:{name:'picche',symbol:'♠',path:'M12 2C9 6 3 9 3 14a5 5 0 0 0 8 4l-2 4h6l-2-4a5 5 0 0 0 8-4c0-5-6-8-9-12z'},
  H:{name:'cuori',symbol:'♥',path:'M12 21 3 12C-3 4 7-2 12 5c5-7 15-1 9 7z'},
@@ -58,6 +70,32 @@ function cardValue(code){
 function fail(message){$('error').textContent=message;}
 function renderHandCount(cycle){$('handCount').textContent=cycle?.count??0;}
 renderHandCount();
+const seatLabels={top:'Alto',upper_right:'Destra alta',lower_right:'Destra bassa',hero:'Tu',lower_left:'Sinistra bassa',upper_left:'Sinistra alta'};
+function formatAmount(amount){return amount?`${amount.value} ${amount.unit}`:'—';}
+function renderPotSummary(data){
+ const ready=data?.status==='ready';
+ $('centerPotValue').textContent=ready?formatAmount(data.collected_pot):'—';
+ $('tablePotValue').textContent=ready?formatAmount(data.pot):'—';
+ $('centerPotByStreet').textContent=[['flop','Flop'],['turn','Turn'],['river','River']].map(([key,label])=>label+': '+(ready?formatAmount(data.street_pots?.[key]?.last_collected):'—')).join(' · ');
+ $('potReadStatus').textContent=!data?'In attesa della lettura del tavolo':!ready?'Lettura del tavolo non ancora disponibile':!data.collected_pot?'Importo al centro in lettura':'Flop, turn e river mostrano l’ultimo raccolto confermato della fase. Importi nelle unità mostrate dal tavolo.';
+}
+function renderTableObservation(data){
+ renderPotSummary(data);
+ const ready=data?.status==='ready';
+ $('tableReadStatus').textContent=ready?'lettura aggiornata':data?.status==='error'?'OCR: '+data.error:data?.status==='stale'?'lettura scaduta':data?'lettura in corso':'in attesa';
+ $('dealerSeat').textContent=ready?(seatLabels[data.button]||'—'):'—';
+ $('observedPot').textContent=ready?formatAmount(data.pot):'—';$('observedContribution').textContent=ready?formatAmount(data.contribution):'—';
+ $('collectedPot').textContent=ready?formatAmount(data.collected_pot):'—';
+ $('streetPots').textContent=[['flop','Flop'],['turn','Turn'],['river','River']].map(([key,label])=>label+': '+(ready?formatAmount(data.street_pots?.[key]?.first_total):'—')).join(' · ');
+ $('observedSeats').replaceChildren(...(ready?data.seats:[]).map(seat=>{
+  const row=document.createElement('tr');
+  const values=[seatLabels[seat.seat]+(seat.name?' · '+seat.name:''),seat.position||(seat.position_estimate?seat.position_estimate+' (?)':'—'),seat.action||'—',formatAmount(seat.stack),formatAmount(seat.wager)];
+  values.forEach((text,index)=>{const cell=document.createElement('td');cell.textContent=text;cell.title=index===1&&!seat.position&&seat.position_estimate?'Posizione da verificare: partecipanti iniziali non completamente osservati':text;if(index===1&&!seat.position&&seat.position_estimate)cell.className='estimated';row.append(cell);});return row;
+ }));
+ $('offeredActions').textContent=ready?'Pulsanti disponibili (non azioni eseguite): '+(data.available_actions.map(a=>a.text+(a.amount?' '+formatAmount(a.amount):'')).join(' · ')||'—'):'';
+ $('observedEvents').replaceChildren(...(ready?data.events.slice(-8):[]).map(event=>{const line=document.createElement('div');line.textContent=`Mano ${event.hand_id} · ${event.street} · ${seatLabels[event.seat]}: ${event.action}`+(event.amount?' · '+formatAmount(event.amount)+' (totale street)':'');return line;}));
+}
+renderTableObservation();
 function renderSlots(target,labels,board=[]){
  $(target).replaceChildren(...labels.map((label,i)=>{
   const card=board[i], slot=document.createElement('div'), title=document.createElement('small'), value=document.createElement('strong');
@@ -71,6 +109,7 @@ renderBoard();
 renderHand();
 function renderOpponents(data){
  $('opponentCount').textContent=data?.count??'—';
+ $('opponentReliabilityValue').textContent=data?`${(data.seats||[]).filter(seat=>seat.confirmed).length}/${(data.seats||[]).length} posti verificati`:'Nessuna verifica disponibile';
  $('opponentState').textContent=!data?'In attesa di scansione':data.pending?'Verifica delle coppie in corso…':`${data.count} con carte coperte · ${data.players_with_cards} giocatori con carte visibili`;
  $('opponentSeats').replaceChildren(...(data?.seats||[]).map(seat=>{const item=document.createElement('span');item.className='seat '+(seat.in_hand===true?'active':seat.in_hand===false?'absent':'pending');item.textContent=seat.label+': '+(seat.in_hand===true?'in mano':seat.in_hand===false?'senza dorsi':'verifica');return item;}));
 }
@@ -83,7 +122,7 @@ $('diagnose').onclick=async()=>{
  const link=document.createElement('a');link.href=url;link.download='diagnosi-carte-'+Date.now()+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
 };
 function stopRecording(){if(recorder && recorder.state!=='inactive'){recorder.stop();$('record').disabled=true;}}
-function stop(){renderBoard();renderHand();renderOpponents();generation++;scanning=false;if(pending)pending.abort();$('choose').disabled=false;stopRecording();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('start').disabled=true;$('stop').disabled=true;$('record').disabled=true;$('status').textContent='Acquisizione ferma';$('source').textContent='Nessuna acquisizione attiva';$('empty').hidden=false;$('view').classList.remove('preview');image.hidden=true;overlay.hidden=true;$('cards').textContent='—';$('metrics').textContent='';overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);}
+function stop(){renderBoard();renderHand();renderOpponents();renderTableObservation();generation++;scanning=false;if(pending)pending.abort();$('choose').disabled=false;stopRecording();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('start').disabled=true;$('stop').disabled=true;$('record').disabled=true;$('status').textContent='Acquisizione ferma';$('source').textContent='Nessuna acquisizione attiva';$('empty').hidden=false;$('view').classList.remove('preview');image.hidden=true;overlay.hidden=true;$('cards').textContent='—';$('metrics').textContent='';overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);}
 $('stop').onclick=stop;
 $('choose').onclick=async()=>{
  fail('');$('choose').disabled=true;
@@ -92,7 +131,7 @@ $('choose').onclick=async()=>{
   stream=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:10},audio:false,selfBrowserSurface:'exclude',surfaceSwitching:'exclude'});
   const track=stream.getVideoTracks()[0], settings=track.getSettings();
   if(settings.displaySurface && settings.displaySurface!=='browser')throw Error('Seleziona una scheda del browser, invece di uno schermo o una finestra.');
-  video.srcObject=stream;await video.play();session=crypto.randomUUID();renderHandCount();const current=++generation;
+  video.srcObject=stream;await video.play();$('view').style.setProperty('--capture-aspect',video.videoWidth/video.videoHeight);fitCapturePreview();session=crypto.randomUUID();renderHandCount();const current=++generation;
   track.onended=()=>{if(current===generation)stop();};
   $('source').textContent='Sorgente: '+track.label;$('status').textContent='Anteprima pronta: controlla la scheda e avvia la scansione';$('start').disabled=false;$('view').classList.add('preview');$('stop').disabled=false;$('record').disabled=typeof MediaRecorder==='undefined'||recorder!==null;
   $('empty').hidden=true;image.hidden=false;overlay.hidden=false;
@@ -106,6 +145,7 @@ async function scan(current){
  try{
   const w=video.videoWidth,h=video.videoHeight;if(!w||!h)throw Error('La scheda non sta fornendo immagini.');
   const scale=Math.min(1,2560/w,1600/h);image.width=Math.round(w*scale);image.height=Math.round(h*scale);
+  $('view').style.setProperty('--capture-aspect',image.width/image.height);fitCapturePreview();
   overlay.width=image.width;overlay.height=image.height;
   image.getContext('2d').drawImage(video,0,0,image.width,image.height);
   const blob=await new Promise(resolve=>image.toBlob(resolve,'image/jpeg',.92));
@@ -123,10 +163,11 @@ async function scan(current){
   renderBoard(result.board);
   renderHand(result.player_hand);
   renderHandCount(result.hand_cycle);
+  renderTableObservation(result.table_observation);
   renderOpponents(result.opponents);
   for(const seat of result.opponents?.seats||[]){if(!seat.bbox)continue;const [x,y,b,d]=seat.bbox;ctx.strokeStyle=ctx.fillStyle=seat.in_hand===true?'#70d7ff':'#ffcf70';ctx.strokeRect(x,y,b-x,d-y);ctx.fillText('2 coperte',x,Math.max(20,y-5));}
   $('cards').replaceChildren(document.createTextNode('Altre carte: '));const other=result.cards.filter(c=>c.table_group==='other'&&c.accepted);if(!other.length)$('cards').append('nessuna');for(const card of other){const span=document.createElement('span');span.className='card-code';span.append(cardValue(card.card));$('cards').append(span);}
-  $('metrics').textContent=`${image.width} × ${image.height} · Elaborazione ${Math.round(result.processing_ms)} ms · Ciclo ${Math.round(performance.now()-began)} ms · Conferma: almeno ${result.temporal.required_observations} letture consecutive in ${result.temporal.min_span_ms} ms`;
+  $('metrics').textContent=`${image.width} × ${image.height} · Elaborazione ${Math.round(result.processing_ms)} ms · Ciclo ${Math.round(performance.now()-began)} ms · Conferma: almeno ${result.temporal.required_observations} letture consecutive, intervallo minimo ${result.temporal.min_span_ms} ms`;
  }catch(error){if(current===generation){stop();fail(error.message+' Verifica che la console del bot sia aperta e riavvia la scansione.');}return;}
  setTimeout(()=>scan(current),Math.max(0,100-(performance.now()-began)));
 }
@@ -154,4 +195,5 @@ $('record').onclick=()=>{
 };
 window.addEventListener('beforeunload',()=>{if(stream)stream.getTracks().forEach(t=>t.stop());});
 </script>
+</body>
 </html>

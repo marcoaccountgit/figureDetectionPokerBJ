@@ -101,7 +101,10 @@ class LearnedCardDetector:
         self.crop = metadata.get('crop')
         self.crop_reference_size = metadata.get('crop_reference_size')
         symbol_path = metadata.get('symbol_references')
+        reviewed_symbols = MODEL_DIR.parent/'assets/pokerstars-reviewed-symbols'
+        extras = [reviewed_symbols] if profile=='pokerstars' and reviewed_symbols.is_dir() else []
         self.symbol_classifier = Recognizer(MODEL_DIR / symbol_path) if symbol_path else None
+        self.reviewed_symbol_classifier = Recognizer(MODEL_DIR / symbol_path,extra_assets=extras) if symbol_path and extras else None
         self.names = json.loads(classes.read_text(encoding='utf-8'))
         expected = {rank + suit for rank in ['A', 'J', 'Q', 'K', '10', *'23456789'] for suit in 'CDHS'}
         if len(self.names) != 52 or set(self.names) != expected:
@@ -115,15 +118,22 @@ class LearnedCardDetector:
         if classifier is None:
             return None
         symbols = stacked_index_symbols(image)
-        reading = classifier.classify_symbols(*symbols) if symbols else None
-        if reading and reading['accepted'] and min(reading['rank_score'], reading['suit_score']) >= .90:
-            reading.update(decision_source='training_symbol_references',
-                           confidence=min(reading['rank_score'], reading['suit_score']))
-            return reading
+        if not symbols:
+            return None
+        # Preserve the existing strong decisions. Extra reviewed templates
+        # recover ambiguous glyphs without narrowing the original S/C margin.
+        for candidate,source in [(classifier,'training_symbol_references'),
+                                 (getattr(self,'reviewed_symbol_classifier',None),'reviewed_symbol_references')]:
+            if candidate is None:
+                continue
+            reading = candidate.classify_symbols(*symbols)
+            if reading['accepted'] and min(reading['rank_score'],reading['suit_score']) >= .90:
+                reading.update(decision_source=source,confidence=min(reading['rank_score'],reading['suit_score']))
+                return reading
         return None
 
     def _recover_player_indices(self, frame, cards):
-        """Read exposed hole-card strips even when YOLO emits no box.
+        """Read exposed hole-card strips when YOLO misses or doubts an index.
 
         Use the reviewed layout at its reference width so small glyphs meet
         the symbol extractor's pixel-size requirements. Never invent a code
@@ -137,7 +147,8 @@ class LearnedCardDetector:
             if y2 > canonical.shape[0]:
                 continue
             bbox = [round(v*scale) for v in box]
-            if any(overlap(bbox,c['bbox']) >= .2 for c in cards):
+            existing = [c for c in cards if overlap(bbox,c['bbox']) >= .2]
+            if any(c['accepted'] for c in existing):
                 continue
             image = canonical[y1:y2,x1:x2]
             # A black/green background or covered card is not an exposed index.
@@ -147,12 +158,20 @@ class LearnedCardDetector:
             reading = self._symbol_reading(image)
             if reading is None:
                 continue
+            previous = max(existing,key=lambda c:c.get('confidence',0),default={})
+            candidate = previous.get('neural_candidate') or (
+                previous['rank']+previous['suit'] if previous.get('rank') and previous.get('suit') else None)
             x1,y1,x2,y2 = bbox
             reading.update(domain='physical', group='card_index', bbox=bbox,
                            polygon=[[x1,y1],[x2,y1],[x2,y2],[x1,y2]],
                            decision_source='fixed_player_index_recovery',
-                           recovered_hand_slot=slot, neural_confidence=None)
-            cards.append(reading)
+                           recovered_hand_slot=slot,
+                           neural_confidence=previous.get('neural_confidence',previous.get('confidence')))
+            if candidate:
+                reading.update(neural_candidate=candidate,symbol_corrected=candidate!=reading['card'])
+            for old in existing:
+                cards.remove(old)
+            cards.append(dict(previous,**reading))
 
     def detect(self, frame):
         start = perf_counter()

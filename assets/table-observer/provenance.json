@@ -1,0 +1,67 @@
+{
+  "button": {
+    "source": "capture10 reviewed/80.png",
+    "crop": [
+      428,
+      690,
+      468,
+      729
+    ],
+    "sha256": "14624f7995960bbb3e7eb4fbaa50bcc48acc2fe8719c600377ee18655d316d52"
+  },
+  "actions": [
+    {
+      "action": "check",
+      "source": "0000.jpg",
+      "source_sha256": "b1a5b9cb96adc01bd982600c0429532b51226b9ae64df8a4824a77c3833e0642",
+      "seat": "top",
+      "preview_crop": null,
+      "method": "Reviewed yellow action label only; not a command button or a player name."
+    },
+    {
+      "action": "call",
+      "source": "0300.jpg",
+      "source_sha256": "a3cd4f342e38f74543065342bad3b7be6c2a0fc61dda71a5f30f6da3894ac4e9",
+      "seat": "upper_right",
+      "preview_crop": null,
+      "method": "Reviewed yellow action label only; not a command button or a player name."
+    },
+    {
+      "action": "raise",
+      "source": "0480.jpg",
+      "source_sha256": "6648bb7b8007e42bca3b23eed15fcdcb2a2a43cc370d342e55b51adb5ab19c01",
+      "seat": "top",
+      "preview_crop": null,
+      "method": "Reviewed yellow action label only; not a command button or a player name."
+    },
+    {
+      "action": "fold",
+      "source": "fold-699.6.jpg",
+      "source_sha256": "388c6c5a6c9ab3754eef35d9a293311b204c76358faff5423166a48608087477",
+      "seat": "hero",
+      "preview_crop": null,
+      "method": "Reviewed yellow action label only; not a command button or a player name."
+    },
+    {
+      "action": "bet",
+      "source": "213508-transition-720.8.jpg",
+      "source_sha256": "88317f8a841300d7f278dbe0f34bad22fb5a851519752e3bd824255c3bca425d",
+      "seat": "hero",
+      "preview_crop": null,
+      "method": "Reviewed yellow action label only; not a command button or a player name."
+    },
+    {
+      "action": "all_in",
+      "source": "Screenshot 2026-11-05 155720.png",
+      "source_sha256": "9e18f056956324c99147f5facf661a7c1b1f1be615d59fdadb4a383eb8bcc3bd",
+      "seat": "upper_left",
+      "preview_crop": [
+        87,
+        239,
+        1317,
+        896
+      ],
+      "method": "Reviewed yellow action label only; not a command button or a player name."
+    }
+  ]
+}

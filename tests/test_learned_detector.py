@@ -1,10 +1,10 @@
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from card_detector import np
+from card_detector import Recognizer, cv2, np
 from learned_detector import LearnedCardDetector, decode_indices, letterbox
 
 NAMES = [rank + suit for rank in ['10', *'23456789', 'A', 'J', 'K', 'Q'] for suit in 'CDHS']
@@ -20,6 +20,44 @@ def output_for(rows):
 
 
 class LearnedDetectorTests(unittest.TestCase):
+    def test_reviewed_references_cannot_override_an_existing_strong_symbol_reading(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.symbol_classifier = Mock()
+        detector.reviewed_symbol_classifier = Mock()
+        detector.symbol_classifier.classify_symbols.return_value = dict(
+            card='4S',accepted=True,rank_score=.95,suit_score=.94)
+        with patch('learned_detector.stacked_index_symbols',return_value=((None,None),'black')):
+            result = detector._symbol_reading(np.zeros((100,40,3),np.uint8))
+        self.assertEqual(result['card'],'4S')
+        self.assertEqual(result['decision_source'],'training_symbol_references')
+        detector.reviewed_symbol_classifier.classify_symbols.assert_not_called()
+
+    def test_reviewed_references_recover_ambiguity_without_lowering_score_requirement(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.symbol_classifier = Mock()
+        detector.reviewed_symbol_classifier = Mock()
+        detector.symbol_classifier.classify_symbols.return_value = dict(
+            card=None,accepted=False,rank_score=.88,suit_score=.89)
+        detector.reviewed_symbol_classifier.classify_symbols.return_value = dict(
+            card='3C',accepted=True,rank_score=.95,suit_score=.94)
+        with patch('learned_detector.stacked_index_symbols',return_value=((None,None),'black')):
+            result = detector._symbol_reading(np.zeros((100,40,3),np.uint8))
+        self.assertEqual(result['card'],'3C')
+        self.assertEqual(result['decision_source'],'reviewed_symbol_references')
+
+    def test_reviewed_club_glyphs_are_loaded_without_changing_base_references(self):
+        root = Path(__file__).resolve().parents[1]
+        base = Recognizer(root/'models/pokerstars-symbols')
+        extended = Recognizer(root/'models/pokerstars-symbols',extra_assets=[root/'assets/pokerstars-reviewed-symbols'])
+        self.assertGreater(len(extended.templates['rank']['3']),len(base.templates['rank']['3']))
+        self.assertGreater(len(extended.templates['suit']['C']),len(base.templates['suit']['C']))
+        for rank,source in [('3','192703'),('4','192744')]:
+            glyphs = [cv2.imread(str(root/f'assets/pokerstars-reviewed-symbols/{kind}/{label}_reviewed_{source}_native.png'),cv2.IMREAD_GRAYSCALE)>0
+                      for kind,label in [('rank',rank),('suit','C')]]
+            result = extended.classify_symbols(glyphs,'black')
+            self.assertTrue(result['accepted'])
+            self.assertEqual(result['card'],rank+'C')
+            self.assertGreaterEqual(min(result['rank_score'],result['suit_score']),.90)
     def test_missing_player_index_is_recovered_at_reference_scale_without_duplicates(self):
         detector = LearnedCardDetector.__new__(LearnedCardDetector)
         detector._symbol_reading = Mock(side_effect=lambda image: dict(
@@ -46,6 +84,21 @@ class LearnedDetectorTests(unittest.TestCase):
         detector._recover_player_indices(frame,cards)
         self.assertEqual(cards,[])
         detector._symbol_reading.assert_called_once()
+
+    def test_uncertain_existing_index_is_rechecked_and_replaced_without_duplicates(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector._symbol_reading = Mock(return_value=dict(rank='K',suit='S',card='KS',accepted=True,confidence=.93))
+        frame = np.full((984,1762,3),(30,65,30),np.uint8)
+        frame[650:746,648:686] = 255
+        cards = [dict(rank='K',suit='S',card=None,accepted=False,confidence=.31,bbox=[647,649,687,747])]
+        detector._recover_player_indices(frame,cards)
+        self.assertEqual(len(cards),1)
+        self.assertEqual(cards[0]['card'],'KS')
+        self.assertEqual(cards[0]['neural_confidence'],.31)
+        self.assertEqual(cards[0]['decision_source'],'fixed_player_index_recovery')
+        detector._recover_player_indices(frame,cards)
+        self.assertEqual(len(cards),1)
+        self.assertEqual(detector._symbol_reading.call_count,1)
 
     def test_confident_wrong_rank_is_cross_checked_against_strong_symbols(self):
         detector = LearnedCardDetector.__new__(LearnedCardDetector)

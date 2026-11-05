@@ -12,7 +12,7 @@ from card_detector import cv2, np
 from learned_detector import LearnedCardDetector
 from temporal_cards import TemporalCards
 from table_layout import arrange_table
-from capture_alignment import align_capture, restore_coordinates
+from capture_alignment import CaptureAligner, restore_coordinates
 from opponent_detector import OpponentDetector, OpponentTracker
 from hand_counter import HandCounter, player_card_presence
 
@@ -21,15 +21,15 @@ MAX_FRAME = 12 * 1024 * 1024
 
 
 def live_confirmation():
-    return TemporalCards(required_observations=5, min_span=.3, max_age=2,
-                         window_frames=12, consecutive=True)
+    return TemporalCards(required_observations=5, min_span=.3, max_age=8,
+                         window_frames=12, consecutive=True, max_gap=2)
 
 
-def make_handler(detector, token):
+def make_handler(detector, token, table_observer=None):
     lock = threading.Lock()
     opponents = OpponentDetector()
     state = {'session': None, 'viewport': None, 'temporal': live_confirmation(),
-             'opponents': OpponentTracker(), 'hands': HandCounter()}
+             'opponents': OpponentTracker(), 'hands': HandCounter(), 'dealt_seats': [], 'aligner': None}
 
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, body, content_type='application/json'):
@@ -63,10 +63,12 @@ def make_handler(detector, token):
                 if not session or len(session) > 100:
                     raise ValueError('Sessione non valida')
                 with lock:
-                    game, viewport = align_capture(frame)
+                    if state['session'] != session:
+                        state['aligner'] = CaptureAligner()
+                    game, viewport = state['aligner'].align(frame)
                     if state['session'] != session:
                         state.update(session=session, viewport=viewport, temporal=live_confirmation(),
-                                     opponents=OpponentTracker(), hands=HandCounter())
+                                     opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[])
                     elif state['viewport'] != viewport:
                         state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker())
                         state['hands'].reset_observations()
@@ -76,16 +78,26 @@ def make_handler(detector, token):
                     result = arrange_table(result, game.shape)
                     hand_start = perf_counter()
                     result['hand_cycle'] = state['hands'].update(player_card_presence(game), raw_hand, perf_counter())
-                    if result['hand_cycle']['started'] or result['hand_cycle']['ended']:
+                    if result['hand_cycle']['started']:
                         state['opponents'] = OpponentTracker()
-                    if result['hand_cycle']['ended']:
-                        state['temporal'] = live_confirmation()
                     result['hand_processing_ms'] = round((perf_counter()-hand_start)*1000, 3)
                     opponent_start = perf_counter()
-                    result['opponents'] = state['opponents'].update(opponents.detect(game), perf_counter(), result['player_hand'])
+                    visible_y = (max(0,-viewport[1])*1762/game.shape[1],
+                                 (min(frame.shape[0],viewport[3])-viewport[1])*1762/game.shape[1])
+                    result['opponents'] = state['opponents'].update(opponents.detect(game,visible_y), perf_counter(), result['player_hand'])
                     result['opponent_processing_ms'] = round((perf_counter()-opponent_start)*1000, 3)
                     result['processing_ms'] = round(result['processing_ms']+result['opponent_processing_ms']+result['hand_processing_ms'], 3)
+                    if result['hand_cycle']['started']:
+                        state['dealt_seats'] = ['hero']+[s['seat'] for s in result['opponents']['seats'] if s['present'] is True]
+                    if table_observer is not None:
+                        board_count = sum(c['detected'] for c in result['board'])
+                        context = dict(capture_session=session,viewport=viewport,
+                                       hand_id=result['hand_cycle']['count'],active=result['hand_cycle']['active'],
+                                       ended=result['hand_cycle']['ended'],dealt_seats=list(state['dealt_seats']),
+                                       street={0:'preflop',3:'flop',4:'turn',5:'river'}.get(board_count,'unknown'))
+                        result['table_observation'] = table_observer.submit(game, context)
                     result = restore_coordinates(result, viewport, frame.shape)
+                    result['capture_alignment']['vertical_anchor'] = state['aligner'].last_anchor
                 self.reply(200, json.dumps(result, allow_nan=False).encode())
             except (ValueError, RuntimeError, cv2.error) as error:
                 self.reply(400, json.dumps({'error': str(error)}).encode())
@@ -102,8 +114,10 @@ def main():
     parser.add_argument('--no-open', action='store_true')
     args = parser.parse_args()
     detector = LearnedCardDetector(profile='pokerstars')
+    from table_observer import TableObservationService
+    table_observer = TableObservationService()
     token = secrets.token_urlsafe(32)
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(detector, token))
+    server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(detector, token, table_observer))
     url = f'http://127.0.0.1:{server.server_port}/?token={token}'
     print(f'Pannello PokerStars: {url}\nLascia aperta questa console. Ctrl+C per chiudere.', flush=True)
     if not args.no_open:
@@ -113,6 +127,7 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
+        table_observer.close()
         server.server_close()
 
 

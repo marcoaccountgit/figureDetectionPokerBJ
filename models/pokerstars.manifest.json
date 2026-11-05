@@ -19,94 +19,24 @@
     840
   ],
   "dataset_manifest": {
-    "replay_manifest_sha256": "2baf7e7471ce0622dac120ec708d7a5bca0e7f2f64456b02b27820ad10db9393",
-    "sources": [
-      {
-        "source": "Screen Recording 2026-11-04 211955.mp4",
-        "source_sha256": "ad8a1a96048cd2e6db62965cd49db1fcbe94285c75ef366b1e3675b664ea78f5",
-        "annotation": "table-211955-extra.json",
-        "annotation_sha256": "945c74444fbda3f36c2a90c994bc74443e2de97b0cd279a003af0e433db35e52"
-      },
-      {
-        "source": "Screen Recording 2026-11-04 213508.mp4",
-        "source_sha256": "978c00f44b67aab14a4d1a6c93fd437a93b97ec753f424f57ddbf6e79e40096d",
-        "annotation": "table-213508-extra.json",
-        "annotation_sha256": "f29c0cf6254c16fa4ea05dcba7f82f25b4a64aac97337b96f9cb599b624b5927"
-      }
-    ],
-    "protocol": "Additional reviewed prefix training hands; old validation/test and synthetic replay unchanged. Adjacent frames accepted only when annotated indices are virtually unchanged.",
+    "source": "screen-capture (10)-navigabile.mp4",
+    "source_sha256": "7525244e0492d4ab4ae5f65273ae4e72773fa1263dc6ae089f68556ff7855569",
+    "annotations_sha256": "bfc235e52d5d2d583896629b8f7e91c2e059ca1260117bf83c797ca66f7c4279",
+    "replay_manifest_sha256": "796a082a9cc9a5375a10357d5e337ba44d17c07bd542a6a3fd989f42b0a414a6",
+    "protocol": "Manually reviewed capture; splits by hand. Native FFmpeg decode, black side margins removed, uniform game scaling to 1762px. Stable neighbours only in training. Original replay and splits retained.",
     "added_frames_by_split": {
-      "train": 135
+      "train": 33,
+      "val": 1,
+      "test": 4
     },
-    "skipped_unstable_neighbours": 10,
-    "images_by_split": {
-      "train": 495,
-      "val": 9,
-      "test": 6
-    },
-    "real_training_codes": [
-      "10C",
-      "10D",
-      "10H",
-      "2C",
-      "2D",
-      "2S",
-      "3C",
-      "3D",
-      "3H",
-      "3S",
-      "4C",
-      "4D",
-      "4H",
-      "4S",
-      "5C",
-      "5D",
-      "5H",
-      "5S",
-      "6C",
-      "6D",
-      "6H",
-      "6S",
-      "7C",
-      "7D",
-      "7H",
-      "7S",
-      "8C",
-      "8D",
-      "8H",
-      "8S",
-      "9C",
-      "9D",
-      "9H",
-      "AC",
-      "AD",
-      "AH",
-      "AS",
-      "JC",
-      "JD",
-      "JH",
-      "JS",
-      "KC",
-      "KD",
-      "QD",
-      "QH"
-    ],
-    "missing_real_training_codes": [
-      "10S",
-      "2H",
-      "9S",
-      "KH",
-      "KS",
-      "QC",
-      "QS"
-    ]
+    "skipped_unstable_neighbours": 2
   },
-  "training_run": "artifacts\\training\\pokerstars-sequences-clean",
-  "epochs_requested": 8,
+  "training_run": "artifacts\\training\\pokerstars-capture10",
+  "epochs_requested": 12,
   "files": [
     {
       "local": "pokerstars.onnx",
-      "sha256": "38cedc3f660d6168a5bac71426925dd791be34e8cfaedbb0105721f42d91d915"
+      "sha256": "167040b71c82e089f52690d7e418fb918c6881a75a8ab38d609c94528b44d850"
     },
     {
       "local": "pokerstars.classes.json",
@@ -114,8 +44,8 @@
     }
   ],
   "warm_start": {
-    "file": "artifacts\\training\\pokerstars-improved\\weights\\best.pt",
-    "sha256": "e6913fc444c9581eebe66d8f5fd86a702103f59a4276d739128bf174446fbdcc"
+    "file": "artifacts\\training\\pokerstars-sequences-clean\\weights\\best.pt",
+    "sha256": "988c5f61f2bc01db8dee5ba29a8cb43e03c5140c483e2c561ea720d8d47aa951"
   },
   "epochs_completed": 7,
   "best_epoch": 7,

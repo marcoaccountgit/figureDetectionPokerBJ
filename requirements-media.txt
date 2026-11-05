@@ -1,0 +1,3 @@
+# Optional native decoder for browser captures with changing resolution.
+# Not needed by the live application or normal fixed-resolution videos.
+imageio-ffmpeg==0.8.1

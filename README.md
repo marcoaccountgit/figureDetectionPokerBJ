@@ -42,6 +42,13 @@ fotogramma attende conferma, le carte scomparse vengono rimosse subito.
 Si puo disabilitare con `--no-temporal`. Dati, misure e limiti in
 [docs/mani-e-sequenze.md](docs/mani-e-sequenze.md).
 
+L'aggiornamento dalla nuova registrazione `screen-capture (10)` aggiunge 33
+fotogrammi verificati al training. Nei quattro fotogrammi di test di sviluppo
+passa da 18/20 a 20/20 indici corretti, correggendo due 10D letti QD. Il vecchio
+errore 8S letto 8C rimane. La cattura cambia risoluzione e richiede decodifica
+nativa e allineamento per queste verifiche; dettagli, backup e limiti in
+[docs/improvement-capture10.md](docs/improvement-capture10.md).
+
 ## Installazione
 
 Python 3.11–3.14. Su Windows, dalla cartella del progetto:

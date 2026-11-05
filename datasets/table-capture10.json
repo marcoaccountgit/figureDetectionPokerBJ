@@ -1,0 +1,211 @@
+{
+  "source": "screen-capture (10)-navigabile.mp4",
+  "source_sha256": "7525244e0492d4ab4ae5f65273ae4e72773fa1263dc6ae089f68556ff7855569",
+  "size": [
+    1762,
+    1100
+  ],
+  "crop": [
+    560,
+    380,
+    1200,
+    840
+  ],
+  "coordinate_space": "Native FFmpeg frame, black side margins removed, uniformly scaled to game width1762 and padded below to1100. Not original capture coordinates.",
+  "index_boxes": {
+    "board": [
+      [
+        594,
+        399,
+        636,
+        484
+      ],
+      [
+        710,
+        399,
+        752,
+        484
+      ],
+      [
+        826,
+        399,
+        868,
+        484
+      ],
+      [
+        942,
+        399,
+        984,
+        484
+      ],
+      [
+        1058,
+        399,
+        1100,
+        484
+      ]
+    ],
+    "hole": [
+      [
+        646,
+        648,
+        687,
+        748
+      ],
+      [
+        687,
+        660,
+        738,
+        762
+      ]
+    ]
+  },
+  "note": "All identities read visually. At960/970 third board card is 10D, not the model candidate QD. Hands disjoint across splits; tests are reviewed development holdouts.",
+  "frames": [
+    {
+      "time": 70,
+      "split": "train",
+      "hand": "clubs-hole",
+      "board": [],
+      "hole": [
+        "8C",
+        "2C"
+      ]
+    },
+    {
+      "time": 80,
+      "split": "train",
+      "hand": "clubs-hole",
+      "board": [
+        "9D",
+        "10H",
+        "5C"
+      ],
+      "hole": [
+        "8C",
+        "2C"
+      ]
+    },
+    {
+      "time": 100,
+      "split": "train",
+      "hand": "spades-flop",
+      "board": [
+        "9C",
+        "8S",
+        "5H"
+      ],
+      "hole": []
+    },
+    {
+      "time": 110,
+      "split": "train",
+      "hand": "empty-after-spades",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 160,
+      "split": "train",
+      "hand": "spades-ace",
+      "board": [
+        "8S",
+        "6D",
+        "AD"
+      ],
+      "hole": []
+    },
+    {
+      "time": 230,
+      "split": "train",
+      "hand": "clubs-board",
+      "board": [
+        "8C",
+        "8H",
+        "10H",
+        "4D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 1260,
+      "split": "train",
+      "hand": "spades-hole",
+      "board": [
+        "AD",
+        "JD",
+        "KD"
+      ],
+      "hole": [
+        "QH",
+        "8S"
+      ]
+    },
+    {
+      "time": 260,
+      "split": "val",
+      "hand": "spades-jack",
+      "board": [
+        "JD",
+        "9C",
+        "8S",
+        "4H"
+      ],
+      "hole": []
+    },
+    {
+      "time": 740,
+      "split": "test",
+      "hand": "spades-late",
+      "board": [
+        "JS",
+        "6D",
+        "8S",
+        "QS"
+      ],
+      "hole": [
+        "10C",
+        "3S"
+      ]
+    },
+    {
+      "time": 750,
+      "split": "test",
+      "hand": "spades-late",
+      "board": [
+        "JS",
+        "6D",
+        "8S",
+        "QS",
+        "4S"
+      ],
+      "hole": [
+        "10C",
+        "3S"
+      ]
+    },
+    {
+      "time": 960,
+      "split": "test",
+      "hand": "clubs-late",
+      "board": [
+        "5S",
+        "8C",
+        "10D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 970,
+      "split": "test",
+      "hand": "clubs-late",
+      "board": [
+        "5S",
+        "8C",
+        "10D",
+        "6S"
+      ],
+      "hole": []
+    }
+  ]
+}

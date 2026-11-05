@@ -26,6 +26,8 @@ def main():
     parser.add_argument('--candidate', type=Path, default=ROOT / 'artifacts/table-improvement/candidate')
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/table-improvement/evaluation')
     parser.add_argument('--extra-annotations', type=Path, nargs='*', default=[])
+    parser.add_argument('--saved-frames', type=Path,
+                        help='Explicit JPEG regression mode: table-STAMP/inspection/TIME.jpg; no source-video equivalence claim')
     args = parser.parse_args()
     detectors = {name: load_profile(path) for name, path in (('previous', args.previous), ('candidate', args.candidate))}
     args.output.mkdir(parents=True, exist_ok=True)
@@ -51,11 +53,15 @@ def main():
     for stamp, annotations in annotation_sources:
         spec = json.loads(annotations.read_text())
         video = args.video_directory / spec['source']
-        if file_digest(video) != spec['source_sha256']:
+        if args.saved_frames and stamp is None:
+            raise ValueError('Saved-frame mode supports the two original timestamp inventories only')
+        if not args.saved_frames and file_digest(video) != spec['source_sha256']:
             raise ValueError('Recording differs from reviewed annotations')
-        sources.append({'video': video.name, 'sha256': spec['source_sha256'], 'annotations_sha256': file_digest(annotations)})
-        cap = cv2.VideoCapture(str(video))
-        if not cap.isOpened() or [round(cap.get(3)), round(cap.get(4))] != spec['size']:
+        source = {'video': video.name, 'sha256': spec['source_sha256'],
+                  'annotations_sha256': file_digest(annotations), 'saved_frames': []}
+        sources.append(source)
+        cap = None if args.saved_frames else cv2.VideoCapture(str(video))
+        if cap is not None and (not cap.isOpened() or [round(cap.get(3)), round(cap.get(4))] != spec['size']):
             cap.release()
             raise ValueError('Video dimensions differ from annotations')
         try:
@@ -63,15 +69,22 @@ def main():
                 t = entry['time']
                 partition = ('extra_adaptation' if stamp is None else 'adaptation' if t <= 300
                              else 'validation' if stamp == '213508' and t == 540 else 'heldout')
-                cap.set(cv2.CAP_PROP_POS_MSEC, t*1000)
-                ok, frame = cap.read()
+                if args.saved_frames:
+                    path = args.saved_frames / f'table-{stamp}/inspection/{int(t):04d}.jpg'
+                    frame = cv2.imread(str(path))
+                    ok = frame is not None and [frame.shape[1], frame.shape[0]] == spec['size']
+                    source['saved_frames'].append({'time': t, 'sha256': file_digest(path)})
+                else:
+                    cap.set(cv2.CAP_PROP_POS_MSEC, t*1000)
+                    ok, frame = cap.read()
                 if not ok:
                     raise ValueError(f'Cannot decode {video} at {t}')
                 expected = [(code, box) for group in spec['index_boxes']
                             for code, box in zip(entry[group], spec['index_boxes'][group])]
                 check(f'{partition}-{stamp or annotations.stem}-{t}', frame, expected)
         finally:
-            cap.release()
+            if cap is not None:
+                cap.release()
     # Original recording removed by user; preserved labelled crops still allow
     # classifier regression checks, but do not verify full-frame opponent tiling.
     replay = ROOT / 'artifacts/table-195129/dataset-v2'
@@ -101,6 +114,7 @@ def main():
                                          'processing_ms_median': float(np.median([e['processing_ms'] for e in selected])),
                                          'processing_ms_p95': float(np.percentile([e['processing_ms'] for e in selected],95))}
     report = {'protocol': 'Adaptation <=300s; 213508 540s validation; other suffixes excluded from this weight update. Suffixes reviewed previously: development holdout, not untouched benchmark.',
+              'input_mode': 'preserved JPEG frames; original videos unavailable, JPEG compression can change predictions' if args.saved_frames else 'original source video',
               'sources': sources, 'manifests': {name: file_digest(path / 'pokerstars.manifest.json')
                                               for name, path in (('previous', args.previous), ('candidate', args.candidate))},
               'summary': summaries, 'cases': cases}

@@ -122,6 +122,38 @@ class LearnedCardDetector:
             return reading
         return None
 
+    def _recover_player_indices(self, frame, cards):
+        """Read exposed hole-card strips even when YOLO emits no box.
+
+        Use the reviewed layout at its reference width so small glyphs meet
+        the symbol extractor's pixel-size requirements. Never invent a code
+        from position, and do not duplicate an existing index detection.
+        """
+        from temporal_cards import overlap
+        scale = frame.shape[1] / 1762
+        canonical = cv2.resize(frame, (1762, round(frame.shape[0]/scale)))
+        for slot, box in enumerate(([648,650,686,746], [688,662,736,760])):
+            x1,y1,x2,y2 = box
+            if y2 > canonical.shape[0]:
+                continue
+            bbox = [round(v*scale) for v in box]
+            if any(overlap(bbox,c['bbox']) >= .2 for c in cards):
+                continue
+            image = canonical[y1:y2,x1:x2]
+            # A black/green background or covered card is not an exposed index.
+            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            if np.mean((hsv[:,:,1] < 65) & (hsv[:,:,2] > 180)) < .5:
+                continue
+            reading = self._symbol_reading(image)
+            if reading is None:
+                continue
+            x1,y1,x2,y2 = bbox
+            reading.update(domain='physical', group='card_index', bbox=bbox,
+                           polygon=[[x1,y1],[x2,y1],[x2,y2],[x1,y2]],
+                           decision_source='fixed_player_index_recovery',
+                           recovered_hand_slot=slot, neural_confidence=None)
+            cards.append(reading)
+
     def detect(self, frame):
         start = perf_counter()
         offset_x, offset_y = 0, 0
@@ -156,11 +188,16 @@ class LearnedCardDetector:
             proposed = decode_indices(self.net.forward(), self.names, image.shape, scale, left, top)
             for card in proposed:
                 card['decision_source'] = 'model'
-                if not card['accepted']:
+                # A confident network prediction can still be wrong (e.g.
+                # 4S -> AS). Cross-check all PokerStars indices against the
+                # existing high-threshold rank/suit references.
+                if not card['accepted'] or self.profile == 'pokerstars':
                     x1, y1, x2, y2 = card['bbox']
                     reading = self._symbol_reading(image[y1:y2, x1:x2])
                     if reading:
+                        card['neural_candidate'] = card['rank'] + card['suit']
                         card['neural_confidence'] = card['confidence']
+                        card['symbol_corrected'] = card['neural_candidate'] != reading['card']
                         card.update(reading)
                 card['bbox'] = [value + (ax if i % 2 == 0 else ay) for i, value in enumerate(card['bbox'])]
                 card['polygon'] = [[x+ax, y+ay] for x, y in card['polygon']]
@@ -183,6 +220,8 @@ class LearnedCardDetector:
             priority = [c['confidence'] + (1 if c['accepted'] and c['decision_source'] == 'model' else 0) for c in cards]
             kept = cv2.dnn.NMSBoxes(boxes, priority, .25, .45)
             cards = [cards[i] for i in np.asarray(kept).reshape(-1)]
+        if self.profile == 'pokerstars':
+            self._recover_player_indices(frame, cards)
         return {'scene': 'card_model', 'scene_score': None,
                 'detector': 'lgd-cards-gen3' if self.profile == 'general' else 'pokerstars-finetuned-yolo11n',
                 'profile': self.profile,

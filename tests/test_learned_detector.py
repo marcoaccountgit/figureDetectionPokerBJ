@@ -1,10 +1,11 @@
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import Mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from card_detector import np
-from learned_detector import decode_indices, letterbox
+from learned_detector import LearnedCardDetector, decode_indices, letterbox
 
 NAMES = [rank + suit for rank in ['10', *'23456789', 'A', 'J', 'K', 'Q'] for suit in 'CDHS']
 
@@ -19,6 +20,63 @@ def output_for(rows):
 
 
 class LearnedDetectorTests(unittest.TestCase):
+    def test_missing_player_index_is_recovered_at_reference_scale_without_duplicates(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector._symbol_reading = Mock(side_effect=lambda image: dict(
+            rank='3',suit='S',card='3S',accepted=True,confidence=.93))
+        frame = np.full((984,1762,3),(30,65,30),np.uint8)
+        frame[650:746,648:686] = 255
+        cards = []
+        detector._recover_player_indices(frame,cards)
+        self.assertEqual([c['card'] for c in cards],['3S'])
+        self.assertEqual(cards[0]['bbox'],[648,650,686,746])
+        self.assertEqual(detector._symbol_reading.call_args.args[0].shape,(96,38,3))
+        detector._recover_player_indices(frame,cards)
+        self.assertEqual(len(cards),1)
+        self.assertEqual(detector._symbol_reading.call_count,1)
+
+    def test_player_recovery_does_not_accept_background_or_weak_symbols(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector._symbol_reading = Mock(return_value=None)
+        frame = np.full((984,1762,3),(30,65,30),np.uint8)
+        cards = []
+        detector._recover_player_indices(frame,cards)
+        detector._symbol_reading.assert_not_called()
+        frame[650:746,648:686] = 255
+        detector._recover_player_indices(frame,cards)
+        self.assertEqual(cards,[])
+        detector._symbol_reading.assert_called_once()
+
+    def test_confident_wrong_rank_is_cross_checked_against_strong_symbols(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.profile = 'pokerstars'
+        detector.crop = None
+        detector.names = NAMES
+        detector.net = Mock()
+        detector.net.forward.return_value = output_for([([100,200,40,80], {'AS':.92})])
+        detector._symbol_reading = Mock(return_value=dict(
+            rank='4',suit='S',card='4S',accepted=True,confidence=.91,
+            decision_source='training_symbol_references'))
+        result = detector.detect(np.zeros((640,640,3),np.uint8))
+        card = result['cards'][0]
+        self.assertEqual(card['card'], '4S')
+        self.assertEqual(card['neural_candidate'], 'AS')
+        self.assertEqual(card['neural_confidence'], .92)
+        self.assertTrue(card['symbol_corrected'])
+        self.assertTrue(card['accepted'])
+
+    def test_no_strong_symbol_reading_preserves_network_prediction(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.profile = 'pokerstars'
+        detector.crop = None
+        detector.names = NAMES
+        detector.net = Mock()
+        detector.net.forward.return_value = output_for([([100,200,40,80], {'AS':.92})])
+        detector._symbol_reading = Mock(return_value=None)
+        card = detector.detect(np.zeros((640,640,3),np.uint8))['cards'][0]
+        self.assertEqual(card['card'], 'AS')
+        self.assertNotIn('symbol_corrected', card)
+
     def test_letterbox_preserves_aspect_and_converts_bgr_to_rgb(self):
         frame = np.full((800, 400, 3), (10, 20, 30), np.uint8)
         blob, scale, left, top = letterbox(frame)

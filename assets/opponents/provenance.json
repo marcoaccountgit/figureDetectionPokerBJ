@@ -1,0 +1,12 @@
+{
+  "source": "artifacts\\table-213508\\inspection\\0060.jpg",
+  "sha256": "0a91856bdc20b7aab06da4075a79d946fc7d80abcc7410bb9dc476b3300e9116",
+  "canonical_width": 1762,
+  "crop": [
+    827,
+    92,
+    937,
+    140
+  ],
+  "purpose": "Two overlapping red card backs, including both white top borders. Template calibration; no YOLO weight update."
+}

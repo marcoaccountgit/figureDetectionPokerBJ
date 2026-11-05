@@ -336,3 +336,214 @@ Il modello preaddestrato è un punto di partenza per ampliare la copertura.
 Per misurarla servono altre carte, mazzi e sessioni annotate; un eventuale
 fine-tuning deve essere valutato su una registrazione distinta dal training.
 Il confronto con i riferimenti resta utilizzabile per la grafica digitale nota.
+
+
+## Pannello browser: anteprima e registrazione
+
+Avvia `Avvia-Browser-PokerStars.cmd` con doppio clic. Il comando usa Python
+in `.venv`, oppure `.venv-training` se disponibile, e apre il pannello locale.
+In alternativa esegui `python browser_capture.py` con le dipendenze del progetto.
+Lascia la console aperta durante l'utilizzo; Ctrl+C chiude il server.
+
+1. Apri il pannello nello stesso browser della scheda del tavolo (Chrome, Edge o Opera).
+   Se si apre nel browser predefinito sbagliato, copia l'indirizzo della console
+   nel browser desiderato.
+2. Premi **1. Scegli scheda** e seleziona la scheda del gioco nel selettore del browser.
+3. Controlla sorgente e anteprima, poi premi **2. Avvia scansione**.
+   Il pannello mostra il fotogramma analizzato con riquadri verdi per le carte
+   confermate e gialli per quelle incerte, oltre ai tempi di elaborazione.
+4. **Registra video** include i riquadri del bot quando la scansione e
+   l'opzione **Registra anche i riquadri del bot** sono attive. Disattiva
+   l'opzione per salvare la sorgente originale. Il video e senza audio.
+   Premi nuovamente il pulsante per terminare e usa il collegamento di download
+   per salvare il WebM. Puoi registrare la sorgente originale anche prima di avviare la scansione.
+5. **Ferma acquisizione** termina condivisione, scansione e registrazione.
+   Puoi quindi scegliere un'altra scheda.
+
+La registrazione rimane in memoria fino al download: usa sessioni brevi e
+scarica i video prima di chiudere la pagina. L'elaborazione passa solo dal
+server locale su `127.0.0.1`. La selezione della scheda richiede un'azione
+esplicita nel browser. Per mantenere la calibrazione del profilo PokerStars,
+il tavolo deve occupare l'area acquisita senza pannelli laterali.
+
+
+### Ordine delle carte comuni
+
+Il pannello distingue le carte comuni dalle altre letture e mostra cinque
+posizioni fisse: **Flop 1, Flop 2, Flop 3, Turn, River**. Le posizioni derivano
+dalle annotazioni dei video 195129, 211955, 213508 e capture10. Il criterio usa
+la posizione sul tavolo, non la confidenza o l'ordine restituito dal modello.
+Una carta assente lascia il proprio spazio vuoto; una lettura incerta mostra
+`?`. Non vengono conservate identita di fotogrammi precedenti. La geometria
+segue la larghezza del gioco; controlli aggiuntivi in basso non spostano gli
+spazi. Layout diversi, margini laterali o un tavolo non allineato richiedono
+una nuova calibrazione. I riquadri del board riportano F1/F2/F3/Turn/River.
+
+Dopo un aggiornamento del backend, termina e scarica eventuali registrazioni,
+chiudi la console del bot con Ctrl+C, riavvia il launcher e ricarica il pannello.
+
+
+### Conferma prudente e diagnosi live
+
+Il pannello browser richiede almeno cinque osservazioni consecutive della stessa
+carta nella stessa posizione, distribuite su almeno 300 ms e non oltre due
+secondi. Una lettura mancante, incerta o diversa interrompe la sequenza per
+quella carta. Il filtro non conserva carte scomparse e non corregge errori
+sistematici del modello. Gli altri comandi mantengono i parametri precedenti.
+
+Quando una carta appare sbagliata, **Salva diagnosi lettura** scarica un JSON
+con il fotogramma JPEG effettivamente analizzato, la sorgente, le letture grezze,
+quelle confermate e gli slot del board. Il file rimane sul PC e permette di
+controllare errore di identita, posizione e calibrazione sullo stesso campione.
+
+Controllo diagnostico della modifica: 81 rilevazioni board confrontate con le
+annotazioni in JPEG/PNG conservati di 211955, 213508 e capture10, nessuna
+identita confermata errata nel campione. Questo conteggio non misura le carte
+mancate, non e una prova sulla partita live e non garantisce assenza di errori.
+Dati del controllo: `artifacts/board-diagnosis/baseline.json`.
+
+
+### Bande nere nella scheda acquisita
+
+Il server browser elimina le bande laterali quasi nere prima del modello e
+prima di assegnare gli slot del board. Le coordinate di carte, poligoni e slot
+vengono poi riportate all'immagine originale per mantenere i riquadri allineati.
+Un cambiamento del ritaglio azzera la conferma temporale. La diagnosi include
+`capture_alignment` con dimensioni originali e area del gioco utilizzata.
+Questo corregge le bande nere laterali, non pannelli laterali colorati o altri
+layout del tavolo.
+
+Lo screenshot 153812 ha permesso di riprodurre il risultato errato
+`?, 4D, 4H, 4H` e ottenere `5S, 2D, 2H, AH` dopo l'allineamento. Il controllo
+usa l'anteprima estratta dallo screenshot con la parte inferiore mancante
+riempita di nero: non equivale a una prova completa della cattura live.
+Report locale: `artifacts/board-diagnosis/screenshot-153812.json`.
+
+
+### Mano del giocatore
+
+Le due carte scoperte in basso sono mostrate nella sezione **Mano del giocatore**,
+in due posizioni fisse da sinistra a destra. La geometria deriva dagli indici
+`hole` annotati nelle registrazioni 195129, 211955, 213508 e capture10, inclusa
+la seconda carta leggermente piu in basso per la sovrapposizione.
+Le carte del board e quelle degli avversari restano separate dalla mano.
+
+La risposta JSON contiene `player_hand` con due slot e ogni rilevazione della
+mano ha `table_group: player_hand` e `hand_slot: 0|1`. La conferma live rimane
+almeno cinque letture consecutive su almeno 300 ms. Una carta scomparsa lascia
+il suo spazio vuoto; una lettura incerta mostra `?`, senza recuperare identita
+precedenti. Nell'anteprima e nella registrazione con riquadri le etichette sono
+**Mano SX** e **Mano DX**. La correzione delle bande nere vale anche per la mano.
+
+Verifica: test di assegnazione su tutte le annotazioni delle quattro registrazioni
+a tre scale; inferenza sui PNG conservati di capture10 a 70/80s (8C,2C) e
+160/970s (nessuna mano), risultati conformi alle annotazioni. Sono campioni di
+sviluppo e non dimostrano l'accuratezza su nuove partite. Report:
+`artifacts/player-hand/review.json`.
+
+
+### Controllo dei simboli anche sulle letture sicure
+
+Nel profilo PokerStars il confronto con i riferimenti di rango e seme viene
+eseguito anche quando il modello ha gia accettato la carta. In precedenza era
+solo un recupero per letture incerte: il modello poteva quindi confermare AS
+con confidenza 0.9145 anche se i simboli riconoscevano 4S. Restano le soglie
+esistenti: lettura dei simboli accettata e punteggi di rango/seme almeno 0.90.
+Quando questo controllo produce una lettura forte, essa viene usata prima
+della conferma temporale. Non sono stati cambiati pesi o numero di letture.
+Le diagnosi registrano `neural_candidate`, `neural_confidence` e
+`symbol_corrected` per rendere visibili eventuali correzioni.
+
+Riproduzione screenshot 155720, anteprima ritagliata e bande rimosse:
+prima AS/7H, dopo 4S/7H, conformemente alle carte visibili. Il confronto sui
+fotogrammi conservati di 211955, 213508 e capture10 resta a 109 indici corretti,
+un falso positivo e due indici mancati, usando identita e IoU >=0.30.
+Nessuna regressione misurata in questo campione di sviluppo; il controllo
+non garantisce accuratezza su partite nuove. Report:
+`artifacts/player-hand/symbol-crosscheck.json`.
+
+
+### Avversari nella mano corrente e pannello compatto
+
+Il pannello mostra il numero degli avversari che hanno una **coppia di carte
+coperte visibile**, verificando i cinque posti del layout PokerStars a sei
+posti presente nelle registrazioni. Non conta nomi o avatar: un posto occupato
+senza carte, incluso il sit out, non basta per essere contato. Aggiorna il
+conteggio a ogni scansione: dopo un fold o una nuova distribuzione verifica
+di nuovo i posti cambiati. Durante la verifica mostra un trattino, non uno
+zero. Il numero di giocatori con carte visibili aggiunge il giocatore in basso
+solo quando entrambi gli indici della sua mano sono rilevati.
+
+La presenza e l'assenza richiedono entrambe cinque osservazioni consecutive
+su almeno 300 ms. Una lettura ambigua, un cambio di sessione/allineamento o
+una pausa oltre due secondi interrompe la conferma. I riquadri azzurri mostrano
+le coppie confermate. I dati `opponents.seats` registrano punteggio, posizione
+e stato di ogni posto; `opponents.count` vale null finche il conteggio non e
+confermato. Anche le diagnosi includono questi dati.
+
+Questa aggiunta e un rilevatore visivo calibrato sui video esistenti mediante
+un riferimento di due dorsi rossi sovrapposti, non un nuovo addestramento dei
+pesi YOLO delle carte. Riferimento: `assets/opponents/covered-pair.png`;
+provenienza e ritaglio in `assets/opponents/provenance.json`. Le etichette
+visive dei fotogrammi conservati sono in `datasets/opponents-reviewed.json`.
+Verifica riproducibile:
+
+```powershell
+.venv-training/Scripts/python.exe evaluate_opponents.py
+.venv-training/Scripts/python.exe -m unittest discover -s tests
+node --test tests/test_browser_ui.cjs
+```
+
+Un fotogramma usato come riferimento e 37 fotogrammi di sviluppo da 211955,
+213508 e capture10: conteggio concorde in 37/37 controlli, 185/185 posti.
+Sono campioni esaminati durante lo sviluppo, non una misura indipendente
+sull'intera partita. Report con hash dei fotogrammi:
+`artifacts/opponents/report.json`. Il rilevatore conta i dorsi rossi visibili:
+carte coperte da finestre, animazioni, carte scoperte allo showdown o altri
+layout/grafiche richiedono ulteriori verifiche e non sono inferiti dai nomi.
+
+Il frontend affianca board, mano e conteggio. L'anteprima e limitata a 820 px
+senza ridurre la risoluzione inviata al riconoscitore o al video registrato.
+Ogni codice carta e affiancato da un'icona SVG del seme, con colore e nome
+accessibile; le icone compaiono anche sui riquadri registrati. Le istruzioni
+estese sono raccolte sotto la guida espandibile.
+
+
+### Recupero degli indici della mano non proposti dal modello
+
+Nel profilo PokerStars, dopo il modello e il controllo dei simboli, il bot
+controlla i due ritagli degli indici del giocatore dalle annotazioni precedenti.
+Se manca una proposta in uno slot, cerca rango e seme nel ritaglio a larghezza
+di riferimento 1762: questo evita di perdere un indice stretto/occluso che il
+modello non ha localizzato. Le soglie dei simboli restano invariate (almeno
+0.90 per rango e seme, piu margini gia richiesti), e segue la stessa conferma
+live di cinque letture. Non duplica riquadri esistenti e non deduce identita
+dalla posizione. I ritagli privi di sfondo bianco o di lettura forte non
+producono carte. La diagnosi indica `fixed_player_index_recovery` come origine.
+
+Screenshot 162911: la carta 3S mancava completamente nelle proposte del
+modello; il recupero legge 3S e mantiene 4C. Il controllo usa l'anteprima
+ridotta estratta dallo screenshot, non il fotogramma live originale. Confronto
+su 35 fotogrammi conservati: invariati 109 indici corretti, un falso positivo
+e due mancate letture; nessuna regressione misurata nel campione.
+Report: `artifacts/player-hand/missing-index-recovery.json`.
+
+
+### Contatore delle mani del giocatore
+
+**Mani rilevate** parte da zero a ogni nuova acquisizione. Una coppia di carte
+fisicamente presente in basso, confermata per cinque campioni su almeno 300 ms,
+incrementa il totale una sola volta. Il ritiro confermato di entrambe le carte
+(fold o fine piatto) abilita la successiva mano. Una carta non riconosciuta o
+un cambiamento del suo codice non azzerano il ciclo. Le coppie successive
+possono anche avere le stesse identita della coppia precedente.
+
+Il totale resta visibile allo stop e riparte da zero scegliendo una nuova
+sorgente. Stati e transizioni sono disponibili soltanto in `hand_cycle` nelle
+diagnosi; il frontend mostra solo il numero. La calibrazione del bianco delle
+carte e del panno deriva dai fotogrammi gia caricati: 35 fotogrammi annotati
+piu 12 della sequenza fold, senza errori di presenza nel campione. I test
+controllati coprono il ciclo completo; la breve sequenza fold reale contiene
+solo quattro osservazioni dopo il ritiro e quindi non attesta la conferma
+finale della chiusura. Dettagli, limiti e riproduzione in
+`docs/rilevazione-cambio-mano.md`.

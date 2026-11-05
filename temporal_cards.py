@@ -17,8 +17,14 @@ class TemporalCards:
     A disappeared or changed card is therefore removed immediately. Persistent
     classification errors can still pass this filter.
     """
-    def __init__(self):
-        self.history = deque(maxlen=2)
+    def __init__(self, required_observations=2, min_span=0, max_age=.65, window_frames=3,
+                 consecutive=False):
+        if required_observations < 2 or window_frames < required_observations or not 0 <= min_span < max_age:
+            raise ValueError('Invalid temporal confirmation settings')
+        self.required_observations = required_observations
+        self.min_span, self.max_age = min_span, max_age
+        self.window_frames, self.consecutive = window_frames, consecutive
+        self.history = deque(maxlen=window_frames-1)
         self.shape = None
         self.last_timestamp = None
 
@@ -30,7 +36,7 @@ class TemporalCards:
         if self.shape != shape or (self.last_timestamp is not None and timestamp <= self.last_timestamp):
             self.history.clear()
         self.shape, self.last_timestamp = shape, timestamp
-        while self.history and timestamp-self.history[0][0] > .65:
+        while self.history and timestamp-self.history[0][0] > self.max_age:
             self.history.popleft()
         raw = result['cards']
         current = []
@@ -41,7 +47,8 @@ class TemporalCards:
                         temporal_support=0)
             if card['accepted']:
                 matches = []
-                for slot, (when, observations) in enumerate(self.history):
+                for slot in reversed(range(len(self.history))):
+                    when, observations = self.history[slot]
                     candidates = [(overlap(card['bbox'], previous['bbox']), i)
                                   for i, previous in enumerate(observations)
                                   if i not in used[slot] and previous['card'] == card['card']]
@@ -49,9 +56,13 @@ class TemporalCards:
                     if iou >= .3:
                         used[slot].add(index)
                         matches.append(when)
+                    elif self.consecutive:
+                        break
                 item['temporal_support'] = 1+len(matches)
-                item['temporal_confirmed'] = bool(matches)
-                if matches:
+                confirmed = (1+len(matches) >= self.required_observations
+                             and timestamp-min(matches, default=timestamp) >= self.min_span)
+                item['temporal_confirmed'] = confirmed
+                if confirmed:
                     item['confirmation_span_ms'] = round((timestamp-min(matches))*1000, 3)
                 else:
                     item['accepted'] = False
@@ -63,6 +74,7 @@ class TemporalCards:
         return dict(result, cards=current, raw_cards=raw,
                     frame_processing_ms=result['processing_ms'],
                     processing_ms=round(result['processing_ms']+elapsed, 3),
-                    temporal={'enabled': True, 'required_observations': 2,
-                              'window_frames': 3, 'max_age_ms': 650,
+                    temporal={'enabled': True, 'required_observations': self.required_observations,
+                              'window_frames': self.window_frames, 'max_age_ms': self.max_age*1000,
+                              'min_span_ms': self.min_span*1000, 'consecutive': self.consecutive,
                               'processing_ms': round(elapsed, 3)})

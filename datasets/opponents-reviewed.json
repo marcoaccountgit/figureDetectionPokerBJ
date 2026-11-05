@@ -1,0 +1,468 @@
+{
+  "seat_order": [
+    "top",
+    "upper_left",
+    "upper_right",
+    "lower_left",
+    "lower_right"
+  ],
+  "protocol": "Manually inspected preserved video frames/contact sheets. Labels indicate visible covered pairs only, not named occupancy. Development review, not independent video benchmark.",
+  "frames": [
+    {
+      "source": "213508",
+      "time": 0,
+      "seats": [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 60,
+      "seats": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "split": "reference"
+    },
+    {
+      "source": "213508",
+      "time": 120,
+      "seats": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 180,
+      "seats": [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 240,
+      "seats": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 300,
+      "seats": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 360,
+      "seats": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 420,
+      "seats": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 480,
+      "seats": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 540,
+      "seats": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 600,
+      "seats": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 660,
+      "seats": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "213508",
+      "time": 720,
+      "seats": [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 0,
+      "seats": [
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 60,
+      "seats": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 120,
+      "seats": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 180,
+      "seats": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 240,
+      "seats": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 300,
+      "seats": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 360,
+      "seats": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 420,
+      "seats": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 480,
+      "seats": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 540,
+      "seats": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 600,
+      "seats": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 660,
+      "seats": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "211955",
+      "time": 720,
+      "seats": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 70,
+      "seats": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 80,
+      "seats": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 100,
+      "seats": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 110,
+      "seats": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 160,
+      "seats": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 230,
+      "seats": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 260,
+      "seats": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 740,
+      "seats": [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 750,
+      "seats": [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 960,
+      "seats": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 970,
+      "seats": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "split": "development"
+    },
+    {
+      "source": "capture10",
+      "time": 1260,
+      "seats": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "split": "development"
+    }
+  ]
+}

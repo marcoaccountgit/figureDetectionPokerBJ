@@ -17,6 +17,31 @@ def reading(code='AS', box=None, accepted=True):
 
 
 class TemporalTests(unittest.TestCase):
+    def test_live_confirmation_requires_repeated_spaced_observations(self):
+        from browser_capture import live_confirmation
+        tracker = live_confirmation()
+        for t in (0, .02, .04, .06, .08):
+            self.assertFalse(tracker.update({'cards': [reading()], 'processing_ms': 1}, t, (840,1762))['cards'][0]['accepted'])
+        self.assertTrue(tracker.update({'cards': [reading()], 'processing_ms': 1}, .35, (840,1762))['cards'][0]['accepted'])
+
+    def test_live_four_readings_over_300_ms_are_not_enough(self):
+        from browser_capture import live_confirmation
+        tracker = live_confirmation()
+        for t in (0, .15, .3, .45):
+            self.assertFalse(tracker.update({'cards': [reading()], 'processing_ms': 1}, t, (840,1762))['cards'][0]['accepted'])
+        self.assertTrue(tracker.update({'cards': [reading()], 'processing_ms': 1}, .6, (840,1762))['cards'][0]['accepted'])
+
+    def test_live_conflicting_or_missing_reading_breaks_confirmation(self):
+        from browser_capture import live_confirmation
+        for interruption in ([reading('KD')], [], [reading(accepted=False)]):
+            tracker = live_confirmation()
+            for t in (0, .1, .2, .3, .4):
+                tracker.update({'cards': [reading()], 'processing_ms': 1}, t, (840,1762))
+            tracker.update({'cards': interruption, 'processing_ms': 1}, .5, (840,1762))
+            for t in (.6, .7, .8, .9):
+                self.assertFalse(tracker.update({'cards': [reading()], 'processing_ms': 1}, t, (840,1762))['cards'][0]['accepted'])
+            self.assertTrue(tracker.update({'cards': [reading()], 'processing_ms': 1}, 1, (840,1762))['cards'][0]['accepted'])
+
     def setUp(self):
         self.filter = TemporalCards()
 

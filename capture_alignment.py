@@ -19,6 +19,14 @@ def align_capture(frame):
     return frame[:, left:right], (left, 0, right, height)
 
 
+def extract_viewport(frame,viewport):
+    left,top,right,bottom=viewport;h,w=frame.shape[:2]
+    image=frame[max(0,top):min(h,bottom),max(0,left):min(w,right)]
+    if not image.size:raise ValueError('Il tavolo rilevato è fuori dalla sorgente acquisita')
+    return cv2.copyMakeBorder(image,max(0,-top),max(0,bottom-h),max(0,-left),max(0,right-w),
+                             cv2.BORDER_CONSTANT,value=0)
+
+
 class CaptureAligner:
     """Stabilize side bars and register vertical layout shifts to player HUD edges.
 
@@ -42,6 +50,12 @@ class CaptureAligner:
         self.pending_offset = None
         self.pending_samples = 0
         self.last_anchor = None
+        self.profile = 'pokerstars'
+        self.desktop_viewport=None
+        self.desktop_shape=None
+        self.desktop_pending=None
+        self.desktop_samples=0
+        self.alignment_ready=True
 
     def vertical_offset(self, image):
         scale = image.shape[1]/1762
@@ -64,7 +78,44 @@ class CaptureAligner:
         return candidates[0]
 
     def align(self, frame):
-        _,viewport = align_capture(frame)
+        from table_profiles import nine_layout_anchor, NINE,desktop_table_viewport,desktop_seat_profile
+        raw_nine = nine_layout_anchor(frame)
+        registration=desktop_table_viewport(frame)
+        self.alignment_ready=True
+        if registration is not None:
+            viewport,score=registration
+            width=frame.shape[1]
+            needs_registration=(raw_nine is None or abs((viewport[2]-viewport[0])/width-1)>.06
+                                or abs(viewport[0])>width*.03 or abs(viewport[1])>width*.03)
+            if needs_registration:
+                shape=frame.shape[:2]
+                if self.desktop_viewport is None or shape!=self.desktop_shape:
+                    self.desktop_viewport,self.desktop_shape=viewport,shape
+                elif max(abs(a-b) for a,b in zip(viewport,self.desktop_viewport))>4:
+                    if self.desktop_pending is not None and max(abs(a-b) for a,b in zip(viewport,self.desktop_pending))<=4:
+                        self.desktop_samples+=1
+                    else:self.desktop_pending,self.desktop_samples=viewport,1
+                    if self.desktop_samples>=3:
+                        self.desktop_viewport=viewport;self.desktop_pending=None;self.desktop_samples=0
+                    else:self.alignment_ready=False
+                else:self.desktop_pending=None;self.desktop_samples=0
+                viewport=self.desktop_viewport
+                game=extract_viewport(frame,viewport)
+                self.profile=desktop_seat_profile(game)
+                self.last_anchor=dict(score=round(score,4),method='table_rail',registered=self.alignment_ready)
+                return game,viewport
+        if self.desktop_viewport is not None and raw_nine is None:
+            # A lost reference must not silently route desktop pixels to browser
+            # coordinates. Keep only the preview; discard analysis until reacquired.
+            self.alignment_ready=False
+            self.last_anchor=dict(method='table_rail',registered=False,reason='reference_lost')
+            viewport=self.desktop_viewport
+            return extract_viewport(frame,viewport),viewport
+        if raw_nine is not None:
+            # Dark desktop-client wallpaper is content, not a browser side bar.
+            viewport = (0,0,frame.shape[1],frame.shape[0])
+        else:
+            _,viewport = align_capture(frame)
         left,_,right,height = viewport
         shape = frame.shape[:2]
         if self.bounds and self.source_shape == shape:
@@ -73,7 +124,15 @@ class CaptureAligner:
                 left,right = self.bounds
         self.bounds,self.source_shape = (left,right),shape
         horizontal = frame[:,left:right]
-        anchor = self.vertical_offset(horizontal)
+        anchor = nine_layout_anchor(horizontal)
+        if anchor is not None:
+            self.profile = NINE
+            if registration is not None:
+                self.profile=desktop_seat_profile(horizontal)
+        else:
+            anchor = self.vertical_offset(horizontal)
+            if anchor is not None:
+                self.profile = 'pokerstars'
         if anchor is not None:
             score,offset = anchor
             self.last_anchor = dict(score=round(score,4),reference_offset_y=offset)
@@ -93,8 +152,7 @@ class CaptureAligner:
             self.pending_offset,self.pending_samples = None,0
         top = round((self.offset or 0)*(right-left)/1762)
         bottom = max(height,top+round((right-left)*840/1762))
-        image = frame[max(0,top):min(height,bottom),left:right]
-        image = cv2.copyMakeBorder(image,max(0,-top),max(0,bottom-height),0,0,cv2.BORDER_CONSTANT,value=0)
+        image=extract_viewport(frame,(left,top,right,bottom))
         return image,(left,top,right,bottom)
 
 

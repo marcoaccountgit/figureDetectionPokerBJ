@@ -10,6 +10,15 @@ def overlap(a, b):
     return area/union if union > 0 else 0
 
 
+def same_table_slot(current, previous):
+    """A reviewed table slot survives the client's winning-card lift animation."""
+    group = current.get('table_group')
+    field = {'board': 'board_slot', 'player_hand': 'hand_slot'}.get(group)
+    return (field is not None and previous.get('table_group') == group
+            and isinstance(current.get(field), int)
+            and current[field] == previous.get(field))
+
+
 class TemporalCards:
     """Require a matching reading in one of the two preceding frames (<=650ms).
 
@@ -53,7 +62,7 @@ class TemporalCards:
                 matches = []
                 for slot in reversed(range(len(self.history))):
                     when, observations = self.history[slot]
-                    candidates = [(overlap(card['bbox'], previous['bbox']), i)
+                    candidates = [(1.0 if same_table_slot(card, previous) else overlap(card['bbox'], previous['bbox']), i)
                                   for i, previous in enumerate(observations)
                                   if i not in used[slot] and previous['card'] == card['card']]
                     iou, index = max(candidates, default=(0, -1))
@@ -72,7 +81,9 @@ class TemporalCards:
                     item['accepted'] = False
                     item['card'] = None
             current.append(item)
-        observations = [{'card': c['card'], 'bbox': list(c['bbox'])} for c in raw if c['accepted']]
+        observations = [{key: c[key] for key in
+                         ('card', 'bbox', 'table_group', 'board_slot', 'hand_slot') if key in c}
+                        for c in raw if c['accepted']]
         self.history.append((timestamp, observations))
         elapsed = (perf_counter()-start)*1000
         return dict(result, cards=current, raw_cards=raw,

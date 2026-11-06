@@ -17,6 +17,29 @@ def reading(code='AS', box=None, accepted=True):
 
 
 class TemporalTests(unittest.TestCase):
+    def test_winning_card_animation_keeps_same_slot_confirmation(self):
+        from browser_capture import live_confirmation
+        tracker = live_confirmation()
+        for i in range(6):
+            card = dict(reading('5H', [480, 215 if i % 2 else 236, 499, 253 if i % 2 else 274]),
+                        table_group='board', board_slot=1)
+            result = tracker.update({'cards': [card], 'processing_ms': 1}, i*.2, (714,1143))
+            self.assertEqual(result['cards'][0]['accepted'], i >= 4)
+
+    def test_slot_matching_does_not_retain_a_missing_or_changed_card(self):
+        tracker = TemporalCards()
+        card = dict(reading('5H'), table_group='board', board_slot=1)
+        tracker.update({'cards': [card], 'processing_ms': 1}, 0, (840,1762))
+        changed = dict(card, card='6H')
+        self.assertFalse(tracker.update({'cards': [changed], 'processing_ms': 1}, .1, (840,1762))['cards'][0]['accepted'])
+        self.assertEqual(tracker.update({'cards': [], 'processing_ms': 1}, .2, (840,1762))['cards'], [])
+
+    def test_slot_matching_does_not_cross_between_board_and_hand(self):
+        tracker = TemporalCards()
+        tracker.update({'cards': [dict(reading(), table_group='board', board_slot=0)], 'processing_ms': 1}, 0, (840,1762))
+        card = dict(reading(box=[400,400,420,440]), table_group='player_hand', hand_slot=0)
+        self.assertFalse(tracker.update({'cards': [card], 'processing_ms': 1}, .1, (840,1762))['cards'][0]['accepted'])
+
     def test_live_five_consecutive_slow_cycles_can_confirm_beyond_two_seconds(self):
         from browser_capture import live_confirmation
         tracker = live_confirmation()

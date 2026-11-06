@@ -1,0 +1,435 @@
+{
+  "source": "Screen Recording 2026-11-06 125816.mp4",
+  "split": "train",
+  "frames": [
+    0,
+    30,
+    60,
+    150,
+    330
+  ],
+  "templates": [
+    {
+      "file": "4_0_1918_0.png",
+      "time": 0,
+      "label": "4"
+    },
+    {
+      "file": "2_0_1918_1.png",
+      "time": 0,
+      "label": "2"
+    },
+    {
+      "file": "5_0_1918_2.png",
+      "time": 0,
+      "label": "5"
+    },
+    {
+      "file": "0_0_1918_3.png",
+      "time": 0,
+      "label": "0"
+    },
+    {
+      "file": "4_0_1762_0.png",
+      "time": 0,
+      "label": "4"
+    },
+    {
+      "file": "2_0_1762_1.png",
+      "time": 0,
+      "label": "2"
+    },
+    {
+      "file": "5_0_1762_2.png",
+      "time": 0,
+      "label": "5"
+    },
+    {
+      "file": "0_0_1762_3.png",
+      "time": 0,
+      "label": "0"
+    },
+    {
+      "file": "1_30_1918_0.png",
+      "time": 30,
+      "label": "1"
+    },
+    {
+      "file": "3_30_1918_1.png",
+      "time": 30,
+      "label": "3"
+    },
+    {
+      "file": "5_30_1918_2.png",
+      "time": 30,
+      "label": "5"
+    },
+    {
+      "file": "0_30_1918_3.png",
+      "time": 30,
+      "label": "0"
+    },
+    {
+      "file": "0_30_1918_4.png",
+      "time": 30,
+      "label": "0"
+    },
+    {
+      "file": "1_30_1762_0.png",
+      "time": 30,
+      "label": "1"
+    },
+    {
+      "file": "3_30_1762_1.png",
+      "time": 30,
+      "label": "3"
+    },
+    {
+      "file": "5_30_1762_2.png",
+      "time": 30,
+      "label": "5"
+    },
+    {
+      "file": "0_30_1762_3.png",
+      "time": 30,
+      "label": "0"
+    },
+    {
+      "file": "0_30_1762_4.png",
+      "time": 30,
+      "label": "0"
+    },
+    {
+      "file": "1_60_1918_0.png",
+      "time": 60,
+      "label": "1"
+    },
+    {
+      "file": "1_60_1918_1.png",
+      "time": 60,
+      "label": "1"
+    },
+    {
+      "file": "8_60_1918_2.png",
+      "time": 60,
+      "label": "8"
+    },
+    {
+      "file": "3_60_1918_3.png",
+      "time": 60,
+      "label": "3"
+    },
+    {
+      "file": "9_60_1918_4.png",
+      "time": 60,
+      "label": "9"
+    },
+    {
+      "file": "1_60_1918_5.png",
+      "time": 60,
+      "label": "1"
+    },
+    {
+      "file": "1_60_1762_0.png",
+      "time": 60,
+      "label": "1"
+    },
+    {
+      "file": "1_60_1762_1.png",
+      "time": 60,
+      "label": "1"
+    },
+    {
+      "file": "8_60_1762_2.png",
+      "time": 60,
+      "label": "8"
+    },
+    {
+      "file": "3_60_1762_3.png",
+      "time": 60,
+      "label": "3"
+    },
+    {
+      "file": "9_60_1762_4.png",
+      "time": 60,
+      "label": "9"
+    },
+    {
+      "file": "1_60_1762_5.png",
+      "time": 60,
+      "label": "1"
+    },
+    {
+      "file": "2_150_1918_0.png",
+      "time": 150,
+      "label": "2"
+    },
+    {
+      "file": "7_150_1918_1.png",
+      "time": 150,
+      "label": "7"
+    },
+    {
+      "file": "5_150_1918_2.png",
+      "time": 150,
+      "label": "5"
+    },
+    {
+      "file": "0_150_1918_3.png",
+      "time": 150,
+      "label": "0"
+    },
+    {
+      "file": "2_150_1762_0.png",
+      "time": 150,
+      "label": "2"
+    },
+    {
+      "file": "7_150_1762_1.png",
+      "time": 150,
+      "label": "7"
+    },
+    {
+      "file": "5_150_1762_2.png",
+      "time": 150,
+      "label": "5"
+    },
+    {
+      "file": "0_150_1762_3.png",
+      "time": 150,
+      "label": "0"
+    },
+    {
+      "file": "4_330_1918_0.png",
+      "time": 330,
+      "label": "4"
+    },
+    {
+      "file": "0_330_1918_1.png",
+      "time": 330,
+      "label": "0"
+    },
+    {
+      "file": "1_330_1918_2.png",
+      "time": 330,
+      "label": "1"
+    },
+    {
+      "file": "6_330_1918_3.png",
+      "time": 330,
+      "label": "6"
+    },
+    {
+      "file": "4_330_1762_0.png",
+      "time": 330,
+      "label": "4"
+    },
+    {
+      "file": "0_330_1762_1.png",
+      "time": 330,
+      "label": "0"
+    },
+    {
+      "file": "1_330_1762_2.png",
+      "time": 330,
+      "label": "1"
+    },
+    {
+      "file": "6_330_1762_3.png",
+      "time": 330,
+      "label": "6"
+    },
+    {
+      "file": "1_bet0_top_left_0.png",
+      "time": 0,
+      "label": "1",
+      "seat": "top_left"
+    },
+    {
+      "file": "5_bet0_top_left_1.png",
+      "time": 0,
+      "label": "5",
+      "seat": "top_left"
+    },
+    {
+      "file": "0_bet0_top_left_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "top_left"
+    },
+    {
+      "file": "0_bet0_top_left_3.png",
+      "time": 0,
+      "label": "0",
+      "seat": "top_left"
+    },
+    {
+      "file": "5_bet0_upper_left_0.png",
+      "time": 0,
+      "label": "5",
+      "seat": "upper_left"
+    },
+    {
+      "file": "0_bet0_upper_left_1.png",
+      "time": 0,
+      "label": "0",
+      "seat": "upper_left"
+    },
+    {
+      "file": "0_bet0_upper_left_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "upper_left"
+    },
+    {
+      "file": "5_bet0_middle_left_0.png",
+      "time": 0,
+      "label": "5",
+      "seat": "middle_left"
+    },
+    {
+      "file": "0_bet0_middle_left_1.png",
+      "time": 0,
+      "label": "0",
+      "seat": "middle_left"
+    },
+    {
+      "file": "0_bet0_middle_left_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "middle_left"
+    },
+    {
+      "file": "2_bet0_middle_right_0.png",
+      "time": 0,
+      "label": "2",
+      "seat": "middle_right"
+    },
+    {
+      "file": "5_bet0_middle_right_1.png",
+      "time": 0,
+      "label": "5",
+      "seat": "middle_right"
+    },
+    {
+      "file": "0_bet0_middle_right_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "middle_right"
+    },
+    {
+      "file": "5_bet0_lower_left_0.png",
+      "time": 0,
+      "label": "5",
+      "seat": "lower_left"
+    },
+    {
+      "file": "0_bet0_lower_left_1.png",
+      "time": 0,
+      "label": "0",
+      "seat": "lower_left"
+    },
+    {
+      "file": "0_bet0_lower_left_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "lower_left"
+    },
+    {
+      "file": "5_bet0_lower_right_0.png",
+      "time": 0,
+      "label": "5",
+      "seat": "lower_right"
+    },
+    {
+      "file": "0_bet0_lower_right_1.png",
+      "time": 0,
+      "label": "0",
+      "seat": "lower_right"
+    },
+    {
+      "file": "0_bet0_lower_right_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "lower_right"
+    },
+    {
+      "file": "5_bet0_hero_0.png",
+      "time": 0,
+      "label": "5",
+      "seat": "hero"
+    },
+    {
+      "file": "0_bet0_hero_1.png",
+      "time": 0,
+      "label": "0",
+      "seat": "hero"
+    },
+    {
+      "file": "0_bet0_hero_2.png",
+      "time": 0,
+      "label": "0",
+      "seat": "hero"
+    },
+    {
+      "file": "5_bet60_upper_left_0.png",
+      "time": 60,
+      "label": "5",
+      "seat": "upper_left"
+    },
+    {
+      "file": "1_bet60_upper_left_1.png",
+      "time": 60,
+      "label": "1",
+      "seat": "upper_left"
+    },
+    {
+      "file": "8_bet60_upper_left_2.png",
+      "time": 60,
+      "label": "8",
+      "seat": "upper_left"
+    },
+    {
+      "file": "7_bet60_upper_left_3.png",
+      "time": 60,
+      "label": "7",
+      "seat": "upper_left"
+    },
+    {
+      "file": "2_bet60_upper_left_4.png",
+      "time": 60,
+      "label": "2",
+      "seat": "upper_left"
+    },
+    {
+      "file": "5_bet60_lower_left_0.png",
+      "time": 60,
+      "label": "5",
+      "seat": "lower_left"
+    },
+    {
+      "file": "1_bet60_lower_left_1.png",
+      "time": 60,
+      "label": "1",
+      "seat": "lower_left"
+    },
+    {
+      "file": "8_bet60_lower_left_2.png",
+      "time": 60,
+      "label": "8",
+      "seat": "lower_left"
+    },
+    {
+      "file": "7_bet60_lower_left_3.png",
+      "time": 60,
+      "label": "7",
+      "seat": "lower_left"
+    },
+    {
+      "file": "2_bet60_lower_left_4.png",
+      "time": 60,
+      "label": "2",
+      "seat": "lower_left"
+    }
+  ]
+}

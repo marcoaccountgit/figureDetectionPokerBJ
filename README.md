@@ -345,10 +345,13 @@ in `.venv`, oppure `.venv-training` se disponibile, e apre il pannello locale.
 In alternativa esegui `python browser_capture.py` con le dipendenze del progetto.
 Lascia la console aperta durante l'utilizzo; Ctrl+C chiude il server.
 
-1. Apri il pannello nello stesso browser della scheda del tavolo (Chrome, Edge o Opera).
+1. Apri il pannello in Chrome, Edge o Opera. Il gioco può essere in una scheda
+   del browser oppure in un'applicazione desktop.
    Se si apre nel browser predefinito sbagliato, copia l'indirizzo della console
    nel browser desiderato.
-2. Premi **1. Scegli scheda** e seleziona la scheda del gioco nel selettore del browser.
+2. Premi **Scegli sorgente** e seleziona **Scheda**, **Finestra** oppure
+   **Schermo intero** nel selettore di condivisione del browser.
+   Per PokerStars desktop scegli la finestra del gioco e massimizzala.
 3. Controlla sorgente e anteprima, poi premi **2. Avvia scansione**.
    Il pannello mostra il fotogramma analizzato con riquadri verdi per le carte
    confermate e gialli per quelle incerte, oltre ai tempi di elaborazione.
@@ -358,13 +361,16 @@ Lascia la console aperta durante l'utilizzo; Ctrl+C chiude il server.
    Premi nuovamente il pulsante per terminare e usa il collegamento di download
    per salvare il WebM. Puoi registrare la sorgente originale anche prima di avviare la scansione.
 5. **Ferma acquisizione** termina condivisione, scansione e registrazione.
-   Puoi quindi scegliere un'altra scheda.
+   Puoi quindi scegliere un'altra scheda, finestra o schermo.
 
 La registrazione rimane in memoria fino al download: usa sessioni brevi e
 scarica i video prima di chiudere la pagina. L'elaborazione passa solo dal
-server locale su `127.0.0.1`. La selezione della scheda richiede un'azione
+server locale su `127.0.0.1`. La selezione della sorgente richiede un'azione
 esplicita nel browser. Per mantenere la calibrazione del profilo PokerStars,
 il tavolo deve occupare l'area acquisita senza pannelli laterali.
+Con uno schermo intero, tieni il gioco massimizzato e il pannello del bot su
+un altro monitor o fuori dalla vista del tavolo, per evitare sovrapposizioni.
+Il tipo di sorgente selezionato viene indicato accanto al suo nome.
 
 
 ### Ordine delle carte comuni
@@ -540,14 +546,43 @@ verificate sono indicate esplicitamente. Gli importi illeggibili restano vuoti.
 
 La lettura usa OCR Windows locale in background e riferimenti visivi estratti
 dai materiali gia caricati. La scansione delle carte continua durante l'OCR;
-nessun dato viene inviato a servizi esterni. Non sono aggiunti equity, range,
-profili degli avversari o suggerimenti di gioco. Per attivarla dopo un
+nessun dato viene inviato a servizi esterni. Range e profili degli avversari
+non sono inclusi. Per attivarla dopo un
 aggiornamento, riavviare il bot e ricaricare il pannello.
 
 Verifica sui materiali conservati: 90/90 campi annotati in 18 fotogrammi,
 con sovrapposizione parziale ai riferimenti di calibrazione. Una prova HTTP
 con modello carte e OCR nativo ha verificato anche il percorso JPEG completo.
 Dettagli, requisiti, limiti e riproduzione: [Osservatore del tavolo](docs/osservatore-tavolo.md).
+
+### Poker Equity Prediction
+
+Il pannello **PROBABILITÀ ED EQUITÀ DELLA MANO**, sempre aperto sotto Lettura tavolo, mostra probabilità
+allo showdown, equity, forza attuale, miglioramenti e distribuzione delle mani.
+Permette di scegliere Veloce (5.000), Bilanciato (50.000) o
+Accurato (250.000 simulazioni). Il conteggio automatico degli avversari usa
+le coppie di carte coperte confermate dal rilevatore visivo e viene mostrato
+esplicitamente. Attivando "Imposta gli avversari manualmente" si può inserire
+un intero da 1 a 5 sul vecchio tavolo, oppure fino a 8 sul nuovo tavolo a nove posti.
+La sezione "Ripetibilità della simulazione" spiega il
+seme casuale facoltativo, che permette di ripetere lo stesso campionamento.
+
+Riavviare `Avvia-Browser-PokerStars.cmd` e ricaricare il pannello. Il calcolo
+è locale in un processo separato; dati incerti producono uno stato di attesa.
+Le stime sono riferite a carte avversarie casuali uniformi e a un piatto comune,
+senza side pot o rake. Nessuna azione viene eseguita sul tavolo.
+
+API, schema dati, test, benchmark e limiti: [Motore equity](docs/poker-equity.md).
+
+La sezione **Valutazione della decisione** confronta equità, piatto totale e
+costo esplicito del pulsante Vedi dopo conferma temporale. Mostra soglia minima,
+margine e valore atteso semplificato, con indicazioni condizionate di vedere,
+passare o margine incerto. Senza importi validi e coerenti rimane in attesa.
+Le ipotesi e le metriche incrociate sono nella spiegazione espandibile.
+Non determina puntate ottimali e non esegue azioni: il modello esclude costi
+successivi, commissioni e piatti secondari e assume mani avversarie uniformi.
+
+Formule, criteri dei suggerimenti e test: [Valutazione della decisione](docs/poker-advice.md).
 
 **Piatto per fase:** la sezione distingue il totale Pot dal raccolto scritto
 sotto il board. Registra e mostra il primo totale confermato di flop, turn
@@ -577,3 +612,17 @@ controllati coprono il ciclo completo; la breve sequenza fold reale contiene
 solo quattro osservazioni dopo il ritiro e quindi non attesta la conferma
 finale della chiusura. Dettagli, limiti e riproduzione in
 `docs/rilevazione-cambio-mano.md`.
+
+### Tavolo desktop a nove posti
+
+Il pannello browser riconosce automaticamente anche la grafica del client desktop
+del video `Screen Recording 2026-11-06 125816.mp4`, mantenendo il profilo browser
+a sei posti. Il nuovo profilo `pokerstars-nine` ha pesi, riferimenti e geometria
+separati: carte comuni/personali/scoperte degli avversari, otto posti avversari,
+bottone, posizioni, stack, puntate e azioni. Gli importi senza unità di questa
+grafica sono fiches virtuali, senza conversione automatica in euro o BB.
+Il motore di equità e l'input manuale consentono fino a otto avversari.
+
+Riavviare il bot e ricaricare il pannello. Per il video sono stati utilizzati
+solo fotogrammi precedenti a 14:00. Risultati, limiti della verifica delle carte
+personali e comandi: [Profilo a nove posti](docs/tavolo-nove-posti.md).

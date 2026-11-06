@@ -1,0 +1,349 @@
+{
+  "source": "Screen Recording 2026-11-06 125816.mp4",
+  "size": [
+    1918,
+    1198
+  ],
+  "max_time_exclusive": 840,
+  "crop": [
+    650,
+    360,
+    1280,
+    900
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        696,
+        397,
+        729,
+        463
+      ],
+      [
+        806,
+        397,
+        839,
+        463
+      ],
+      [
+        916,
+        397,
+        949,
+        463
+      ],
+      [
+        1026,
+        397,
+        1059,
+        463
+      ],
+      [
+        1136,
+        397,
+        1169,
+        463
+      ]
+    ],
+    "hole": [
+      [
+        863,
+        723,
+        895,
+        786
+      ],
+      [
+        967,
+        723,
+        999,
+        786
+      ]
+    ]
+  },
+  "frames": [
+    {
+      "time": 0,
+      "hand": "opening",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KD",
+        "JS"
+      ]
+    },
+    {
+      "time": 30,
+      "hand": "opening",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 60,
+      "hand": "opening",
+      "split": "train",
+      "board": [
+        "AH",
+        "AS",
+        "10C"
+      ],
+      "hole": []
+    },
+    {
+      "time": 90,
+      "hand": "h120",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 120,
+      "hand": "h120",
+      "split": "train",
+      "board": [
+        "7D",
+        "7C",
+        "9C",
+        "KS"
+      ],
+      "hole": []
+    },
+    {
+      "time": 150,
+      "hand": "h150",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 180,
+      "hand": "h210",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 210,
+      "hand": "h210",
+      "split": "train",
+      "board": [
+        "4S",
+        "QC",
+        "6S",
+        "8S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 240,
+      "hand": "h240",
+      "split": "train",
+      "board": [
+        "3S",
+        "3D",
+        "3H",
+        "AS"
+      ],
+      "hole": []
+    },
+    {
+      "time": 270,
+      "hand": "h300",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 300,
+      "hand": "h300",
+      "split": "train",
+      "board": [
+        "QH",
+        "10D",
+        "KS",
+        "10H",
+        "5S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 330,
+      "hand": "h330",
+      "split": "train",
+      "board": [
+        "9D",
+        "KC",
+        "6H"
+      ],
+      "hole": []
+    },
+    {
+      "time": 360,
+      "hand": "h360",
+      "split": "train",
+      "board": [
+        "QH",
+        "KH",
+        "KS",
+        "9S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 390,
+      "hand": "empty390",
+      "split": "val",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 420,
+      "hand": "h420",
+      "split": "train",
+      "board": [
+        "JS",
+        "10C",
+        "KS",
+        "2H",
+        "5D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 450,
+      "hand": "h480",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 480,
+      "hand": "h480",
+      "split": "test",
+      "board": [
+        "QS",
+        "KS",
+        "4H",
+        "JH"
+      ],
+      "hole": []
+    },
+    {
+      "time": 510,
+      "hand": "h480",
+      "split": "test",
+      "board": [
+        "QS",
+        "KS",
+        "4H",
+        "JH",
+        "2D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 540,
+      "hand": "h540",
+      "split": "val",
+      "board": [
+        "JS",
+        "7H",
+        "2D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 570,
+      "hand": "h540",
+      "split": "val",
+      "board": [
+        "JS",
+        "7H",
+        "2D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 600,
+      "hand": "h540",
+      "split": "val",
+      "board": [
+        "JS",
+        "7H",
+        "2D",
+        "10C"
+      ],
+      "hole": []
+    },
+    {
+      "time": 630,
+      "hand": "h630",
+      "split": "train",
+      "board": [
+        "10H",
+        "2D",
+        "KS"
+      ],
+      "hole": []
+    },
+    {
+      "time": 660,
+      "hand": "h690",
+      "split": "train",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 690,
+      "hand": "h690",
+      "split": "train",
+      "board": [
+        "3D",
+        "9C",
+        "2H",
+        "KH"
+      ],
+      "hole": []
+    },
+    {
+      "time": 720,
+      "hand": "h750",
+      "split": "test",
+      "board": [],
+      "hole": []
+    },
+    {
+      "time": 750,
+      "hand": "h750",
+      "split": "test",
+      "board": [
+        "9S",
+        "3D",
+        "7C",
+        "7S",
+        "8S"
+      ],
+      "hole": []
+    },
+    {
+      "time": 780,
+      "hand": "h780",
+      "split": "train",
+      "board": [
+        "2S",
+        "10S",
+        "7D"
+      ],
+      "hole": []
+    },
+    {
+      "time": 810,
+      "hand": "empty810",
+      "split": "train",
+      "board": [],
+      "hole": []
+    }
+  ],
+  "annotation_revision": 2,
+  "review_note": "420s king verified as spades at full resolution; training labels corrected before final fit.",
+  "source_sha256": "e5a00f508df0ca85528f62c94af02b8404a5f6dc7ccc160b37efc2a763b94aab"
+}

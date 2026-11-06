@@ -15,6 +15,8 @@ from time import monotonic
 
 from card_detector import cv2, np
 
+from table_profiles import is_desktop, desktop_layout
+
 ROOT = Path(__file__).resolve().parent
 CLOCKWISE = ('top','upper_right','lower_right','hero','lower_left','upper_left')
 NAME_REGIONS = {
@@ -92,7 +94,7 @@ def canonical_frame(frame):
     return cv2.resize(frame,(1762,round(frame.shape[0]*1762/frame.shape[1])))
 
 
-def ocr_mosaic(frame):
+def ocr_mosaic(frame,profile='pokerstars'):
     """Enlarge text regions; keep offered buttons separate from performed actions."""
     image = canonical_frame(frame)
     regions = [(f'seat:{key}',box,3) for key,box in NAME_REGIONS.items()]
@@ -100,16 +102,36 @@ def ocr_mosaic(frame):
     regions += [('pot',(790,315,985,393),3)]
     regions += [(f'option:{i}',(245*i,835,245*(i+1),1010),2) for i in range(3)]
     regions += [('collected_pot',(850,550,1010,610),3)]
-    mosaic = np.full((2340,2400,3),255,np.uint8)
+    from table_profiles import NINE, NINE_NAMES, NINE_BETS, canonical_box
+    if is_desktop(profile):
+        layout=desktop_layout(profile)
+        regions = [(f'seat:{key}',box,3) for key,box in layout['names'].items()]
+        regions += [(f'stack:{key}',(box[0],round(box[1]+(box[3]-box[1])*.53),box[2],box[3]),4) for key,box in layout['names'].items()]
+        regions += [(f'bet:{key}',box,3) for key,box in layout['bets'].items()]
+        regions += [('pot',canonical_box((835,310,1095,397)),3)]
+        regions += [('collected_pot',canonical_box((903,567,1030,610)),4)]
+        regions += [(f'option:{i}',canonical_box(box),2) for i,box in enumerate(
+            [(950,1010,1255,1135),(1260,1010,1585,1135),(1590,1010,1900,1135)])]
+    mosaic = np.full((((len(regions)+2)//3)*390,2400,3),255,np.uint8)
     placements = []
     for index,(key,(x,y,right,bottom),scale) in enumerate(regions):
         tile_x,tile_y = (index%3)*800+25,(index//3)*390+20
         crop = image[y:min(bottom,image.shape[0]),x:right]
         if not crop.size:
             continue
+        if is_desktop(profile) and key.startswith('bet:'):
+            crop = chip_amount_label(crop)
+            if crop is None:continue
+        if is_desktop(profile):
+            scale=min(scale,750/crop.shape[1],350/crop.shape[0])
         if key.startswith(('option:','bet:')) or key=='collected_pot':
             _,s,v = cv2.split(cv2.cvtColor(crop,cv2.COLOR_BGR2HSV))
             mask = ((s < 100) & (v > 120)).astype(np.uint8)*255
+            if is_desktop(profile) and key.startswith('bet:'):
+                count,labels,stats,_=cv2.connectedComponentsWithStats(mask,8)
+                for component in range(1,count):
+                    if stats[component,cv2.CC_STAT_HEIGHT]>26:
+                        mask[labels==component]=0
             text = 255-cv2.resize(mask,None,fx=scale,fy=scale,interpolation=cv2.INTER_CUBIC)
         else:
             gray = cv2.cvtColor(crop,cv2.COLOR_BGR2GRAY)
@@ -126,6 +148,31 @@ def ocr_mosaic(frame):
         mosaic[tile_y:tile_y+height,tile_x:tile_x+width] = cv2.cvtColor(text,cv2.COLOR_GRAY2BGR)
         placements.append(dict(key=key,x=tile_x,y=tile_y,width=width,height=height))
     return mosaic,placements
+
+
+def chip_amount_label(crop):
+    """Locate the dark green amount pill, excluding denominations on chips."""
+    hsv=cv2.cvtColor(crop,cv2.COLOR_BGR2HSV)
+    mask=((hsv[:,:,0]>=35)&(hsv[:,:,0]<=95)&(hsv[:,:,1]>70)&(hsv[:,:,2]<110)&(hsv[:,:,2]>25)).astype(np.uint8)*255
+    contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    candidates=[]
+    for contour in contours:
+        x,y,w,h=cv2.boundingRect(contour)
+        if w>=35 and h>=12 and w/h>=1.5 and cv2.contourArea(contour)>200:
+            candidates.append((cv2.contourArea(contour),x,y,w,h))
+    if not candidates:return None
+    _,x,y,w,h=max(candidates)
+    return crop[max(0,y-1):min(crop.shape[0],y+h+1),max(0,x-1):min(crop.shape[1],x+w+1)]
+
+
+def white_stack_glyph(crop):
+    hsv=cv2.cvtColor(crop,cv2.COLOR_BGR2HSV)
+    mask=((hsv[:,:,1]<80)&(hsv[:,:,2]>160)).astype(np.uint8)*255
+    points=cv2.findNonZero(mask)
+    if points is None:return None
+    x,y,w,h=cv2.boundingRect(points)
+    if w<10 or h<10:return None
+    return mask[y:y+h,x:x+w]
 
 
 def group_ocr(result, placements):
@@ -155,7 +202,7 @@ def parse_amount(text):
     return dict(value=float(match[1].replace(',','.')),unit='EUR' if match[2]=='EUR' else 'BB',raw=text)
 
 
-ACTION_WORDS = {'check':'check','fold':'fold','passa':'fold','vedi':'call','call':'call',
+ACTION_WORDS = {'check':'check','fold':'fold','passa':'fold','vedi':'call','call':'call','chiama':'call',
                 'puntata':'bet','punta':'bet','bet':'bet','rilancia':'raise','raise':'raise',
                 'all-in':'all_in','allin':'all_in','all in':'all_in'}
 
@@ -168,23 +215,47 @@ def parse_action(text):
     return None
 
 
-def positions_from_button(button, dealt):
+def parse_call_amount(text):
+    """Read an explicitly unit-labelled cost on the call button itself."""
+    match = re.fullmatch(r'(?i)\s*(?:vedi|call)\s+(.+?)\s*',text)
+    return parse_amount(match[1]) if match else None
+
+
+def parse_table_amount(text,profile='pokerstars'):
+    if not is_desktop(profile):return parse_amount(text)
+    stripped=text.strip()
+    if any(c.isdigit() for c in stripped):
+        stripped=stripped.upper().replace('O','0')
+    stripped=re.sub(r'\s*([.,*])\s*',r'\1',stripped)
+    # This profile explicitly displays integer play-money chips, not euros/BB.
+    if re.fullmatch(r'(?:\d{1,3}(?:[.,* ]\d{3})+|\d+)',stripped):
+        return dict(value=int(re.sub(r'[.,* ]','',stripped)),unit='CHIPS',raw=text)
+    return parse_amount(text)
+
+
+def positions_from_button(button, dealt,clockwise=CLOCKWISE):
     """Assign positions from seats dealt into the hand, never the remaining count."""
-    if button not in dealt or len(dealt) < 2 or len(set(dealt)) != len(dealt):
+    if button not in clockwise or button not in dealt or len(dealt) < 2 or len(set(dealt)) != len(dealt) or any(s not in clockwise for s in dealt):
         return {}
-    order = [CLOCKWISE[(CLOCKWISE.index(button)+i)%6] for i in range(6)]
+    order = [clockwise[(clockwise.index(button)+i)%len(clockwise)] for i in range(len(clockwise))]
     order = [seat for seat in order if seat in dealt]
     labels = {2:['BTN/SB','BB'],3:['BTN','SB','BB'],4:['BTN','SB','BB','UTG'],
-              5:['BTN','SB','BB','UTG','CO'],6:['BTN','SB','BB','UTG','HJ','CO']}[len(order)]
+              5:['BTN','SB','BB','UTG','CO'],6:['BTN','SB','BB','UTG','HJ','CO'],
+              7:['BTN','SB','BB','UTG','LJ','HJ','CO'],
+              8:['BTN','SB','BB','UTG','UTG+1','LJ','HJ','CO'],
+              9:['BTN','SB','BB','UTG','UTG+1','MP','LJ','HJ','CO']}[len(order)]
     return dict(zip(order,labels))
 
 
-def yellow_action_glyph(canonical, seat):
-    x,y,right,bottom = NAME_REGIONS[seat]
+def yellow_action_glyph(canonical, seat,profile='pokerstars'):
+    from table_profiles import NINE,NINE_NAMES
+    nine=is_desktop(profile)
+    x,y,right,bottom = (desktop_layout(profile)['names'] if nine else NAME_REGIONS)[seat]
     # All-in is displayed on the stack line rather than the name line.
     header = canonical[y:bottom,x:right]
     hue,saturation,value = cv2.split(cv2.cvtColor(header,cv2.COLOR_BGR2HSV))
-    mask = ((hue >= 20)&(hue <= 40)&(saturation > 100)&(value > 120)).astype(np.uint8)
+    mask = (((hue >= 80)&(hue <= 110)&(saturation > 70)&(value > 120)) if nine else
+            ((hue >= 20)&(hue <= 40)&(saturation > 100)&(value > 120))).astype(np.uint8)
     count,labels,stats,_ = cv2.connectedComponentsWithStats(mask,8)
     clean = np.zeros_like(mask)
     for index in range(1,count):
@@ -198,9 +269,10 @@ def yellow_action_glyph(canonical, seat):
 
 
 class ActionTemplates:
-    def __init__(self):
+    def __init__(self,profile='pokerstars'):
         self.references = []
-        for path in sorted((ROOT/'assets/table-observer/actions').glob('*.png')):
+        folder='table-nine/actions' if is_desktop(profile) else 'table-observer/actions'
+        for path in sorted((ROOT/'assets'/folder).glob('*.png')):
             mask = cv2.imread(str(path),cv2.IMREAD_GRAYSCALE)
             self.references.append((path.stem,mask.shape[1]/mask.shape[0],cv2.resize(mask,(192,40)) > 100))
 
@@ -222,13 +294,22 @@ class ActionTemplates:
 
 
 class TableVisualReader:
-    def __init__(self, ocr):
+    def __init__(self, ocr,profile='pokerstars'):
         self.ocr = ocr
-        template = cv2.imread(str(ROOT/'assets/table-observer/dealer-button.png'))
+        self.set_profile(profile)
+
+    def set_profile(self,profile):
+        self.profile=profile
+        folder='table-nine' if is_desktop(profile) else 'table-observer'
+        template = cv2.imread(str(ROOT/'assets'/folder/'dealer-button.png'))
         if template is None:
             raise RuntimeError('Riferimento del bottone mancante')
         self.button_template = cv2.cvtColor(template,cv2.COLOR_BGR2GRAY)
-        self.action_templates = ActionTemplates()
+        self.action_templates = ActionTemplates(profile)
+        self.all_in_template = cv2.imread(str(ROOT/'assets/table-nine/all-in-stack.png'),cv2.IMREAD_GRAYSCALE) if is_desktop(profile) else None
+        from table_number_reader import ChipNumberReader
+        self.chip_numbers=ChipNumberReader() if is_desktop(profile) else None
+        self.chip_amounts=ChipNumberReader(ROOT/'assets/table-nine/amount-digits') if is_desktop(profile) else None
 
     def dealer_button(self, frame):
         image = canonical_frame(frame)
@@ -237,54 +318,87 @@ class TableVisualReader:
         roi = cv2.cvtColor(image[150:840],cv2.COLOR_BGR2GRAY)
         _,score,_,location = cv2.minMaxLoc(cv2.matchTemplate(roi,self.button_template,cv2.TM_CCOEFF_NORMED))
         x,y = location[0]+20,location[1]+150+19
-        key = min(SEAT_CENTRES,key=lambda k:(SEAT_CENTRES[k][0]-x)**2+(SEAT_CENTRES[k][1]-y)**2)
+        from table_profiles import NINE_CENTRES
+        centres=desktop_layout(self.profile)['centres'] if is_desktop(self.profile) else SEAT_CENTRES
+        key = min(centres,key=lambda k:(centres[k][0]-x)**2+(centres[k][1]-y)**2)
         return dict(seat=key if score >= .75 else None,score=round(score,4))
 
     def read(self, frame):
-        mosaic,placements = ocr_mosaic(frame)
+        mosaic,placements = ocr_mosaic(frame,self.profile)
         canonical = canonical_frame(frame)
         result = self.ocr.recognize(mosaic)
         grouped = group_ocr(result,placements)
         seats = []
-        for key in CLOCKWISE:
+        from table_profiles import NINE_ORDER
+        order=desktop_layout(self.profile)['order'] if is_desktop(self.profile) else CLOCKWISE
+        amount=lambda text:parse_table_amount(text,self.profile)
+        for key in order:
             lines = grouped.get('seat:'+key,[])
+            stack_lines = grouped.get('stack:'+key,[]) if is_desktop(self.profile) else lines
             bets = grouped.get('bet:'+key,[])
-            stack = next((v for line in reversed(lines) if (v:=parse_amount(line))),None)
-            glyph = yellow_action_glyph(canonical,key)
+            stack = next((v for line in reversed(stack_lines) if (v:=amount(line))),None)
+            if stack is None and is_desktop(self.profile):
+                stack=next((v for line in reversed(lines[1:]) if (v:=amount(line))),None)
+            if is_desktop(self.profile):
+                from table_profiles import NINE_NAMES
+                a,b,c,d=desktop_layout(self.profile)['names'][key]
+                fallback=self.chip_numbers.read(canonical[round(b+(d-b)*.53):d,a:c])
+                if stack is None:stack=fallback
+                elif fallback is not None and fallback['value']!=stack['value']:stack=None
+            glyph = yellow_action_glyph(canonical,key,self.profile)
             yellow_label = glyph is not None
             action = next((a for line in lines if (a:=parse_action(line))),None) if yellow_label else None
             template_action = self.action_templates.classify(glyph)
             if template_action:
                 action = template_action['action'] if action in (None,template_action['action']) else None
-            name = next((line for line in lines if not parse_amount(line) and not (action and parse_action(line))
-                         and not any(term in line.lower() for term in ('sit out','libero','posto'))),None)
+            if is_desktop(self.profile) and any(parse_action(line)=='all_in' for line in stack_lines):
+                action='all_in'
+            if is_desktop(self.profile) and self.all_in_template is not None:
+                from table_profiles import NINE_NAMES
+                a,b,c,d=desktop_layout(self.profile)['names'][key]
+                glyph=white_stack_glyph(canonical[round(b+(d-b)*.53):d,a:c])
+                if glyph is not None:
+                    ref=self.all_in_template>0;sample=cv2.resize(glyph,(192,40))>0
+                    if 2*(ref&sample).sum()/max(1,ref.sum()+sample.sum())>=.91:
+                        action='all_in';stack=None
+            name = next((line for line in lines if not amount(line) and not (action and parse_action(line))
+                         and not any(term in line.lower() for term in ('sit out','libero','posto','vuoto','disconnesso'))),None)
+            wager=next((v for line in bets if (v:=amount(line))),None)
+            if wager is None and is_desktop(self.profile):
+                from table_profiles import NINE_BETS
+                a,b,c,d=desktop_layout(self.profile)['bets'][key];label=chip_amount_label(canonical[b:d,a:c])
+                if label is not None:wager=self.chip_amounts.read(label,bet=True)
             seats.append(dict(seat=key,name=name,action=action,stack=stack,
-                              wager=next((v for line in bets if (v:=parse_amount(line))),None),
-                              empty=any('libero' in line.lower() for line in lines),
+                              wager=wager,
+                              empty=any(any(term in line.lower() for term in ('libero','vuoto')) for line in lines),
                               sit_out='sit out' in ' '.join(lines).lower(),raw_text=lines,raw_wager=bets,
+                              raw_stack=stack_lines,
                               yellow_action_label=yellow_label,action_template=template_action))
         pot = contribution = None
         for line in grouped.get('pot',[]):
-            match = re.match(r'(?i)\s*(pot|contributo)\s*[:;]?\s*(.*)',line)
+            pattern=(r'(?i)\s*(pot|piatto|contributo)[\s:;.\ufffd\u2022]*([0-9].*)'
+                     if is_desktop(self.profile) else r'(?i)\s*(pot|piatto|contributo)\s*[:;]?\s*(.*)')
+            match = re.match(pattern,line)
             if match:
-                if match[1].lower()=='pot':
-                    pot = parse_amount(match[2])
+                if match[1].lower() in ('pot','piatto'):
+                    pot = amount(match[2])
                 else:
-                    contribution = parse_amount(match[2])
+                    contribution = amount(match[2])
         options = []
         for key,lines in grouped.items():
             if not key.startswith('option:'):
                 continue
             actions = [(line,parse_action(line)) for line in lines if parse_action(line)]
-            amounts = [value for line in lines if (value:=parse_amount(line))]
+            amounts = [value for line in lines if (value:=amount(line) or
+                       (amount(re.sub(r'(?i)^\s*(?:chiama|vedi|call)\s+','',line)) if parse_action(line)=='call' else None))]
             for line,action in actions:
                 options.append(dict(text=line,action=action,
                                     amount=amounts[0] if len(actions)==1 and len(amounts)==1 else None))
-        collected_values = [value for line in grouped.get('collected_pot',[]) if (value:=parse_amount(line))]
+        collected_values = [value for line in grouped.get('collected_pot',[]) if (value:=amount(line))]
         collected_pot = collected_values[0] if len(collected_values)==1 else None
         return dict(button=self.dealer_button(frame),seats=seats,pot=pot,contribution=contribution,
                     collected_pot=collected_pot,raw_collected_pot=grouped.get('collected_pot',[]),
-                    available_actions=options,ocr_language=result.get('language'),raw_pot=grouped.get('pot',[]))
+                    available_actions=options,ocr_language=result.get('language'),raw_pot=grouped.get('pot',[]),clockwise=order)
 
 
 def amount_key(value):
@@ -348,7 +462,7 @@ class TableStateTracker:
         if self.hand_button is None and hand_id > 0 and context.get('active') and button:
             self.hand_button = button
         same_deal = self.hand_button is None or button is None or button == self.hand_button
-        estimated_positions = positions_from_button(button,self.dealt) if button else {}
+        estimated_positions = positions_from_button(button,self.dealt,observation.get('clockwise',CLOCKWISE)) if button else {}
         # Only a complete captured deal can make SB/BB/etc authoritative.
         position_complete = bool(button) and (self.deal_complete or bool(context.get('deal_complete')))
         if not same_deal:
@@ -397,6 +511,8 @@ class TableStateTracker:
         pot = self.confirm('pot',amount_key(observation['pot']),timestamp)
         contribution = self.confirm('contribution',amount_key(observation['contribution']),timestamp)
         collected = self.confirm('collected_pot',amount_key(observation.get('collected_pot')),timestamp)
+        confirmed_options = self.confirm('available_actions:'+street,
+                                         observation['available_actions'] or None,timestamp)
         confirmed_street = self.confirm('street',street if street in ('preflop','flop','turn','river') else None,timestamp)
         can_record = (hand_id > 0 and same_deal and
                       (context.get('active',True) or (button is not None and button==self.hand_button)))
@@ -420,6 +536,7 @@ class TableStateTracker:
                     collected_pot=observation.get('collected_pot') if collected else None,
                     street_pots=deepcopy(self.street_pots),
                     available_actions=observation['available_actions'],events=deepcopy(self.events),
+                    available_actions_confirmed=deepcopy(confirmed_options) if confirmed_options else [],
                     history_complete=False,
                     ocr_language=observation['ocr_language'],
                     observation_policy='No inferred actions from offered buttons, absent cards or missing OCR; amounts require explicit units.')
@@ -445,7 +562,7 @@ class TableObservationService:
 
     def submit(self, frame, context):
         now = monotonic()
-        scope = (context['capture_session'],tuple(context['viewport']))
+        scope = (context['capture_session'],tuple(context['viewport']),context.get('profile','pokerstars'))
         with self.lock:
             if scope != self.scope or context.get('hand_id') != self.desired_hand:
                 self.latest = dict(status='pending',hand_id=context.get('hand_id'))
@@ -482,6 +599,8 @@ class TableObservationService:
                 try:
                     if self.reader is None:
                         self.reader = self.reader_factory()
+                    if isinstance(self.reader,TableVisualReader) and self.reader.profile!=context.get('profile','pokerstars'):
+                        self.reader.set_profile(context.get('profile','pokerstars'))
                     observation = self.reader.read(frame)
                     result = tracker.update(observation,context,timestamp)
                     result['ocr_processing_ms'] = round((monotonic()-timestamp)*1000)

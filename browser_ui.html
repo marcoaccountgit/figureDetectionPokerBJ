@@ -7,7 +7,7 @@
 <style>
 :root{color-scheme:dark;font-family:Segoe UI,system-ui,sans-serif;background:#101820;color:#edf3f6;font-size:13px}
 *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;padding:12px;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:10px;overflow:hidden}h1,h2,p{margin:0}h1{font-size:18px;letter-spacing:-.4px}h2{font-size:13px;font-weight:650}.muted,.small,small{color:#aebfc9}.small,small{font-size:11px}.app-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0}.brand{display:flex;align-items:center;gap:10px;white-space:nowrap}.local-tag{font-size:10px;border:1px solid #365244;padding:3px 7px;border-radius:20px;color:#88e2b1}.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}button{font:inherit;font-size:12px;color:inherit;background:#243541;border:1px solid #415463;border-radius:7px;padding:8px 11px;cursor:pointer}button.primary{background:#88e2b1;color:#10241a;border-color:#88e2b1;font-weight:650}button:disabled{opacity:.4;cursor:default}a{color:#88e2b1}label{display:flex;align-items:center;gap:7px;font-size:12px}button:focus-visible,summary:focus-visible{outline:2px solid #88e2b1;outline-offset:3px}
-.dashboard{display:grid;grid-template-columns:minmax(420px,.94fr) minmax(0,1.16fr);gap:12px;flex:1;min-height:0;max-width:1600px;width:100%;margin:0 auto}.left-column{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}.right-column{display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;gap:10px;min-width:0;min-height:0}.panel{border:1px solid #30434f;background:#18252f;border-radius:10px;padding:10px;min-width:0}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.section-heading small{font-size:10px}.status-panel{padding:8px 10px}.status-top{display:flex;align-items:center;justify-content:space-between;gap:10px}#status{color:#88e2b1;font-size:11px;font-weight:600}.hand-counter{display:flex;align-items:center;gap:8px;font-size:11px;white-space:nowrap}.hand-counter strong{font-size:23px;color:#edf3f6;line-height:1}.status-details summary{font-size:10px}.status-extra{display:flex;align-items:center;gap:8px}#error{color:#ffb3a9;font-size:11px;white-space:pre-wrap}#error:not(:empty){margin-top:6px}#source,#metrics,#cards{font-size:11px;line-height:1.5;overflow-wrap:anywhere}#cards{margin:7px 0}.card-code{display:inline-flex;align-items:center;gap:4px;margin-right:7px}.suit-icon{width:18px;height:18px;vertical-align:middle;flex-shrink:0}
+.dashboard{display:grid;grid-template-columns:minmax(420px,1fr) minmax(0,1fr);gap:12px;flex:1;min-height:0;max-width:1412px;width:100%;margin:0 auto}.left-column{overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}.right-column{display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;gap:10px;min-width:0;min-height:0}.panel{border:1px solid #30434f;background:#18252f;border-radius:10px;padding:10px;min-width:0}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.section-heading small{font-size:10px}.status-panel{padding:8px 10px}.status-top{display:flex;align-items:center;justify-content:space-between;gap:10px}#status{color:#88e2b1;font-size:11px;font-weight:600}.hand-counter{display:flex;align-items:center;gap:8px;font-size:11px;white-space:nowrap}.hand-counter strong{font-size:23px;color:#edf3f6;line-height:1}.status-details summary{font-size:10px}.status-extra{display:flex;align-items:center;gap:8px}#error{color:#ffb3a9;font-size:11px;white-space:pre-wrap}#error:not(:empty){margin-top:6px}#source,#metrics,#cards{font-size:11px;line-height:1.5;overflow-wrap:anywhere}#cards{margin:7px 0}.card-code{display:inline-flex;align-items:center;gap:4px;margin-right:7px}.suit-icon{width:18px;height:18px;vertical-align:middle;flex-shrink:0}
 .board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:7px}.board.hand{grid-template-columns:repeat(2,minmax(0,1fr));max-width:270px}.board-slot{border:1px solid #415463;border-radius:7px;padding:5px 3px;text-align:center;min-width:0}.board-slot small{display:block;font-size:10px}.board-slot strong{display:flex;align-items:center;justify-content:center;gap:5px;font-size:22px;min-height:28px;margin-top:3px}.board-slot.confirmed{border-color:#70ffac;color:#70ffac}.board-slot.uncertain{border-color:#ffcf70;color:#ffcf70}.opponent-line{display:flex;align-items:center;justify-content:space-between;gap:12px}.opponent-label{display:flex;align-items:center;gap:12px}.opponent-label h2{font-size:12px}#opponentCount{font-size:25px;font-weight:700;line-height:1;color:#88e2b1}.seat{display:inline-block;font-size:10px;padding:3px 5px;border-radius:4px;background:#243541}.seat.active{color:#70ffac}.seat.pending{color:#ffcf70}.seat.absent{color:#aebfc9}#opponentSeats{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}#opponentState{font-size:11px;line-height:1.5}
 .dropdown{position:relative}.dropdown>summary{cursor:pointer;color:#aebfc9;font-size:11px;list-style:none;white-space:nowrap}.dropdown>summary::after{content:' \25BE';font-size:10px}.dropdown[open]>summary{color:#edf3f6}.popover{position:absolute;z-index:30;right:0;top:calc(100% + 8px);width:320px;max-width:calc(100vw - 32px);padding:13px;background:#20313e;border:1px solid #49606f;border-radius:9px;box-shadow:0 12px 36px #0008;font-size:12px;line-height:1.5}.popover label{margin-bottom:10px}.popover p+p{margin-top:8px}.popover button{margin-top:8px}.dropdown.above .popover{top:auto;bottom:calc(100% + 8px)}.status-details .popover{right:auto;left:0}.popover-scroll{max-height:38vh;overflow:auto}
 #tableObservation{flex:1;min-height:210px;display:flex;flex-direction:column;gap:7px}#tableReadStatus{font-size:10px;color:#aebfc9;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.table-meta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10px;color:#aebfc9}.table-meta strong{font-size:11px;color:#edf3f6}.seat-table-wrap{min-height:0;flex:1;overflow:auto}.seat-table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px}.seat-table th{font-weight:500;color:#aebfc9;font-size:10px;text-align:left;border-bottom:1px solid #30434f;padding:4px}.seat-table td{padding:5px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid #243541}.seat-table th:first-child{width:31%}.seat-table th:nth-child(2){width:17%}.seat-table th:nth-child(3){width:17%}.estimated{color:#ffcf70}.table-footer{display:flex;align-items:center;justify-content:space-between;gap:10px}.table-footer .popover{right:auto;left:0;width:430px}.table-footer p{margin-bottom:8px}#observedEvents{font-size:11px;line-height:1.6}
@@ -16,15 +16,17 @@
 @media(min-width:981px) and (max-height:700px){body{padding:8px;gap:8px}.dashboard{gap:10px}.left-column{gap:6px}.panel{padding:8px}.board{margin-top:5px}.board-slot{padding:3px}.board-slot strong{font-size:19px;min-height:23px}.board-slot small{font-size:9px}.seat-table td{padding:3px 4px}.seat-table th{padding:3px 4px}#tableObservation{min-height:185px}.preview-panel{padding:8px}.capture-view{max-width:680px}}
 @media(min-width:981px) and (max-height:600px){.left-column{gap:5px}.left-column>.panel{padding:6px 8px}.board{margin-top:4px}.board-slot{padding:2px 3px}.board-slot strong{font-size:18px;min-height:20px;line-height:1;margin-top:2px}.section-heading h2{font-size:12px}.seat-table td{padding:3px 4px}.table-meta{font-size:10px}}
 @media(max-width:980px){body{height:auto;min-height:100dvh;overflow:auto}.app-header{align-items:flex-start}.brand{flex-direction:column;align-items:flex-start;gap:4px}.dashboard{grid-template-columns:1fr}.right-column{grid-row:1;display:flex;flex-direction:column;align-items:center}.preview-panel{height:auto}.preview-stage{height:min(45vh,360px);flex:none}.left-column{min-height:600px}.capture-view{width:100%;max-width:620px}.preview-panel,#potPanel,.support-bar{max-width:660px}.support-bar{margin:0 0 8px}.toolbar{gap:5px}button{padding:7px 9px}#tableObservation{min-height:230px}}
+.left-column>.panel{flex-shrink:0}#tableObservation{flex:none}#equityPanel{width:100%}#equityPanel>h2{color:#88e2b1}#equityContent{padding-top:10px}.equity-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.equity-controls label{font-size:11px}.equity-controls select,.equity-controls input{background:#101820;color:#edf3f6;border:1px solid #415463;border-radius:4px;padding:4px;max-width:130px}.equity-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;margin:8px 0}.equity-row{display:flex;justify-content:space-between;gap:8px;font-size:11px}.equity-row strong{color:#88e2b1}.equity-row progress{width:60px;height:9px;accent-color:#88e2b1}#equityMeta,#equityState,#equityTiming,#equityNote{font-size:11px;line-height:1.5}#equityState{color:#ffcf70}
+#advicePanel{border-top:1px solid #415463;border-bottom:1px solid #415463;margin:10px 0;padding:10px 0}#adviceTitle{font-weight:650;margin:6px 0;color:#ffcf70}#adviceLimits p{margin-top:6px;color:#ffcf70}#adviceNotes p{margin-top:6px}
 </style>
 </head>
 <body>
 <header class="app-header"><div class="brand"><h1>Scanner del tavolo</h1><span class="local-tag">Locale</span></div>
-<div class="toolbar"><button id="choose" class="primary">Scegli scheda</button><button id="start" disabled>Avvia scansione</button><button id="stop" disabled>Ferma</button><button id="record" disabled>Registra video</button>
+<div class="toolbar"><button id="choose" class="primary">Scegli sorgente</button><button id="start" disabled>Avvia scansione</button><button id="stop" disabled>Ferma</button><button id="record" disabled>Registra video</button>
 <details class="dropdown"><summary>Opzioni</summary><div class="popover"><label><input id="recordOverlay" type="checkbox" checked>Registra i riquadri del bot</label><label><input id="temporalNote" type="checkbox" checked disabled>Conferma temporale attiva</label><button id="diagnose" disabled>Salva diagnosi lettura</button></div></details></div></header>
 <main class="dashboard">
 <div class="left-column">
-<section class="panel status-panel" aria-label="Stato della scansione"><div class="status-top"><div class="status-extra"><span id="status" role="status">In attesa di una scheda</span><details class="dropdown status-details"><summary>Dettagli</summary><div class="popover"><p id="source">Nessuna sorgente selezionata</p><div id="cards">&mdash;</div><p id="metrics"></p></div></details></div><div class="hand-counter">Mani giocate <strong id="handCount" role="status">0</strong></div></div><div id="error" role="alert"></div></section>
+<section class="panel status-panel" aria-label="Stato della scansione"><div class="status-top"><div class="status-extra"><span id="status" role="status">In attesa di una sorgente</span><details class="dropdown status-details"><summary>Dettagli</summary><div class="popover"><p id="source">Nessuna sorgente selezionata</p><div id="cards">&mdash;</div><p id="metrics"></p></div></details></div><div class="hand-counter">Mani giocate <strong id="handCount" role="status">0</strong></div></div><div id="error" role="alert"></div><p id="alignmentStatus" class="small" role="status" hidden></p></section>
 <section class="panel" aria-label="Board, carte sul tavolo"><div class="section-heading"><h2>Board</h2><small>Flop &middot; Turn &middot; River</small></div><div id="board" class="board" aria-live="polite"></div></section>
 <section class="panel" aria-label="Mano del giocatore"><div class="section-heading"><h2>La tua mano</h2><small>Sinistra &rarr; destra</small></div><div id="playerHand" class="board hand" aria-live="polite"></div></section>
 <section class="panel" aria-label="Avversari nella mano corrente"><div class="opponent-line"><div class="opponent-label"><h2>Avversari nella mano</h2><strong id="opponentCount" role="status">&mdash;</strong></div><details class="dropdown"><summary>Affidabilit&agrave;</summary><div class="popover"><p id="opponentReliabilityValue">Nessuna verifica disponibile</p><div id="opponentState">In attesa di scansione</div><div id="opponentSeats"></div><p class="small" style="margin-top:8px">Conferma con cinque letture consecutive su almeno 300 ms. I posti non visibili restano da verificare.</p></div></details></div></section>
@@ -32,11 +34,24 @@
 <div class="table-meta"><span>Bottone: <strong id="dealerSeat">&mdash;</strong></span><span>Posizioni (?) da verificare</span></div>
 <div class="seat-table-wrap"><table class="seat-table"><thead><tr><th>Posto</th><th>Pos.</th><th>Azione</th><th>Stack</th><th>Puntata</th></tr></thead><tbody id="observedSeats"></tbody></table></div>
 <div class="table-footer"><small>Importi nelle unit&agrave; del tavolo</small><details class="dropdown above"><summary>Azioni e pulsanti</summary><div class="popover popover-scroll"><p class="small">Totale: <strong id="observedPot">&mdash;</strong> &middot; Centro: <strong id="collectedPot">&mdash;</strong> &middot; Contributo: <strong id="observedContribution">&mdash;</strong></p><p class="small">Primo totale confermato della fase: <span id="streetPots">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</span></p><p class="small" id="offeredActions"></p><div id="observedEvents"></div></div></details></div></section>
+<section id="equityPanel" class="panel" aria-label="Probabilità ed equità della mano"><h2>PROBABILITÀ ED EQUITÀ DELLA MANO</h2><div id="equityContent">
+<div class="equity-controls"><label>Calcolo <select id="equityProfile"><option value="FAST">Veloce · 5.000</option><option value="BALANCED">Bilanciato · 50.000</option><option value="ACCURATE">Accurato · 250.000</option></select></label><label><input id="equityManual" type="checkbox">Imposta gli avversari manualmente</label><label id="equityManualField" hidden>Numero di avversari <input id="equityOpponents" type="number" min="1" max="5" step="1" value="1" disabled></label></div>
+<p id="equityOpponentSource" class="small" role="status">Avversari: in attesa del riconoscimento visivo delle carte coperte.</p>
+<details><summary>Ripetibilità della simulazione</summary><label>Seme casuale (facoltativo) <input id="equitySeed" type="number" step="1" placeholder="Casuale"></label><p class="small">È il numero iniziale del generatore casuale. Con le stesse carte, avversari e impostazioni, lo stesso numero ripete la simulazione. Lascia vuoto per un nuovo campionamento a ogni nuovo calcolo; i risultati già salvati possono essere riutilizzati.</p></details>
+<p id="equityState" role="status">In attesa di carte confermate</p><p id="equityMeta"></p>
+<section id="advicePanel" aria-label="Valutazione probabilistica"><h2>Valutazione della decisione</h2><p id="adviceTitle" role="status">Valutazione in attesa</p><p id="adviceMessage" class="small"></p><div id="adviceNumbers" class="equity-grid"></div><details><summary>Perché: probabilità e ipotesi del modello</summary><div id="adviceFactors" class="equity-grid"></div><div id="adviceNotes" class="small"></div><div id="adviceLimits" class="small"></div></details></section>
+<h2>Al confronto finale delle mani</h2><div id="equityFinal" class="equity-grid"></div>
+<h2>Situazione attuale e miglioramento</h2><div id="equityCurrent" class="equity-grid"></div>
+<details><summary>Distribuzione categorie finali</summary><div id="equityCategories" class="equity-grid"></div></details>
+<p id="equityTiming"></p><p id="equityNote" class="muted">Modello: tutte le distribuzioni legali delle carte avversarie sono equiprobabili, senza ipotesi sullo stile di gioco. L'intervallo di confidenza al 95% misura l'errore della simulazione Monte Carlo, non la conoscenza delle carte nascoste. Equità riferita a un piatto comune, senza piatti secondari o commissioni.</p>
+</div></section>
 </div>
 <div class="right-column">
-<section class="panel preview-panel" aria-label="Anteprima della scheda"><div class="section-heading"><h2>Anteprima</h2><small>Scheda acquisita</small></div><div id="previewStage" class="preview-stage"><div id="view" class="capture-view"><div id="empty">Scegli la scheda del gioco per visualizzare l'anteprima.</div><video id="video" muted playsinline></video><canvas id="image" hidden></canvas><canvas id="overlay" hidden></canvas></div></div><p class="preview-caption">Verde: confermato &middot; Giallo: in verifica &middot; Azzurro: carte coperte</p></section>
+<section class="panel preview-panel" aria-label="Anteprima della sorgente"><div class="section-heading"><h2>Anteprima</h2><small>Sorgente acquisita</small></div><div id="previewStage" class="preview-stage"><div id="view" class="capture-view"><div id="empty">Scegli una scheda, una finestra o uno schermo per visualizzare l'anteprima.</div><video id="video" muted playsinline></video><canvas id="image" hidden></canvas><canvas id="overlay" hidden></canvas></div></div><p class="preview-caption">Verde: confermato &middot; Giallo: in verifica &middot; Azzurro: carte coperte</p></section>
 <section id="potPanel" class="panel" aria-label="Piatto al centro del tavolo"><div class="pot-values"><div><small>Piatto al centro</small><strong id="centerPotValue" aria-live="polite">&mdash;</strong></div><div class="secondary"><small>Totale tavolo</small><strong id="tablePotValue">&mdash;</strong></div></div><div id="centerPotByStreet">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</div><p id="potReadStatus" role="status">In attesa della lettura del tavolo</p></section>
-<div class="support-bar"><details class="dropdown above"><summary>Guida</summary><div class="popover popover-scroll" style="left:0;right:auto"><p>Apri questo pannello nello stesso browser del gioco e scegli la scheda del tavolo. Il conteggio considera le coppie di carte coperte visibili, non nomi e avatar.</p><p>Il video WebM non contiene audio. Se attiva, la registrazione include i riquadri del bot. Scaricala prima di chiudere la pagina: rimane in memoria fino al download.</p></div></details><details class="dropdown above"><summary>Registrazioni</summary><div id="downloads" class="popover popover-scroll" hidden><strong>Video da scaricare</strong></div></details></div>
+
+
+<div class="support-bar"><details class="dropdown above"><summary>Guida</summary><div class="popover popover-scroll" style="left:0;right:auto"><p>Premi Scegli sorgente: puoi condividere una scheda del browser, una finestra del gioco o uno schermo intero. Per il client desktop scegli Finestra e massimizza il tavolo. Se condividi uno schermo, mantieni il tavolo a tutto schermo e il pannello del bot su un altro monitor o fuori dalla vista del gioco. Il conteggio considera le coppie di carte coperte visibili, non nomi e avatar.</p><p>Il video WebM non contiene audio. Se attiva, la registrazione include i riquadri del bot. Scaricala prima di chiudere la pagina: rimane in memoria fino al download.</p></div></details><details class="dropdown above"><summary>Registrazioni</summary><div id="downloads" class="popover popover-scroll" hidden><strong>Video da scaricare</strong></div></details></div>
 </div>
 </main>
 <script>
@@ -45,6 +60,21 @@ const $=id=>document.getElementById(id), token=new URLSearchParams(location.sear
 let stream=null, session=null, recorder=null, chunks=[], generation=0, scanning=false, pending=null;
 let lastPacket=null;
 const image=$('image'), overlay=$('overlay'), video=$('video');
+const captureCanvas=document.createElement('canvas');
+function copySourceFrame(source){
+ const w=source.videoWidth,h=source.videoHeight;
+ if(!w||!h)throw Error('La sorgente non sta fornendo immagini.');
+ const scale=Math.min(1,2560/w,1600/h);
+ captureCanvas.width=Math.round(w*scale);captureCanvas.height=Math.round(h*scale);
+ captureCanvas.getContext('2d').drawImage(source,0,0,captureCanvas.width,captureCanvas.height);
+ return captureCanvas;
+}
+function renderAlignment(data){
+ $('alignmentStatus').hidden=!data;
+ $('alignmentStatus').className=data?.ready===false?'small estimated':'small';
+ const labels={'pokerstars':'Browser a 6 posti','pokerstars-nine':'Desktop a 9 posti','pokerstars-desktop-six':'Desktop a 6 posti'};
+ $('alignmentStatus').textContent=!data?'':data.ready===false?'Allineamento del tavolo in corso: letture e probabilità sospese. Mantieni il tavolo visibile.':'Allineamento: '+(labels[data.profile]||'profilo del tavolo');
+}
 function fitCapturePreview(){
  const stage=$('previewStage'),view=$('view');
  if(!stage.clientWidth||!stage.clientHeight)return;
@@ -68,10 +98,59 @@ function cardValue(code){
  const suit=suits[code?.slice(-1)];if(suit){const icon=document.createElement('img');icon.src=suit.url;icon.alt=suit.name;icon.className='suit-icon';fragment.append(icon);}return fragment;
 }
 function fail(message){$('error').textContent=message;}
+const equityCategoryLabels={'High Card':'Carta alta','One Pair':'Coppia','Two Pair':'Doppia coppia','Three of a Kind':'Tris','Straight':'Scala','Flush':'Colore','Full House':'Full','Four of a Kind':'Poker','Straight Flush':'Scala colore','Royal Flush':'Scala reale'};
+const equityStreetLabels={preflop:'Prima del flop',flop:'Flop',turn:'Quarta carta',river:'Quinta carta'};
+let equityDetectedOpponents=null, equityMaximumOpponents=5;
+function validEquityOpponentInput(){const value=$('equityOpponents').value||'';return /^\d+$/.test(value)&&Number(value)>=1&&Number(value)<=equityMaximumOpponents;}
+function equityOptions(){
+ return {profile:$('equityProfile').value||'FAST',opponents:$('equityManual').checked?(validEquityOpponentInput()?$('equityOpponents').value:'0'):'',seed:/^-?\d+$/.test($('equitySeed').value||'')?$('equitySeed').value:''};
+}
+function renderEquityOpponentSource(data){
+ equityDetectedOpponents=data;equityMaximumOpponents=Number.isInteger(data?.max_opponents)&&data.max_opponents>=1&&data.max_opponents<=9?data.max_opponents:5;$('equityOpponents').max=String(equityMaximumOpponents);
+ const manual=Boolean($('equityManual').checked),ready=data&&!data.pending&&Number.isInteger(data.count);
+ $('equityOpponents').disabled=!manual;$('equityManualField').hidden=!manual;
+ const detected=ready?data.count+' avversari rilevati e confermati':'conteggio in attesa di conferma';
+ $('equityOpponentSource').textContent=manual?'Conteggio manuale: '+(validEquityOpponentInput()?$('equityOpponents').value:'inserisci un numero intero da 1 a '+equityMaximumOpponents)+' · Rilevamento visivo: '+detected+'.':'Conteggio automatico: '+detected+'. Fonte: riconoscimento visivo delle coppie di carte coperte.';
+}
+function renderAdvice(advice){
+ for(const id of ['adviceNumbers','adviceFactors','adviceNotes','adviceLimits'])$(id).replaceChildren();
+ $('adviceTitle').textContent=advice?.title||'Valutazione in attesa';
+ $('adviceMessage').textContent=advice?.message||'Servono le probabilità della mano, il piatto e il costo per vedere confermati.';
+ if(!advice)return;
+ const pct=value=>(100*value).toLocaleString('it-IT',{maximumFractionDigits:2})+'%';
+ const money=value=>value.toLocaleString('it-IT',{maximumFractionDigits:3})+' '+(advice.unit==='CHIPS'?'fiches':advice.unit);
+ const row=(id,label,value)=>{const r=document.createElement('div');r.className='equity-row';const l=document.createElement('span');l.textContent=label;const v=document.createElement('strong');v.textContent=value;r.append(l,v);$(id).append(r);};
+ if(advice.status==='conditional'){
+  for(const [label,value] of [['Piatto, puntate già incluse',money(advice.pot_before_call)],['Costo aggiuntivo per vedere',money(advice.call_cost)],['Piatto dopo la chiamata',money(advice.pot_after_call)],['Equità minima richiesta',pct(advice.required_equity)],['Equità stimata',pct(advice.equity)],['Margine dalla soglia',(100*advice.margin).toLocaleString('it-IT',{maximumFractionDigits:2})+' punti percentuali'],['Valore atteso semplificato',money(advice.expected_value)],['Intervallo del valore atteso',advice.expected_value_ci95.map(money).join(' – ')]])row('adviceNumbers',label,value);
+  if(!advice.complete){const p=document.createElement('p');p.textContent='Valutazione provvisoria: la simulazione si sta ancora raffinando.';$('adviceNotes').append(p);}
+ }
+ for(const factor of advice.factors||[])row('adviceFactors',factor.label,pct(factor.value));
+ for(const [id,lines] of [['adviceNotes',advice.notes],['adviceLimits',advice.limits]])for(const line of lines||[]){const p=document.createElement('p');p.textContent=line;$(id).append(p);}
+}
+function renderEquity(data,advice){
+ renderAdvice(advice);
+ const ready=data?.status==='ready';
+ for(const id of ['equityFinal','equityCurrent','equityCategories'])$(id).replaceChildren();
+ $('equityMeta').textContent='';$('equityTiming').textContent='';
+ $('equityState').textContent=ready?(data.method==='exact'?'Enumerazione esatta del modello':(data.complete?'Stima Monte Carlo completata':'Stima Monte Carlo progressiva')):(data?.message||'In attesa di carte confermate');
+ if(!ready)return;
+ const fmt=x=>(100*x).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+ const row=(id,label,metric)=>{const r=document.createElement('div');r.className='equity-row';const l=document.createElement('span');l.textContent=label;const v=document.createElement('strong');v.textContent=metric?((data.method==='exact'?'':'≈ ')+fmt(metric.value)):'Non disponibile';if(metric){v.title='Errore standard: '+fmt(metric.standard_error)+' · IC 95%: '+metric.ci95.map(fmt).join(' – ');const bar=document.createElement('progress');bar.max=1;bar.value=metric.value;r.append(bar);}r.append(l,v);$(id).append(r);};
+ $('equityMeta').textContent='Mano: '+data.hero_cards.join(' ')+' · Carte comuni: '+(data.community_cards.join(' ')||'—')+' · Fase: '+(equityStreetLabels[data.street]||'Non disponibile')+' · Avversari: '+data.opponents_count+' · Categoria: '+(equityCategoryLabels[data.current_label]||'Non disponibile');
+ for(const [key,label] of [['win','Probabilità di vittoria esclusiva'],['lose','Probabilità di sconfitta'],['tie','Probabilità di pareggio al primo posto'],['equity','Equità: quota attesa del piatto']])row('equityFinal',label,data.metrics[key]);
+ for(const [key,label] of [['current_strength','Probabilità di essere già davanti a tutti'],['currently_behind','Probabilità di essere già dietro'],['current_tie','Pareggio attuale al primo posto'],['category_improvement','Probabilità di migliorare la categoria'],['same_category_value_improvement','Valore migliore nella stessa categoria'],['kicker_improvement','Carte di spareggio migliori, punto invariato']])row('equityCurrent',label,data.metrics[key]);
+ for(const [label,metric] of Object.entries(data.categories))row('equityCategories',equityCategoryLabels[label]||'Categoria non riconosciuta',metric);
+ const eq=data.metrics.equity;
+ $('equityTiming').textContent=data.simulations.toLocaleString('it-IT')+' distribuzioni · '+data.processing_ms.toLocaleString('it-IT')+' ms'+(data.cached?' · Risultato salvato':'')+' · Equità, intervallo di confidenza (IC 95%): '+eq.ci95.map(fmt).join(' – ')+' · Errore standard: '+fmt(eq.standard_error)+'. Gli intervalli delle altre metriche si leggono passando il puntatore sui valori. Migliorare le carte di spareggio o il valore della combinazione non equivale a vincere.';
+}
+for(const id of ['equityProfile','equityManual','equityOpponents','equitySeed'])$(id).onchange=()=>{renderEquityOpponentSource(equityDetectedOpponents);renderEquity({message:'Impostazioni cambiate: attesa della prossima lettura'});};
+for(const id of ['equityOpponents','equitySeed'])$(id).oninput=$(id).onchange;
+renderEquityOpponentSource();
+renderEquity();
 function renderHandCount(cycle){$('handCount').textContent=cycle?.count??0;}
 renderHandCount();
-const seatLabels={top:'Alto',upper_right:'Destra alta',lower_right:'Destra bassa',hero:'Tu',lower_left:'Sinistra bassa',upper_left:'Sinistra alta'};
-function formatAmount(amount){return amount?`${amount.value} ${amount.unit}`:'—';}
+const seatLabels={top_left:'Alto sinistra',top_right:'Alto destra',middle_left:'Sinistra centro',middle_right:'Destra centro',top:'Alto',upper_right:'Destra alta',lower_right:'Destra bassa',hero:'Tu',lower_left:'Sinistra bassa',upper_left:'Sinistra alta'};
+function formatAmount(amount){return amount?`${amount.value} ${amount.unit==='CHIPS'?'fiches':amount.unit}`:'—';}
 function renderPotSummary(data){
  const ready=data?.status==='ready';
  $('centerPotValue').textContent=ready?formatAmount(data.collected_pot):'—';
@@ -108,6 +187,7 @@ function renderHand(hand=[]){renderSlots('playerHand',['Carta sinistra','Carta d
 renderBoard();
 renderHand();
 function renderOpponents(data){
+ renderEquityOpponentSource(data);
  $('opponentCount').textContent=data?.count??'—';
  $('opponentReliabilityValue').textContent=data?`${(data.seats||[]).filter(seat=>seat.confirmed).length}/${(data.seats||[]).length} posti verificati`:'Nessuna verifica disponibile';
  $('opponentState').textContent=!data?'In attesa di scansione':data.pending?'Verifica delle coppie in corso…':`${data.count} con carte coperte · ${data.players_with_cards} giocatori con carte visibili`;
@@ -122,41 +202,45 @@ $('diagnose').onclick=async()=>{
  const link=document.createElement('a');link.href=url;link.download='diagnosi-carte-'+Date.now()+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
 };
 function stopRecording(){if(recorder && recorder.state!=='inactive'){recorder.stop();$('record').disabled=true;}}
-function stop(){renderBoard();renderHand();renderOpponents();renderTableObservation();generation++;scanning=false;if(pending)pending.abort();$('choose').disabled=false;stopRecording();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('start').disabled=true;$('stop').disabled=true;$('record').disabled=true;$('status').textContent='Acquisizione ferma';$('source').textContent='Nessuna acquisizione attiva';$('empty').hidden=false;$('view').classList.remove('preview');image.hidden=true;overlay.hidden=true;$('cards').textContent='—';$('metrics').textContent='';overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);}
+function stop(){renderAlignment();renderEquity();renderBoard();renderHand();renderOpponents();renderTableObservation();generation++;scanning=false;if(pending)pending.abort();$('choose').disabled=false;stopRecording();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('start').disabled=true;$('stop').disabled=true;$('record').disabled=true;$('status').textContent='Acquisizione ferma';$('source').textContent='Nessuna acquisizione attiva';$('empty').hidden=false;$('view').classList.remove('preview');image.hidden=true;overlay.hidden=true;$('cards').textContent='—';$('metrics').textContent='';overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);}
+function captureOptions(){return {video:{frameRate:10},audio:false,monitorTypeSurfaces:'include',selfBrowserSurface:'exclude',surfaceSwitching:'exclude'};}
+function captureSurfaceLabel(surface){return {browser:'Scheda',window:'Finestra',monitor:'Schermo'}[surface]||'Sorgente condivisa';}
 $('stop').onclick=stop;
 $('choose').onclick=async()=>{
  fail('');$('choose').disabled=true;
  try{
   if(!navigator.mediaDevices?.getDisplayMedia)throw Error('Apri il pannello in Chrome, Edge o Opera aggiornato.');
-  stream=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:10},audio:false,selfBrowserSurface:'exclude',surfaceSwitching:'exclude'});
-  const track=stream.getVideoTracks()[0], settings=track.getSettings();
-  if(settings.displaySurface && settings.displaySurface!=='browser')throw Error('Seleziona una scheda del browser, invece di uno schermo o una finestra.');
+  stream=await navigator.mediaDevices.getDisplayMedia(captureOptions());
+  const track=stream.getVideoTracks()[0];
+  if(!track)throw Error('La sorgente selezionata non contiene un flusso video.');
+  const settings=track.getSettings();
   video.srcObject=stream;await video.play();$('view').style.setProperty('--capture-aspect',video.videoWidth/video.videoHeight);fitCapturePreview();session=crypto.randomUUID();renderHandCount();const current=++generation;
   track.onended=()=>{if(current===generation)stop();};
-  $('source').textContent='Sorgente: '+track.label;$('status').textContent='Anteprima pronta: controlla la scheda e avvia la scansione';$('start').disabled=false;$('view').classList.add('preview');$('stop').disabled=false;$('record').disabled=typeof MediaRecorder==='undefined'||recorder!==null;
+  $('source').textContent='Sorgente ('+captureSurfaceLabel(settings.displaySurface)+'): '+track.label;$('status').textContent='Anteprima pronta: controlla la sorgente e avvia la scansione';$('start').disabled=false;$('view').classList.add('preview');$('stop').disabled=false;$('record').disabled=typeof MediaRecorder==='undefined'||recorder!==null;
   $('empty').hidden=true;image.hidden=false;overlay.hidden=false;
 
- }catch(error){stop();fail(error.name==='NotAllowedError'?'Selezione annullata o accesso alla scheda non consentito.':error.message);}
+ }catch(error){stop();fail(error.name==='NotAllowedError'?'Selezione annullata o condivisione della sorgente non consentita.':error.message);}
 };
 $('start').onclick=()=>{if(!stream||scanning)return;scanning=true;$('start').disabled=true;$('view').classList.remove('preview');$('status').textContent='Scansione in diretta';scan(generation);};
 async function scan(current){
  if(current!==generation||!stream)return;
  const began=performance.now();
  try{
-  const w=video.videoWidth,h=video.videoHeight;if(!w||!h)throw Error('La scheda non sta fornendo immagini.');
-  const scale=Math.min(1,2560/w,1600/h);image.width=Math.round(w*scale);image.height=Math.round(h*scale);
+  const sourceFrame=copySourceFrame(video);image.width=sourceFrame.width;image.height=sourceFrame.height;
   $('view').style.setProperty('--capture-aspect',image.width/image.height);fitCapturePreview();
   overlay.width=image.width;overlay.height=image.height;
-  image.getContext('2d').drawImage(video,0,0,image.width,image.height);
-  const blob=await new Promise(resolve=>image.toBlob(resolve,'image/jpeg',.92));
+  image.getContext('2d').drawImage(sourceFrame,0,0);
+  const blob=await new Promise(resolve=>sourceFrame.toBlob(resolve,'image/jpeg',.92));
   if(current!==generation)return;
   if(!blob)throw Error('Impossibile acquisire il fotogramma.');
   pending=new AbortController();
   const request=pending;
   const timeout=setTimeout(()=>request.abort(),15000);
-  let response;try{response=await fetch('/frame',{method:'POST',headers:{'X-Capture-Token':token,'X-Capture-Session':session},body:blob,signal:pending.signal});}finally{clearTimeout(timeout);}
+  const equityRequest=equityOptions(),equitySettings=JSON.stringify(equityRequest);
+  let response;try{response=await fetch('/frame',{method:'POST',headers:{'X-Capture-Token':token,'X-Capture-Session':session,'X-Equity-Profile':equityRequest.profile,'X-Equity-Opponents':equityRequest.opponents,'X-Equity-Seed':equityRequest.seed},body:blob,signal:pending.signal});}finally{clearTimeout(timeout);}
   if(!response.ok){let data=await response.json();throw Error(data.error||'Errore del riconoscitore ('+response.status+')');}
   const result=await response.json();if(current!==generation)return;
+  renderAlignment(result.capture_alignment);
   lastPacket={blob,result,time:new Date().toISOString(),source:$('source').textContent};$('diagnose').disabled=false;
   const ctx=overlay.getContext('2d');ctx.lineWidth=Math.max(3,image.width/500);ctx.font=Math.max(16,image.width/85)+'px Segoe UI';
   for(const card of result.cards){const [x1,y1,x2,y2]=card.bbox;ctx.strokeStyle=ctx.fillStyle=card.accepted?'#70ffac':'#ffcf70';ctx.strokeRect(x1,y1,x2-x1,y2-y1);const label=card.board_slot!=null?['F1','F2','F3','Turn','River'][card.board_slot]+': ':card.hand_slot!=null?['Mano SX: ','Mano DX: '][card.hand_slot]:'';const text=label+(card.accepted?card.card:'?');const textY=Math.max(20,y1-5);ctx.fillText(text,x1,textY);const suit=card.accepted?suits[card.card?.slice(-1)]:null;if(suit?.image.complete&&suit.image.naturalWidth)ctx.drawImage(suit.image,x1+ctx.measureText(text).width+4,textY-16,16,16);}
@@ -165,6 +249,7 @@ async function scan(current){
   renderHandCount(result.hand_cycle);
   renderTableObservation(result.table_observation);
   renderOpponents(result.opponents);
+  if(equitySettings===JSON.stringify(equityOptions()))renderEquity(result.equity,result.poker_advice);
   for(const seat of result.opponents?.seats||[]){if(!seat.bbox)continue;const [x,y,b,d]=seat.bbox;ctx.strokeStyle=ctx.fillStyle=seat.in_hand===true?'#70d7ff':'#ffcf70';ctx.strokeRect(x,y,b-x,d-y);ctx.fillText('2 coperte',x,Math.max(20,y-5));}
   $('cards').replaceChildren(document.createTextNode('Altre carte: '));const other=result.cards.filter(c=>c.table_group==='other'&&c.accepted);if(!other.length)$('cards').append('nessuna');for(const card of other){const span=document.createElement('span');span.className='card-code';span.append(cardValue(card.card));$('cards').append(span);}
   $('metrics').textContent=`${image.width} × ${image.height} · Elaborazione ${Math.round(result.processing_ms)} ms · Ciclo ${Math.round(performance.now()-began)} ms · Conferma: almeno ${result.temporal.required_observations} letture consecutive, intervallo minimo ${result.temporal.min_span_ms} ms`;

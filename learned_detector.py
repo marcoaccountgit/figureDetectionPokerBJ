@@ -6,7 +6,7 @@ from card_detector import Recognizer, cv2, np, stacked_index_symbols
 from download_model import MODEL_DIR, model_manifest, verified_model_files
 
 
-def additional_table_regions(frame, primary):
+def additional_table_regions(frame, primary, min_area=.003, min_height=.08,truncated_indices=False):
     """Propose native-resolution tiles for revealed cards outside board/hero ROI."""
     height, width = frame.shape[:2]
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -19,13 +19,14 @@ def additional_table_regions(frame, primary):
         area = cv2.contourArea(contour)
         x, y, w, h = cv2.boundingRect(contour)
         cx, cy = x+w/2, y+h/2
-        if not .003 < area/(width*height) < .12 or h < height*.08 or not .3 < w/h < 2:
+        if not min_area < area/(width*height) < .12 or h < height*min_height or not .3 < w/h < 2:
             continue
         if px1 <= cx <= px2 and py1 <= cy <= py2:
             continue
         # An overlapping hand may hide one index from the neural detector.
         # Its leftmost visible index can also be proposed from the white face.
-        indices.append([x+2, y+2, min(width, x+round(.28*h)), min(height, y+round(.58*h))])
+        indices.append([x+2, y+2, min(width, x+round(.33*w if truncated_indices else .28*h)),
+                        min(height, y+round(.67*w if truncated_indices else .58*h))])
         if any(ax <= cx <= bx and ay <= cy <= by for ax, ay, bx, by in regions):
             continue
         ax = max(0, min(width-tile_width, round(cx-tile_width/2)))
@@ -173,6 +174,30 @@ class LearnedCardDetector:
                 cards.remove(old)
             cards.append(dict(previous,**reading))
 
+    def _recover_nine_indices(self,frame,cards):
+        """Fixed reviewed index strips, still requiring visible white face/glyphs."""
+        from temporal_cards import overlap
+        scale=frame.shape[1]/1918
+        native=cv2.resize(frame,(1918,round(frame.shape[0]/scale)))
+        boxes=[(696+110*i,397,729+110*i,463) for i in range(5)]
+        boxes += [(863,723,895,786),(967,723,999,786)]
+        for box in boxes:
+            x,y,right,bottom=box
+            if bottom>native.shape[0]:continue
+            bbox=[round(v*scale) for v in box]
+            existing=[c for c in cards if overlap(bbox,c['bbox'])>=.3]
+            if any(c['accepted'] for c in existing):continue
+            image=native[y:bottom,x:right]
+            hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
+            if np.mean((hsv[:,:,1]<65)&(hsv[:,:,2]>180))<.5:continue
+            reading=self._symbol_reading(image)
+            if reading is None:continue
+            a,b,c,d=bbox
+            reading.update(domain='physical',group='card_index',bbox=bbox,
+                           polygon=[[a,b],[c,b],[c,d],[a,d]],decision_source='nine_seat_index_recovery',neural_confidence=None)
+            for old in existing:cards.remove(old)
+            cards.append(reading)
+
     def detect(self, frame):
         start = perf_counter()
         offset_x, offset_y = 0, 0
@@ -196,8 +221,11 @@ class LearnedCardDetector:
         primary = [offset_x, offset_y, offset_x+image.shape[1], offset_y+image.shape[0]]
         regions = [primary]
         outside_indices = []
-        if self.profile == 'pokerstars':
-            extra, outside_indices = additional_table_regions(frame, primary)
+        if self.profile in ('pokerstars','pokerstars-nine'):
+            if self.profile=='pokerstars-nine':
+                extra,outside_indices=additional_table_regions(frame,primary,min_area=.0008,min_height=.045,truncated_indices=True)
+            else:
+                extra, outside_indices = additional_table_regions(frame, primary)
             regions += extra
         cards = []
         for ax, ay, bx, by in regions:
@@ -210,7 +238,7 @@ class LearnedCardDetector:
                 # A confident network prediction can still be wrong (e.g.
                 # 4S -> AS). Cross-check all PokerStars indices against the
                 # existing high-threshold rank/suit references.
-                if not card['accepted'] or self.profile == 'pokerstars':
+                if not card['accepted'] or self.profile in ('pokerstars','pokerstars-nine'):
                     x1, y1, x2, y2 = card['bbox']
                     reading = self._symbol_reading(image[y1:y2, x1:x2])
                     if reading:
@@ -241,9 +269,26 @@ class LearnedCardDetector:
             cards = [cards[i] for i in np.asarray(kept).reshape(-1)]
         if self.profile == 'pokerstars':
             self._recover_player_indices(frame, cards)
+        elif self.profile == 'pokerstars-nine':
+            self._recover_nine_indices(frame,cards)
         return {'scene': 'card_model', 'scene_score': None,
                 'detector': 'lgd-cards-gen3' if self.profile == 'general' else 'pokerstars-finetuned-yolo11n',
                 'profile': self.profile,
                 'regions_analyzed': len(regions),
                 'detection_kind': 'card_index', 'cards': cards,
                 'processing_ms': round((perf_counter() - start) * 1000, 3)}
+
+
+class TableCardDetector:
+    """Lazy independent weights: adding nine seats never replaces six-seat weights."""
+    def __init__(self):
+        self.models={'pokerstars':LearnedCardDetector('pokerstars')}
+        self.profile='pokerstars'
+
+    def detect(self,frame):
+        model_profile='pokerstars-nine' if self.profile=='pokerstars-desktop-six' else self.profile
+        if model_profile not in self.models:
+            self.models[model_profile]=LearnedCardDetector(model_profile)
+        result=self.models[model_profile].detect(frame)
+        result['table_profile']=self.profile
+        return result

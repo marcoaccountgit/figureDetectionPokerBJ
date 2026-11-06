@@ -9,7 +9,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parent
 
 
-def fixture():
+def fixture(equity_open=False):
     page = (ROOT/'browser_ui.html').read_text(encoding='utf-8')
     picture = base64.b64encode((ROOT/'artifacts/capture10-improvement/dataset/reviewed/80.png').read_bytes()).decode()
     script = """<script>
@@ -30,6 +30,16 @@ const report={width:innerWidth,height:innerHeight,pageHeight:document.documentEl
 const pre=document.createElement('pre');pre.id='layoutReport';pre.hidden=true;pre.textContent=JSON.stringify(report);document.body.append(pre);
 },500);};qaImage.src='data:image/png;base64,PICTURE';
 </script>""".replace('PICTURE',picture)
+    if equity_open:
+        from poker_equity import calculate_equity
+        from poker_advice import analyze_decision
+        result = calculate_equity(['8C','2C'],['9D','10H','5C','AS','KC'],3,simulations=200,random_seed=17)
+        advice = analyze_decision(result,dict(status='ready',hand_id=18,street='river',
+                                 pot=dict(value=24,unit='BB'),seats=[],
+                                 available_actions_confirmed=[dict(action='call',amount=dict(value=6,unit='BB'))]),18)
+        page = page.replace('</body>', '<script>renderEquity('
+                            +json.dumps(result)+','+json.dumps(advice)+');</script></body>')
+        script = script.replace("'tableObservation','view','potPanel'", "'tableObservation','view','potPanel','equityPanel'")
     return page.replace('</body>',script+'</body>')
 
 
@@ -37,11 +47,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--browser',type=Path,default=Path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'))
     parser.add_argument('--output',type=Path,default=ROOT/'artifacts/dashboard-layout')
+    parser.add_argument('--equity-open',action='store_true')
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True,exist_ok=True)
     path = output/'preview.html'
-    path.write_text(fixture(),encoding='utf-8')
+    path.write_text(fixture(args.equity_open),encoding='utf-8')
     reports = []
     for width,height in ((1366,768),(1280,720),(1100,650)):
         key = f'{width}x{height}'
@@ -63,7 +74,12 @@ def main():
         assert report['pageHeight']<=report['height'], 'Pagina oltre la viewport'
         assert not report['tableNeedsScroll'], 'Righe dei giocatori non tutte visibili'
         assert report['aspectError']<.02, 'Proporzioni anteprima alterate'
-        assert all(r['bottom']<=report['height'] and r['right']<=report['width'] for r in report['rectangles'].values())
+        assert all(r['bottom']<=report['height'] and r['right']<=report['width']
+                   for key,r in report['rectangles'].items() if key != 'equityPanel')
+        if args.equity_open:
+            equity = report['rectangles']['equityPanel']
+            assert equity['top'] >= report['rectangles']['tableObservation']['bottom']
+            assert equity['right'] <= report['width']
     (output/'report.json').write_text(json.dumps(reports,indent=2),encoding='utf-8')
 
 

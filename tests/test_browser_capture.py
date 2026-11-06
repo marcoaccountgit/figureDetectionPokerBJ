@@ -10,6 +10,23 @@ from card_detector import cv2, np
 
 
 class BrowserCaptureTests(unittest.TestCase):
+    def test_http_confirmation_tracks_the_slot_during_card_lift(self):
+        from temporal_cards import TemporalCards
+        card=dict(card='AS',rank='A',suit='S',accepted=True,confidence=.99)
+        self.detector.detect.side_effect=[
+            dict(cards=[dict(card,bbox=[603,425,623,455])],processing_ms=1),
+            dict(cards=[dict(card,bbox=[603,390,623,420])],processing_ms=1)]
+        with patch('browser_capture.live_confirmation',side_effect=TemporalCards):
+            self.server.RequestHandlerClass=make_handler(self.detector,'test-token')
+            frame=cv2.imencode('.png',np.full((840,1762,3),80,np.uint8))[1].tobytes()
+            headers={'X-Capture-Token':'test-token','X-Capture-Session':'animated-slot'}
+            status,body=self.request('POST','/frame',frame,headers)
+            self.assertEqual(status,200)
+            self.assertFalse(json.loads(body)['board'][0]['accepted'])
+            status,body=self.request('POST','/frame',frame,headers)
+            self.assertEqual(status,200)
+            self.assertEqual(json.loads(body)['board'][0]['card'],'AS')
+
     def setUp(self):
         self.detector = Mock()
         self.detector.detect.return_value = {'cards': [], 'processing_ms': 1}
@@ -34,6 +51,25 @@ class BrowserCaptureTests(unittest.TestCase):
         status, body = self.request('GET', '/?token=test-token')
         self.assertEqual(status, 200)
         self.assertIn(b'getDisplayMedia', body)
+
+    def test_equity_receives_confirmed_result_and_configuration(self):
+        service = Mock()
+        service.submit.return_value = dict(status='waiting',message='Carte non confermate')
+        self.server.RequestHandlerClass = make_handler(self.detector,'test-token',equity_service=service)
+        image = cv2.imencode('.jpg',np.full((100,200,3),80,np.uint8))[1].tobytes()
+        headers = {'X-Capture-Token':'test-token','X-Capture-Session':'equity-one',
+                   'X-Equity-Profile':'BALANCED','X-Equity-Opponents':'3','X-Equity-Seed':'42'}
+        status,body = self.request('POST','/frame',image,headers)
+        self.assertEqual(status,200)
+        self.assertEqual(json.loads(body)['equity']['status'],'waiting')
+        self.assertEqual(json.loads(body)['poker_advice']['status'],'waiting')
+        data,session = service.submit.call_args.args
+        self.assertEqual(session,'equity-one')
+        self.assertIn('player_hand',data)
+        self.assertIn('board',data)
+        self.assertIn('opponents',data)
+        self.assertEqual(service.submit.call_args.kwargs,
+                         dict(profile='BALANCED',manual_opponents=3,random_seed=42))
 
     def test_table_observer_receives_aligned_frame_and_session_context(self):
         observer = Mock()

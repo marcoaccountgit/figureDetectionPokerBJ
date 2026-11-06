@@ -51,6 +51,8 @@ def main():
     parser.add_argument('--output-dir', type=Path, default=ROOT / 'models')
     parser.add_argument('--run-name', default='pokerstars-195129')
     parser.add_argument('--learning-rate', type=float, default=.001)
+    parser.add_argument('--profile', default='pokerstars',choices=['pokerstars','pokerstars-nine'])
+    parser.add_argument('--spec',type=Path,default=ROOT/'datasets/table-195129.json')
     args = parser.parse_args()
     if args.epochs < 1:
         parser.error('epochs must be positive')
@@ -87,17 +89,20 @@ def main():
     export = Path(trained.export(format='onnx', imgsz=640, opset=12, dynamic=False,
                                 simplify=False, half=False, device='cpu', batch=1))
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    target = args.output_dir / 'pokerstars.onnx'
+    target = args.output_dir / (args.profile+'.onnx')
     shutil.copy2(export, target)
-    classes = args.output_dir / 'pokerstars.classes.json'
+    classes = args.output_dir / (args.profile+'.classes.json')
     classes.write_text(json.dumps(names), encoding='utf-8')
     from prepare_table_dataset import export_symbol_references
-    export_symbol_references(args.dataset, args.output_dir / 'pokerstars-symbols')
-    spec = json.loads((ROOT / 'datasets/table-195129.json').read_text())
+    export_symbol_references(args.dataset, args.output_dir / (args.profile+'-symbols'))
+    if args.profile=='pokerstars-nine':
+        from prepare_table_dataset import export_real_index_references
+        export_real_index_references(args.dataset,args.output_dir/(args.profile+'-symbols'))
+    spec = json.loads(args.spec.read_text())
     width, height = spec['size']
     manifest = {
-        'profile': 'pokerstars', 'license': 'AGPL-3.0 (Ultralytics derivative)',
-        'symbol_references': 'pokerstars-symbols',
+        'profile': args.profile, 'license': 'AGPL-3.0 (Ultralytics derivative)',
+        'symbol_references': args.profile+'-symbols',
         'source_checkpoint': BASE_MODEL,
         'crop': [value / (width if i % 2 == 0 else height) for i, value in enumerate(spec['crop'])],
         'crop_reference_size': [width, height],
@@ -119,7 +124,7 @@ def main():
     manifest['best_epoch'] = int(best_row['epoch'])
     manifest['deployment_validation'] = {key: float(value) for key, value in best_row.items()
                                          if key.startswith('deployment/')}
-    (args.output_dir / 'pokerstars.manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+    (args.output_dir / (args.profile+'.manifest.json')).write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     print('Exported candidate:', target, flush=True)
 
 

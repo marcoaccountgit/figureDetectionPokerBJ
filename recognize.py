@@ -63,7 +63,7 @@ def main():
                         help='Template webcam detector: ordinary corner index or casino card face')
     parser.add_argument('--detector', choices=('model', 'templates'),
                         help='Default: trained model for webcam, templates for other sources')
-    parser.add_argument('--profile', choices=('general', 'pokerstars'), default='general',
+    parser.add_argument('--profile', choices=('general', 'pokerstars','pokerstars-nine'), default='general',
                         help='Trained model profile; pokerstars uses its calibrated table crop')
     parser.add_argument('--temporal', action=argparse.BooleanOptionalAction, default=None,
                         help='Confirm across frames; default on for PokerStars streams at >=2 fps')
@@ -100,7 +100,7 @@ def main():
     if args.profile != 'general' and detector_mode != 'model':
         parser.error('--profile pokerstars requires --detector model')
     temporal_enabled = args.temporal if args.temporal is not None else (
-        detector_mode == 'model' and args.profile == 'pokerstars' and not args.image and args.fps >= 2)
+        detector_mode == 'model' and args.profile in ('pokerstars','pokerstars-nine') and not args.image and args.fps >= 2)
     if temporal_enabled and (args.image or detector_mode != 'model' or args.fps < 2):
         parser.error('--temporal requires a model stream and --fps >= 2')
     temporal = None

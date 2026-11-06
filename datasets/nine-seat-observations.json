@@ -1,0 +1,281 @@
+{
+  "source": "Screen Recording 2026-11-06 125816.mp4",
+  "cutoff_seconds": 840,
+  "note": "Manually reviewed visible fields, not inferred bets. Calibration overlaps training; test hands remain excluded from weight training.",
+  "frames": [
+    {
+      "time": 0,
+      "pot": 4250,
+      "button": "upper_right",
+      "actions": {
+        "upper_right": "fold"
+      },
+      "stacks": {
+        "hero": 19500,
+        "upper_left": 66082,
+        "top_left": 16310
+      },
+      "wagers": {
+        "top_left": 1500,
+        "upper_left": 500,
+        "middle_left": 500,
+        "middle_right": 250,
+        "lower_left": 500,
+        "lower_right": 500,
+        "hero": 500
+      }
+    },
+    {
+      "time": 30,
+      "pot": 13500,
+      "actions": {
+        "upper_left": "call"
+      }
+    },
+    {
+      "time": 60,
+      "pot": 118391,
+      "actions": {
+        "lower_left": "all_in"
+      },
+      "wagers": {
+        "lower_left": 51872,
+        "upper_left": 51872
+      }
+    },
+    {
+      "time": 90,
+      "pot": 2750
+    },
+    {
+      "time": 120,
+      "pot": 8505
+    },
+    {
+      "time": 150,
+      "pot": 2750,
+      "button": "lower_right",
+      "actions": {
+        "top_left": "raise"
+      },
+      "stacks": {
+        "top_left": 31752,
+        "upper_left": 11710
+      },
+      "wagers": {
+        "top_right": 500,
+        "upper_left": 500,
+        "middle_left": 500,
+        "lower_left": 250
+      }
+    },
+    {
+      "time": 180,
+      "pot": 9000,
+      "stacks": {
+        "top_left": 31252,
+        "top_right": 48500,
+        "upper_left": 10710,
+        "upper_right": 46127,
+        "middle_left": 45202,
+        "middle_right": 11977,
+        "lower_left": 110186,
+        "lower_right": 29240
+      },
+      "wagers": {
+        "top_left": 1500,
+        "top_right": 1500,
+        "upper_left": 1500,
+        "upper_right": 1000,
+        "middle_left": 500,
+        "middle_right": 1000,
+        "lower_left": 1000,
+        "lower_right": 1000
+      }
+    },
+    {
+      "time": 210
+    },
+    {
+      "time": 240,
+      "pot": 2362,
+      "button": "upper_left",
+      "actions": {
+        "upper_left": "check"
+      }
+    },
+    {
+      "time": 270,
+      "pot": 2000
+    },
+    {
+      "time": 300,
+      "pot": 4725,
+      "actions": {
+        "top_right": "check"
+      }
+    },
+    {
+      "time": 330,
+      "pot": 4016
+    },
+    {
+      "time": 360,
+      "pot": 1890
+    },
+    {
+      "time": 390,
+      "pot": 1000
+    },
+    {
+      "time": 420,
+      "pot": 8505
+    },
+    {
+      "time": 450,
+      "pot": 3750
+    },
+    {
+      "time": 480,
+      "pot": 5725,
+      "button": "lower_right",
+      "actions": {
+        "lower_right": "call"
+      },
+      "stacks": {
+        "top_right": 37553,
+        "middle_left": 44202,
+        "middle_right": 13482,
+        "lower_right": 26490,
+        "upper_left": 45500
+      },
+      "wagers": {
+        "middle_right": 500
+      }
+    },
+    {
+      "time": 510,
+      "pot": 8032,
+      "actions": {
+        "top_right": "fold"
+      }
+    },
+    {
+      "time": 540,
+      "pot": 3307
+    },
+    {
+      "time": 570,
+      "pot": 4807,
+      "actions": {
+        "top_right": "call"
+      }
+    },
+    {
+      "time": 600,
+      "pot": 10108
+    },
+    {
+      "time": 630,
+      "pot": 2126,
+      "actions": {
+        "top_right": "check",
+        "middle_right": "check"
+      }
+    },
+    {
+      "time": 660,
+      "pot": 2750,
+      "actions": {
+        "top_left": "call",
+        "upper_left": "call",
+        "middle_left": "call"
+      }
+    },
+    {
+      "time": 690,
+      "pot": 4725,
+      "actions": {
+        "top_right": "check"
+      }
+    },
+    {
+      "time": 720,
+      "pot": 750
+    },
+    {
+      "time": 750,
+      "pot": 2362,
+      "actions": {
+        "upper_right": "check"
+      }
+    },
+    {
+      "time": 780,
+      "pot": 3807,
+      "button": "upper_right",
+      "actions": {
+        "middle_right": "bet"
+      },
+      "stacks": {
+        "middle_right": 6996
+      },
+      "wagers": {
+        "middle_right": 500
+      }
+    },
+    {
+      "time": 810,
+      "pot": 750
+    }
+  ],
+  "revealed_cards": {
+    "510": [
+      "JC",
+      "7C",
+      "JD",
+      "5H"
+    ]
+  },
+  "covered_seats": {
+    "0": [
+      "top_left",
+      "upper_left",
+      "middle_left",
+      "middle_right",
+      "lower_left",
+      "lower_right"
+    ],
+    "150": [
+      "top_left",
+      "top_right",
+      "upper_left",
+      "upper_right",
+      "middle_left",
+      "middle_right",
+      "lower_left",
+      "lower_right"
+    ],
+    "180": [
+      "top_left",
+      "top_right",
+      "upper_left",
+      "upper_right",
+      "middle_right",
+      "lower_left",
+      "lower_right"
+    ],
+    "510": [],
+    "720": [
+      "top_left",
+      "top_right",
+      "upper_left",
+      "upper_right",
+      "middle_left",
+      "middle_right",
+      "lower_left"
+    ]
+  },
+  "annotation_revision": 2,
+  "review_note": "Pot digits and 810s name/action checked against full-resolution video crops, not thumbnails."
+}

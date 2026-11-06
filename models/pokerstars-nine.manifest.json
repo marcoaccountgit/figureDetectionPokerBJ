@@ -1,0 +1,1756 @@
+{
+  "profile": "pokerstars-nine",
+  "license": "AGPL-3.0 (Ultralytics derivative)",
+  "symbol_references": "pokerstars-nine-symbols",
+  "source_checkpoint": {
+    "repository": "shrimantasatpati/yolov11_playing_cards_detection",
+    "revision": "7b8e6a71f0392544624dfc0b67730e679ece19ee",
+    "sha256": "2617719f994cbb91e974c9f3c3a7f63e83a5cd0d9004342636099c79260260b6",
+    "file": "detect/yolo11n_playing_cards/weights/best.pt"
+  },
+  "crop": [
+    0.33889468196037537,
+    0.3005008347245409,
+    0.6673618352450469,
+    0.7512520868113522
+  ],
+  "crop_reference_size": [
+    1918,
+    1198
+  ],
+  "dataset_manifest": {
+    "source": "Screen Recording 2026-11-06 125816.mp4",
+    "source_sha256": "e5a00f508df0ca85528f62c94af02b8404a5f6dc7ccc160b37efc2a763b94aab",
+    "cutoff_seconds": 840,
+    "real_frames_by_split": {
+      "train": 91,
+      "val": 4,
+      "test": 5
+    },
+    "real_training_codes": [
+      "10C",
+      "10D",
+      "10H",
+      "10S",
+      "2D",
+      "2H",
+      "2S",
+      "3D",
+      "3H",
+      "3S",
+      "4S",
+      "5D",
+      "5S",
+      "6H",
+      "6S",
+      "7C",
+      "7D",
+      "8S",
+      "9C",
+      "9D",
+      "9S",
+      "AH",
+      "AS",
+      "JS",
+      "KC",
+      "KD",
+      "KH",
+      "KS",
+      "QC",
+      "QH"
+    ],
+    "glyph_source": "training hands only",
+    "synthetic_train_frames": 156,
+    "native_synthetic": [
+      {
+        "file": "native_10C_0",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_1",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_2",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_3",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_4",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_5",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_6",
+        "code": "10C"
+      },
+      {
+        "file": "native_10C_7",
+        "code": "10C"
+      },
+      {
+        "file": "native_10D_0",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_1",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_2",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_3",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_4",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_5",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_6",
+        "code": "10D"
+      },
+      {
+        "file": "native_10D_7",
+        "code": "10D"
+      },
+      {
+        "file": "native_10H_0",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_1",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_2",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_3",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_4",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_5",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_6",
+        "code": "10H"
+      },
+      {
+        "file": "native_10H_7",
+        "code": "10H"
+      },
+      {
+        "file": "native_10S_0",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_1",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_2",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_3",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_4",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_5",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_6",
+        "code": "10S"
+      },
+      {
+        "file": "native_10S_7",
+        "code": "10S"
+      },
+      {
+        "file": "native_2C_0",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_1",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_2",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_3",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_4",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_5",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_6",
+        "code": "2C"
+      },
+      {
+        "file": "native_2C_7",
+        "code": "2C"
+      },
+      {
+        "file": "native_2D_0",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_1",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_2",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_3",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_4",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_5",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_6",
+        "code": "2D"
+      },
+      {
+        "file": "native_2D_7",
+        "code": "2D"
+      },
+      {
+        "file": "native_2H_0",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_1",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_2",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_3",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_4",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_5",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_6",
+        "code": "2H"
+      },
+      {
+        "file": "native_2H_7",
+        "code": "2H"
+      },
+      {
+        "file": "native_2S_0",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_1",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_2",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_3",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_4",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_5",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_6",
+        "code": "2S"
+      },
+      {
+        "file": "native_2S_7",
+        "code": "2S"
+      },
+      {
+        "file": "native_3C_0",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_1",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_2",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_3",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_4",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_5",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_6",
+        "code": "3C"
+      },
+      {
+        "file": "native_3C_7",
+        "code": "3C"
+      },
+      {
+        "file": "native_3D_0",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_1",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_2",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_3",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_4",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_5",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_6",
+        "code": "3D"
+      },
+      {
+        "file": "native_3D_7",
+        "code": "3D"
+      },
+      {
+        "file": "native_3H_0",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_1",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_2",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_3",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_4",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_5",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_6",
+        "code": "3H"
+      },
+      {
+        "file": "native_3H_7",
+        "code": "3H"
+      },
+      {
+        "file": "native_3S_0",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_1",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_2",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_3",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_4",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_5",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_6",
+        "code": "3S"
+      },
+      {
+        "file": "native_3S_7",
+        "code": "3S"
+      },
+      {
+        "file": "native_4C_0",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_1",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_2",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_3",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_4",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_5",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_6",
+        "code": "4C"
+      },
+      {
+        "file": "native_4C_7",
+        "code": "4C"
+      },
+      {
+        "file": "native_4D_0",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_1",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_2",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_3",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_4",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_5",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_6",
+        "code": "4D"
+      },
+      {
+        "file": "native_4D_7",
+        "code": "4D"
+      },
+      {
+        "file": "native_4H_0",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_1",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_2",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_3",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_4",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_5",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_6",
+        "code": "4H"
+      },
+      {
+        "file": "native_4H_7",
+        "code": "4H"
+      },
+      {
+        "file": "native_4S_0",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_1",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_2",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_3",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_4",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_5",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_6",
+        "code": "4S"
+      },
+      {
+        "file": "native_4S_7",
+        "code": "4S"
+      },
+      {
+        "file": "native_5C_0",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_1",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_2",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_3",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_4",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_5",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_6",
+        "code": "5C"
+      },
+      {
+        "file": "native_5C_7",
+        "code": "5C"
+      },
+      {
+        "file": "native_5D_0",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_1",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_2",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_3",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_4",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_5",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_6",
+        "code": "5D"
+      },
+      {
+        "file": "native_5D_7",
+        "code": "5D"
+      },
+      {
+        "file": "native_5H_0",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_1",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_2",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_3",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_4",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_5",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_6",
+        "code": "5H"
+      },
+      {
+        "file": "native_5H_7",
+        "code": "5H"
+      },
+      {
+        "file": "native_5S_0",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_1",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_2",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_3",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_4",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_5",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_6",
+        "code": "5S"
+      },
+      {
+        "file": "native_5S_7",
+        "code": "5S"
+      },
+      {
+        "file": "native_6C_0",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_1",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_2",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_3",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_4",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_5",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_6",
+        "code": "6C"
+      },
+      {
+        "file": "native_6C_7",
+        "code": "6C"
+      },
+      {
+        "file": "native_6D_0",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_1",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_2",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_3",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_4",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_5",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_6",
+        "code": "6D"
+      },
+      {
+        "file": "native_6D_7",
+        "code": "6D"
+      },
+      {
+        "file": "native_6H_0",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_1",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_2",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_3",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_4",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_5",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_6",
+        "code": "6H"
+      },
+      {
+        "file": "native_6H_7",
+        "code": "6H"
+      },
+      {
+        "file": "native_6S_0",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_1",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_2",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_3",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_4",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_5",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_6",
+        "code": "6S"
+      },
+      {
+        "file": "native_6S_7",
+        "code": "6S"
+      },
+      {
+        "file": "native_7C_0",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_1",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_2",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_3",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_4",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_5",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_6",
+        "code": "7C"
+      },
+      {
+        "file": "native_7C_7",
+        "code": "7C"
+      },
+      {
+        "file": "native_7D_0",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_1",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_2",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_3",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_4",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_5",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_6",
+        "code": "7D"
+      },
+      {
+        "file": "native_7D_7",
+        "code": "7D"
+      },
+      {
+        "file": "native_7H_0",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_1",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_2",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_3",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_4",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_5",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_6",
+        "code": "7H"
+      },
+      {
+        "file": "native_7H_7",
+        "code": "7H"
+      },
+      {
+        "file": "native_7S_0",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_1",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_2",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_3",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_4",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_5",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_6",
+        "code": "7S"
+      },
+      {
+        "file": "native_7S_7",
+        "code": "7S"
+      },
+      {
+        "file": "native_8C_0",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_1",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_2",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_3",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_4",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_5",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_6",
+        "code": "8C"
+      },
+      {
+        "file": "native_8C_7",
+        "code": "8C"
+      },
+      {
+        "file": "native_8D_0",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_1",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_2",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_3",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_4",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_5",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_6",
+        "code": "8D"
+      },
+      {
+        "file": "native_8D_7",
+        "code": "8D"
+      },
+      {
+        "file": "native_8H_0",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_1",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_2",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_3",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_4",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_5",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_6",
+        "code": "8H"
+      },
+      {
+        "file": "native_8H_7",
+        "code": "8H"
+      },
+      {
+        "file": "native_8S_0",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_1",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_2",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_3",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_4",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_5",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_6",
+        "code": "8S"
+      },
+      {
+        "file": "native_8S_7",
+        "code": "8S"
+      },
+      {
+        "file": "native_9C_0",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_1",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_2",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_3",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_4",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_5",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_6",
+        "code": "9C"
+      },
+      {
+        "file": "native_9C_7",
+        "code": "9C"
+      },
+      {
+        "file": "native_9D_0",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_1",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_2",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_3",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_4",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_5",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_6",
+        "code": "9D"
+      },
+      {
+        "file": "native_9D_7",
+        "code": "9D"
+      },
+      {
+        "file": "native_9H_0",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_1",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_2",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_3",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_4",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_5",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_6",
+        "code": "9H"
+      },
+      {
+        "file": "native_9H_7",
+        "code": "9H"
+      },
+      {
+        "file": "native_9S_0",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_1",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_2",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_3",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_4",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_5",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_6",
+        "code": "9S"
+      },
+      {
+        "file": "native_9S_7",
+        "code": "9S"
+      },
+      {
+        "file": "native_AC_0",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_1",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_2",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_3",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_4",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_5",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_6",
+        "code": "AC"
+      },
+      {
+        "file": "native_AC_7",
+        "code": "AC"
+      },
+      {
+        "file": "native_AD_0",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_1",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_2",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_3",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_4",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_5",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_6",
+        "code": "AD"
+      },
+      {
+        "file": "native_AD_7",
+        "code": "AD"
+      },
+      {
+        "file": "native_AH_0",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_1",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_2",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_3",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_4",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_5",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_6",
+        "code": "AH"
+      },
+      {
+        "file": "native_AH_7",
+        "code": "AH"
+      },
+      {
+        "file": "native_AS_0",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_1",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_2",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_3",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_4",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_5",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_6",
+        "code": "AS"
+      },
+      {
+        "file": "native_AS_7",
+        "code": "AS"
+      },
+      {
+        "file": "native_JC_0",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_1",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_2",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_3",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_4",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_5",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_6",
+        "code": "JC"
+      },
+      {
+        "file": "native_JC_7",
+        "code": "JC"
+      },
+      {
+        "file": "native_JD_0",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_1",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_2",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_3",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_4",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_5",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_6",
+        "code": "JD"
+      },
+      {
+        "file": "native_JD_7",
+        "code": "JD"
+      },
+      {
+        "file": "native_JH_0",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_1",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_2",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_3",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_4",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_5",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_6",
+        "code": "JH"
+      },
+      {
+        "file": "native_JH_7",
+        "code": "JH"
+      },
+      {
+        "file": "native_JS_0",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_1",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_2",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_3",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_4",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_5",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_6",
+        "code": "JS"
+      },
+      {
+        "file": "native_JS_7",
+        "code": "JS"
+      },
+      {
+        "file": "native_KC_0",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_1",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_2",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_3",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_4",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_5",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_6",
+        "code": "KC"
+      },
+      {
+        "file": "native_KC_7",
+        "code": "KC"
+      },
+      {
+        "file": "native_KD_0",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_1",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_2",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_3",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_4",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_5",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_6",
+        "code": "KD"
+      },
+      {
+        "file": "native_KD_7",
+        "code": "KD"
+      },
+      {
+        "file": "native_KH_0",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_1",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_2",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_3",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_4",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_5",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_6",
+        "code": "KH"
+      },
+      {
+        "file": "native_KH_7",
+        "code": "KH"
+      },
+      {
+        "file": "native_KS_0",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_1",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_2",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_3",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_4",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_5",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_6",
+        "code": "KS"
+      },
+      {
+        "file": "native_KS_7",
+        "code": "KS"
+      },
+      {
+        "file": "native_QC_0",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_1",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_2",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_3",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_4",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_5",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_6",
+        "code": "QC"
+      },
+      {
+        "file": "native_QC_7",
+        "code": "QC"
+      },
+      {
+        "file": "native_QD_0",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_1",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_2",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_3",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_4",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_5",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_6",
+        "code": "QD"
+      },
+      {
+        "file": "native_QD_7",
+        "code": "QD"
+      },
+      {
+        "file": "native_QH_0",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_1",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_2",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_3",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_4",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_5",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_6",
+        "code": "QH"
+      },
+      {
+        "file": "native_QH_7",
+        "code": "QH"
+      },
+      {
+        "file": "native_QS_0",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_1",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_2",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_3",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_4",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_5",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_6",
+        "code": "QS"
+      },
+      {
+        "file": "native_QS_7",
+        "code": "QS"
+      }
+    ],
+    "native_synthetic_frames": 416,
+    "annotation_revision": 2
+  },
+  "training_run": "artifacts\\training\\pokerstars-nine-final-125816",
+  "epochs_requested": 8,
+  "files": [
+    {
+      "local": "pokerstars-nine.onnx",
+      "sha256": "ea5194ba978dc9d538078afd2ae1abd461401d98fa157c46c19f9b39350527b6"
+    },
+    {
+      "local": "pokerstars-nine.classes.json",
+      "sha256": "8a2d7e9dacf245aca5ef5a402cb404def919e9994e9142644d80c6d6248ee038"
+    }
+  ],
+  "warm_start": {
+    "file": "artifacts\\training\\pokerstars-nine-reviewed-125816\\weights\\best.pt",
+    "sha256": "56b2067b313eb1879e1ca6a17eed49d4ba6e68c775763758b5470fa44c55ae61"
+  },
+  "epochs_completed": 7,
+  "best_epoch": 7,
+  "deployment_validation": {
+    "deployment/precision": 1.0,
+    "deployment/recall": 1.0,
+    "deployment/f1": 1.0
+  }
+}

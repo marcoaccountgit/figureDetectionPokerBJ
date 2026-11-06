@@ -13,7 +13,7 @@ def file_digest(path):
 
 
 def model_manifest(profile='general'):
-    if profile not in ('general', 'pokerstars'):
+    if profile not in ('general', 'pokerstars','pokerstars-nine'):
         raise ValueError(f'Unknown model profile: {profile}')
     filename = 'manifest.json' if profile == 'general' else f'{profile}.manifest.json'
     path = MODEL_DIR / filename

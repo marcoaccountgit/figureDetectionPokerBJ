@@ -33,6 +33,22 @@ def export_symbol_references(dataset, destination):
             cv2.imwrite(str(destination / kind / f'{key}_{path.stem}.png'), mask*255)
 
 
+def export_real_index_references(dataset,destination):
+    """Export compositional symbols strictly from real TRAIN labels."""
+    dataset,destination=Path(dataset),Path(destination)
+    names=json.loads((dataset/'data.yaml').read_text())['names']
+    for path in (dataset/'images/train').glob('real_*.jpg'):
+        image=cv2.imread(str(path));height,width=image.shape[:2]
+        for i,line in enumerate((dataset/'labels/train'/(path.stem+'.txt')).read_text().splitlines()):
+            index,x,y,w,h=map(float,line.split())
+            a,b,c,d=round((x-w/2)*width),round((y-h/2)*height),round((x+w/2)*width),round((y+h/2)*height)
+            symbols=stacked_index_symbols(image[b:d,a:c])
+            if symbols is None:continue
+            code=names[int(index)]
+            for kind,key,mask in zip(('rank','suit'),(code[:-1],code[-1]),symbols[0]):
+                cv2.imwrite(str(destination/kind/f'{key}_{path.stem}_{i}.png'),mask*255)
+
+
 def annotations_for(frame, specification, names):
     labels = []
     x0, y0, x2, y2 = specification['crop']

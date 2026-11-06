@@ -11,6 +11,32 @@ def observations(active=(True,False,False,False,False)):
 
 
 class OpponentTests(unittest.TestCase):
+    def test_variable_table_capacity_and_fold_count(self):
+        for capacity in (2,5,6,8,9,10):
+            tracker=OpponentTracker()
+            values=(True,)*(capacity-1)
+            for i in range(5):
+                result=tracker.update(observations(values),i*.1,[])
+            self.assertEqual(result['count'],capacity-1)
+            self.assertEqual(result['max_opponents'],capacity-1)
+            for i in range(5,10):
+                result=tracker.update(observations((True,)+(False,)*(capacity-2)),i*.1,[])
+            self.assertEqual(result['count'],1)
+
+    def test_changed_layout_requires_new_confirmation(self):
+        tracker=OpponentTracker()
+        for i in range(5):tracker.update(observations(),i*.1,[])
+        result=tracker.update(observations((True,)*9),.5,[])
+        self.assertIsNone(result['count'])
+        for i in range(6,10):result=tracker.update(observations((True,)*9),i*.1,[])
+        self.assertEqual(result['count'],9)
+
+    def test_duplicate_seats_do_not_make_a_confirmed_count(self):
+        tracker=OpponentTracker()
+        for i in range(5):
+            result=tracker.update([observations()[0]]*5,i*.1,[])
+        self.assertIsNone(result['count'])
+
     def test_a_seat_outside_the_visible_capture_is_unknown_not_absent(self):
         detector = OpponentDetector()
         frame = np.full((1100,1762,3),(30,65,30),np.uint8)

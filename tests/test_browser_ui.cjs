@@ -132,3 +132,137 @@ test('preview fits both dimensions without changing captured canvas resolution',
   assert.equal(canvas.width,1854);
   assert.equal(canvas.height,954);
 });
+
+test('equity distinguishes unavailable current metrics, estimates, and clears stale results',()=>{
+ const {elements,context}=panel();
+ vm.runInContext(`const metric={value:.4,standard_error:.01,ci95:[.38,.42]};
+ renderEquity({status:'ready',method:'monte_carlo',complete:false,hero_cards:['As','Kh'],community_cards:[],street:'preflop',opponents_count:2,current_label:null,
+ metrics:{win:metric,lose:metric,tie:metric,equity:metric},categories:{'High Card':metric},simulations:5000,processing_ms:200});`,context);
+ assert.match(elements.get('equityState').textContent,/progressiva/);
+ assert.match(elements.get('equityMeta').textContent,/Prima del flop/);
+ assert.match(elements.get('equityTiming').textContent,/IC 95%/);
+ const current=descendants(elements.get('equityCurrent'));
+ assert.ok(current.some(n=>n.textContent==='Non disponibile'));
+ assert.ok(descendants(elements.get('equityFinal')).some(n=>String(n.textContent).includes('≈')));
+ vm.runInContext('renderEquity({status:"waiting",message:"Board transitorio"})',context);
+ assert.equal(elements.get('equityFinal').children.length,0);
+ assert.equal(elements.get('equityCategories').children.length,0);
+ assert.equal(elements.get('equityMeta').textContent,'');
+ assert.equal(elements.get('equityState').textContent,'Board transitorio');
+});
+
+test('equity uses detected opponents unless a valid manual input overrides it',()=>{
+ const {elements,context}=panel();
+ elements.get('equityOpponents').value='2';
+ vm.runInContext('renderOpponents({count:3,pending:false,seats:[]})',context);
+ assert.match(elements.get('equityOpponentSource').textContent,/automatico: 3 avversari/);
+ assert.equal(elements.get('equityOpponents').disabled,true);
+ assert.equal(vm.runInContext('equityOptions().opponents',context),'');
+ elements.get('equityManual').checked=true;
+ elements.get('equityManual').onchange();
+ assert.equal(elements.get('equityManualField').hidden,false);
+ assert.equal(vm.runInContext('equityOptions().opponents',context),'2');
+ assert.match(elements.get('equityOpponentSource').textContent,/manuale: 2/);
+ for(const invalid of ['', '1.5', '6', '-1']){
+  elements.get('equityOpponents').value=invalid;
+  elements.get('equityOpponents').oninput();
+  assert.equal(vm.runInContext('equityOptions().opponents',context),'0');
+  assert.match(elements.get('equityOpponentSource').textContent,/numero intero da 1 a 5/);
+ }
+ elements.get('equityManual').checked=false;
+ elements.get('equityManual').onchange();
+ assert.equal(vm.runInContext('equityOptions().opponents',context),'');
+ assert.equal(elements.get('equityManualField').hidden,true);
+});
+
+test('equity translates final categories and current category labels',()=>{
+ const {elements,context}=panel();
+ vm.runInContext(`const m={value:.5,standard_error:.01,ci95:[.48,.52]};
+ renderEquity({status:'ready',method:'monte_carlo',complete:true,hero_cards:['As','Kh'],community_cards:['Qs','Js','Ts'],street:'flop',opponents_count:1,current_label:'Royal Flush',metrics:{equity:m},categories:{'High Card':m,'One Pair':m,'Straight Flush':m},simulations:5000,processing_ms:200});`,context);
+ assert.match(elements.get('equityMeta').textContent,/Scala reale/);
+ const labels=descendants(elements.get('equityCategories')).map(n=>n.textContent);
+ assert.ok(labels.includes('Carta alta'));
+ assert.ok(labels.includes('Coppia'));
+ assert.ok(labels.includes('Scala colore'));
+});
+
+test('conditional advice shows prices and clears them when the next state is incomplete',()=>{
+ const {elements,context}=panel();
+ vm.runInContext(`renderAdvice({status:'conditional',title:'Indicazione teorica: vedere',message:'Ipotesi da verificare',unit:'BB',pot_before_call:150,call_cost:50,pot_after_call:200,required_equity:.25,equity:.35,margin:.10,expected_value:20,expected_value_ci95:[18,22],complete:false,factors:[{label:'Già davanti',value:.4}],notes:['Non sommare le probabilità'],limits:['Costi futuri esclusi']});`,context);
+ assert.match(elements.get('adviceTitle').textContent,/Indicazione teorica/);
+ assert.ok(descendants(elements.get('adviceNumbers')).some(n=>n.textContent==='20 BB'));
+ assert.ok(descendants(elements.get('adviceNotes')).some(n=>String(n.textContent).includes('provvisoria')));
+ vm.runInContext('renderEquity({status:"waiting"})',context);
+ assert.equal(elements.get('adviceNumbers').children.length,0);
+ assert.equal(elements.get('adviceFactors').children.length,0);
+ assert.equal(elements.get('adviceTitle').textContent,'Valutazione in attesa');
+});
+
+test('nine-seat tables allow eight manual opponents and display chip units in Italian',()=>{
+ const {elements,context}=panel();
+ vm.runInContext('renderOpponents({count:8,pending:false,max_opponents:8,seats:[]})',context);
+ elements.get('equityManual').checked=true;elements.get('equityOpponents').value='8';
+ elements.get('equityManual').onchange();
+ assert.equal(elements.get('equityOpponents').max,'8');
+ assert.equal(vm.runInContext('equityOptions().opponents',context),'8');
+ assert.equal(vm.runInContext('formatAmount({value:1500,unit:"CHIPS"})',context),'1500 fiches');
+ vm.runInContext('renderOpponents({count:3,pending:false,max_opponents:5,seats:[]})',context);
+ assert.equal(vm.runInContext('equityOptions().opponents',context),'0');
+});
+
+test('opponent input follows any supported advertised table capacity',()=>{
+ const {elements,context}=panel();
+ elements.get('equityManual').checked=true;
+ for(const capacity of [5,6,8,9,10]){
+  vm.runInContext(`renderOpponents({count:2,pending:false,max_opponents:${capacity-1},seats:[]})`,context);
+  elements.get('equityOpponents').value=String(capacity-1);
+  assert.equal(elements.get('equityOpponents').max,String(capacity-1));
+  assert.equal(vm.runInContext('equityOptions().opponents',context),String(capacity-1));
+  elements.get('equityOpponents').value=String(capacity);
+  assert.equal(vm.runInContext('equityOptions().opponents',context),'0');
+ }
+});
+
+test('source picker accepts browser tabs, application windows, monitors and unspecified surfaces',async()=>{
+ for(const [surface,label] of [['browser','Scheda'],['window','Finestra'],['monitor','Schermo'],[undefined,'Sorgente condivisa']]){
+  const {elements,context}=panel();let requested,stopped=false;
+  const track={label:'PokerStars',getSettings:()=>({displaySurface:surface}),stop:()=>{stopped=true;}};
+  context.navigator={mediaDevices:{getDisplayMedia:async options=>{
+   requested=options;return {getVideoTracks:()=>[track],getTracks:()=>[track]};
+  }}};
+  context.crypto={randomUUID:()=>String(surface)};
+  const video=elements.get('video');video.play=async()=>{};video.videoWidth=1920;video.videoHeight=1080;
+  elements.get('view').style={setProperty(){}};
+  elements.get('view').classList={add(){},remove(){}};
+  elements.get('overlay').getContext=()=>({clearRect(){}});
+  await elements.get('choose').onclick();
+  assert.equal(elements.get('error').textContent,'');
+  assert.equal(elements.get('start').disabled,false);
+  assert.equal(elements.get('source').textContent,`Sorgente (${label}): PokerStars`);
+  assert.equal(requested.monitorTypeSurfaces,'include');
+  assert.equal(requested.video.displaySurface,undefined);
+  assert.equal(requested.audio,false);
+  track.onended();
+  assert.equal(stopped,true);
+  assert.equal(elements.get('start').disabled,true);
+  assert.equal(video.srcObject,null);
+ }
+});
+
+test('analysis pixels come directly from the source, independently of the preview size',()=>{
+ const {elements,context}=panel();
+ const canvas=vm.runInContext('captureCanvas',context);
+ let draw;
+ canvas.getContext=()=>({drawImage:(...args)=>{draw=args;}});
+ elements.get('image').width=300;elements.get('image').height=100;
+ const source={videoWidth:1920,videoHeight:1200};context.testSource=source;
+ const frame=vm.runInContext('copySourceFrame(testSource)',context);
+ assert.equal(frame,canvas);
+ assert.equal(frame.width,1920);assert.equal(frame.height,1200);
+ assert.equal(draw[0],source);
+ assert.deepEqual(draw.slice(1),[0,0,1920,1200]);
+ vm.runInContext('renderAlignment({ready:false,profile:"pokerstars-desktop-six"})',context);
+ assert.match(elements.get('alignmentStatus').textContent,/sospese/);
+ vm.runInContext('renderAlignment({ready:true,profile:"pokerstars-desktop-six"})',context);
+ assert.match(elements.get('alignmentStatus').textContent,/Desktop a 6 posti/);
+});

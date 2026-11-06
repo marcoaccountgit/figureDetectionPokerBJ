@@ -8,7 +8,7 @@ from card_detector import cv2, np
 PLAYER_INDICES = ((648,650,686,746), (688,662,736,760))
 
 
-def player_card_presence(frame):
+def player_card_presence(frame, profile='pokerstars'):
     """True=white card face, False=exposed green felt, None=occluded/ambiguous."""
     scale = frame.shape[1] / 1762
     canonical = cv2.resize(frame, (1762, round(frame.shape[0]/scale)))
@@ -20,10 +20,13 @@ def player_card_presence(frame):
 
     # A white dialog covering the whole player region must not look like
     # two new cards. Check exposed felt above and to the left as context.
-    context_ok = (felt_fraction(canonical[615:635,645:735]) >= .4
+    from table_profiles import is_desktop, NINE_HERO
+    nine = is_desktop(profile)
+    context_ok = (felt_fraction(canonical[630:645,790:930]) >= .3 if nine else
+                  felt_fraction(canonical[615:635,645:735]) >= .4
                   and felt_fraction(canonical[660:730,620:637]) >= .4)
     slots = []
-    for box in PLAYER_INDICES:
+    for box in NINE_HERO if nine else PLAYER_INDICES:
         x,y,right,bottom = box
         if bottom > canonical.shape[0]:
             slots.append(dict(present=None, white_fraction=0, felt_fraction=0))
@@ -31,7 +34,8 @@ def player_card_presence(frame):
         hue,saturation,value = cv2.split(cv2.cvtColor(canonical[y:bottom,x:right],cv2.COLOR_BGR2HSV))
         white = float(np.mean((saturation < 65) & (value > 180)))
         felt = float(np.mean((hue > 30) & (hue < 100) & (saturation > 65) & (value > 35)))
-        present = (True if context_ok and white >= .4 and felt <= .1 else
+        visible_face = (white >= .55 and felt <= .2) if nine else (white >= .4 and felt <= .1)
+        present = (True if context_ok and visible_face else
                    False if context_ok and white <= .08 and felt >= .3 else None)
         slots.append(dict(present=present, white_fraction=round(white,4), felt_fraction=round(felt,4)))
     return slots

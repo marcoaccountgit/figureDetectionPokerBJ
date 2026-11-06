@@ -9,12 +9,13 @@ from time import perf_counter
 import webbrowser
 
 from card_detector import cv2, np
-from learned_detector import LearnedCardDetector
+from learned_detector import LearnedCardDetector, TableCardDetector
 from temporal_cards import TemporalCards
 from table_layout import arrange_table
 from capture_alignment import CaptureAligner, restore_coordinates
 from opponent_detector import OpponentDetector, OpponentTracker
 from hand_counter import HandCounter, player_card_presence
+from poker_advice import analyze_decision
 
 ROOT = Path(__file__).resolve().parent
 MAX_FRAME = 12 * 1024 * 1024
@@ -25,11 +26,12 @@ def live_confirmation():
                          window_frames=12, consecutive=True, max_gap=2)
 
 
-def make_handler(detector, token, table_observer=None):
+def make_handler(detector, token, table_observer=None, equity_service=None):
     lock = threading.Lock()
     opponents = OpponentDetector()
     state = {'session': None, 'viewport': None, 'temporal': live_confirmation(),
-             'opponents': OpponentTracker(), 'hands': HandCounter(), 'dealt_seats': [], 'aligner': None}
+             'opponents': OpponentTracker(), 'hands': HandCounter(), 'dealt_seats': [], 'aligner': None,
+             'profile':'pokerstars'}
 
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, body, content_type='application/json'):
@@ -66,25 +68,39 @@ def make_handler(detector, token, table_observer=None):
                     if state['session'] != session:
                         state['aligner'] = CaptureAligner()
                     game, viewport = state['aligner'].align(frame)
+                    profile = state['aligner'].profile
                     if state['session'] != session:
                         state.update(session=session, viewport=viewport, temporal=live_confirmation(),
                                      opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[])
-                    elif state['viewport'] != viewport:
+                    elif state['viewport'] != viewport or state['profile'] != profile:
                         state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker())
                         state['hands'].reset_observations()
-                    result = detector.detect(game)
-                    raw_hand = arrange_table(result, game.shape)['player_hand']
+                        if state['profile'] != profile:
+                            state.update(hands=HandCounter(),dealt_seats=[])
+                    state['profile'] = profile
+                    if isinstance(detector,TableCardDetector):detector.profile=profile
+                    aligned = state['aligner'].alignment_ready
+                    result = detector.detect(game) if aligned else dict(cards=[],processing_ms=0)
+                    result['table_profile'] = profile
+                    result['alignment_ready'] = aligned
+                    result = arrange_table(result, game.shape)
+                    raw_hand = result['player_hand']
                     result = state['temporal'].update(result, perf_counter(), game.shape)
                     result = arrange_table(result, game.shape)
                     hand_start = perf_counter()
-                    result['hand_cycle'] = state['hands'].update(player_card_presence(game), raw_hand, perf_counter())
+                    presence=player_card_presence(game,profile) if aligned else [dict(present=None),dict(present=None)]
+                    result['hand_cycle'] = state['hands'].update(presence, raw_hand, perf_counter())
                     if result['hand_cycle']['started']:
                         state['opponents'] = OpponentTracker()
                     result['hand_processing_ms'] = round((perf_counter()-hand_start)*1000, 3)
                     opponent_start = perf_counter()
                     visible_y = (max(0,-viewport[1])*1762/game.shape[1],
                                  (min(frame.shape[0],viewport[3])-viewport[1])*1762/game.shape[1])
-                    result['opponents'] = state['opponents'].update(opponents.detect(game,visible_y), perf_counter(), result['player_hand'])
+                    visible_x = (max(0,-viewport[0])*1762/game.shape[1],
+                                 (min(frame.shape[1],viewport[2])-viewport[0])*1762/game.shape[1])
+                    seats=opponents.detect(game,visible_y,profile,visible_x)
+                    if not aligned:seats=[dict(s,present=None,bbox=None,reason='alignment_lost') for s in seats]
+                    result['opponents'] = state['opponents'].update(seats, perf_counter(), result['player_hand'])
                     result['opponent_processing_ms'] = round((perf_counter()-opponent_start)*1000, 3)
                     result['processing_ms'] = round(result['processing_ms']+result['opponent_processing_ms']+result['hand_processing_ms'], 3)
                     if result['hand_cycle']['started']:
@@ -92,12 +108,24 @@ def make_handler(detector, token, table_observer=None):
                     if table_observer is not None:
                         board_count = sum(c['detected'] for c in result['board'])
                         context = dict(capture_session=session,viewport=viewport,
-                                       hand_id=result['hand_cycle']['count'],active=result['hand_cycle']['active'],
+                                       hand_id=result['hand_cycle']['count'],active=result['hand_cycle']['active'],profile=profile,
                                        ended=result['hand_cycle']['ended'],dealt_seats=list(state['dealt_seats']),
                                        street={0:'preflop',3:'flop',4:'turn',5:'river'}.get(board_count,'unknown'))
-                        result['table_observation'] = table_observer.submit(game, context)
+                        result['table_observation'] = (table_observer.submit(game, context) if aligned else
+                                                       dict(status='pending',hand_id=context['hand_id']))
+                    if equity_service is not None:
+                        manual = self.headers.get('X-Equity-Opponents', '')
+                        seed = self.headers.get('X-Equity-Seed', '')
+                        result['equity'] = equity_service.submit(
+                            result, session, profile=self.headers.get('X-Equity-Profile', 'FAST'),
+                            manual_opponents=int(manual) if manual else None,
+                            random_seed=int(seed) if seed else None)
+                        result['poker_advice'] = analyze_decision(
+                            result['equity'],result.get('table_observation'),result['hand_cycle']['count'])
                     result = restore_coordinates(result, viewport, frame.shape)
                     result['capture_alignment']['vertical_anchor'] = state['aligner'].last_anchor
+                    result['capture_alignment']['ready'] = aligned
+                    result['capture_alignment']['profile'] = profile
                 self.reply(200, json.dumps(result, allow_nan=False).encode())
             except (ValueError, RuntimeError, cv2.error) as error:
                 self.reply(400, json.dumps({'error': str(error)}).encode())
@@ -113,11 +141,13 @@ def main():
     parser.add_argument('--port', type=int, default=0)
     parser.add_argument('--no-open', action='store_true')
     args = parser.parse_args()
-    detector = LearnedCardDetector(profile='pokerstars')
+    detector = TableCardDetector()
     from table_observer import TableObservationService
     table_observer = TableObservationService()
+    from equity_service import EquityService
+    equity_service = EquityService()
     token = secrets.token_urlsafe(32)
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(detector, token, table_observer))
+    server = ThreadingHTTPServer(('127.0.0.1', args.port), make_handler(detector, token, table_observer, equity_service))
     url = f'http://127.0.0.1:{server.server_port}/?token={token}'
     print(f'Pannello PokerStars: {url}\nLascia aperta questa console. Ctrl+C per chiudere.', flush=True)
     if not args.no_open:
@@ -127,6 +157,7 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
+        equity_service.close()
         table_observer.close()
         server.server_close()
 

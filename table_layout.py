@@ -8,6 +8,8 @@ LABELS = ('Flop 1', 'Flop 2', 'Flop 3', 'Turn', 'River')
 
 
 def arrange_table(result, shape):
+    from table_profiles import is_desktop, NINE_HERO
+    nine = is_desktop(result.get('table_profile',result.get('profile')))
     scale = shape[1] / 1762
     slots = [None] * 5
     hand_slots = [None] * 2
@@ -16,10 +18,11 @@ def arrange_table(result, shape):
         card = dict(original, table_group='other', board_slot=None, hand_slot=None)
         x1, y1, x2, y2 = card['bbox']
         x, y = (x1+x2)/2/scale, (y1+y2)/2/scale
-        slot = min(range(5), key=lambda i: abs(x-(615+116*i)))
+        board_x,board_step,board_y = (654,101,395) if nine else (615,116,441)
+        slot = min(range(5), key=lambda i: abs(x-(board_x+board_step*i)))
         # Reviewed index centres: x=615+116*i, y approximately 441.
         # Reject neighbouring player cards and detections between slots.
-        if abs(x-(615+116*slot)) <= 46 and abs(y-441) <= 58:
+        if abs(x-(board_x+board_step*slot)) <= (33 if nine else 46) and abs(y-board_y) <= (44 if nine else 58):
             card.update(table_group='board', board_slot=slot)
             previous = slots[slot]
             if previous is None or (card['accepted'], card.get('confidence', 0)) > (
@@ -28,8 +31,10 @@ def arrange_table(result, shape):
         else:
             # Hole-card index centres in all four reviewed layouts. The
             # second card is slightly lower because the cards overlap.
-            hand_slot = min(range(2), key=lambda i: abs(x-(667+45*i)))
-            if abs(x-(667+45*hand_slot)) <= 25 and abs(y-(698+13*hand_slot)) <= 65:
+            hand_x = [(b[0]+b[2])/2 for b in NINE_HERO] if nine else [667,712]
+            hand_y = [(b[1]+b[3])/2 for b in NINE_HERO] if nine else [698,711]
+            hand_slot = min(range(2), key=lambda i: abs(x-hand_x[i]))
+            if abs(x-hand_x[hand_slot]) <= 25 and abs(y-hand_y[hand_slot]) <= 65:
                 card.update(table_group='player_hand', hand_slot=hand_slot)
                 previous = hand_slots[hand_slot]
                 if previous is None or (card['accepted'], card.get('confidence', 0)) > (

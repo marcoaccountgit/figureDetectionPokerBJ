@@ -1,0 +1,704 @@
+{
+  "source": "Screen Recording 2026-11-06 200950.mp4",
+  "size": [
+    1918,
+    1198
+  ],
+  "max_time_exclusive": 720,
+  "crop": [
+    650,
+    360,
+    1280,
+    900
+  ],
+  "index_boxes": {
+    "board": [
+      [
+        696,
+        397,
+        729,
+        463
+      ],
+      [
+        806,
+        397,
+        839,
+        463
+      ],
+      [
+        916,
+        397,
+        949,
+        463
+      ],
+      [
+        1026,
+        397,
+        1059,
+        463
+      ],
+      [
+        1136,
+        397,
+        1169,
+        463
+      ]
+    ],
+    "hole": [
+      [
+        863,
+        723,
+        895,
+        786
+      ],
+      [
+        967,
+        723,
+        999,
+        786
+      ]
+    ]
+  },
+  "frames": [
+    {
+      "time": 0,
+      "hand": "200950-1",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KS",
+        "6C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 15,
+      "hand": "200950-1",
+      "split": "train",
+      "board": [
+        "QC",
+        "4S",
+        "3C"
+      ],
+      "hole": [
+        "KS",
+        "6C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 30,
+      "hand": "200950-2",
+      "split": "val",
+      "board": [],
+      "hole": [
+        "QH",
+        "7S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 45,
+      "hand": "200950-3",
+      "split": "train",
+      "board": [
+        "6H",
+        "8D",
+        "8H"
+      ],
+      "hole": [],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 75,
+      "hand": "200950-4",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "10H",
+        "8S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 90,
+      "hand": "200950-5",
+      "split": "test",
+      "board": [
+        "3C",
+        "10S",
+        "9C"
+      ],
+      "hole": [
+        "6D",
+        "5C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 105,
+      "hand": "200950-6",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "9S",
+        "8H"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 120,
+      "hand": "200950-7",
+      "split": "train",
+      "board": [
+        "9H",
+        "10D",
+        "3D"
+      ],
+      "hole": [
+        "KS",
+        "10S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 135,
+      "hand": "200950-7",
+      "split": "train",
+      "board": [
+        "9H",
+        "10D",
+        "3D",
+        "QS"
+      ],
+      "hole": [
+        "KS",
+        "10S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 150,
+      "hand": "200950-7",
+      "split": "train",
+      "board": [
+        "9H",
+        "10D",
+        "3D",
+        "QS"
+      ],
+      "hole": [
+        "KS",
+        "10S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 165,
+      "hand": "200950-8",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "AC",
+        "QC"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 180,
+      "hand": "200950-8",
+      "split": "train",
+      "board": [
+        "7C",
+        "5H",
+        "5S",
+        "4D"
+      ],
+      "hole": [
+        "AC",
+        "QC"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 195,
+      "hand": "200950-9",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KD",
+        "10H"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 210,
+      "hand": "200950-9",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KD",
+        "10H"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 225,
+      "hand": "200950-9",
+      "split": "train",
+      "board": [
+        "10C",
+        "QS",
+        "9S"
+      ],
+      "hole": [
+        "KD",
+        "10H"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 240,
+      "hand": "200950-9",
+      "split": "train",
+      "board": [
+        "10C",
+        "QS",
+        "9S",
+        "9D",
+        "5S"
+      ],
+      "hole": [
+        "KD",
+        "10H"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 255,
+      "hand": "200950-10",
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "profile": null
+    },
+    {
+      "time": 270,
+      "hand": "200950-11",
+      "split": "val",
+      "board": [],
+      "hole": [
+        "7C",
+        "6D"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 285,
+      "hand": "200950-12",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "2H"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 300,
+      "hand": "200950-13",
+      "split": "test",
+      "board": [
+        "7S",
+        "JS",
+        "3S"
+      ],
+      "hole": [
+        "8D",
+        "7D"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 315,
+      "hand": "200950-14",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KS",
+        "3S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 330,
+      "hand": "200950-14",
+      "split": "train",
+      "board": [
+        "8D",
+        "JH",
+        "2C",
+        "JD"
+      ],
+      "hole": [
+        "KS",
+        "3S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 345,
+      "hand": "200950-14",
+      "split": "train",
+      "board": [
+        "8D",
+        "JH",
+        "2C",
+        "JD",
+        "9S"
+      ],
+      "hole": [
+        "KS",
+        "3S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 360,
+      "hand": "200950-15",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KS",
+        "8S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 390,
+      "hand": "200950-15",
+      "split": "train",
+      "board": [
+        "10C",
+        "6C",
+        "8D"
+      ],
+      "hole": [
+        "KS",
+        "8S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 405,
+      "hand": "200950-15",
+      "split": "train",
+      "board": [
+        "10C",
+        "6C",
+        "8D",
+        "9C"
+      ],
+      "hole": [
+        "KS",
+        "8S"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 420,
+      "hand": "200950-16",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QS",
+        "7C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 435,
+      "hand": "200950-17",
+      "split": "val",
+      "board": [],
+      "hole": [
+        "10H",
+        "10D"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 450,
+      "hand": "200950-17",
+      "split": "val",
+      "board": [
+        "4D",
+        "6C",
+        "QC"
+      ],
+      "hole": [
+        "10H",
+        "10D"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 465,
+      "hand": "200950-18",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "9S",
+        "9C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 480,
+      "hand": "200950-18",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "9S",
+        "9C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 495,
+      "hand": "200950-19",
+      "split": "train",
+      "board": [
+        "2C",
+        "5C",
+        "JH"
+      ],
+      "hole": [
+        "8H",
+        "4D"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 510,
+      "hand": "200950-19",
+      "split": "train",
+      "board": [
+        "2C",
+        "5C",
+        "JH",
+        "6H"
+      ],
+      "hole": [
+        "8H",
+        "4D"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 525,
+      "hand": "200950-23",
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 540,
+      "hand": "200950-20",
+      "split": "test",
+      "board": [],
+      "hole": [
+        "3S",
+        "3C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 555,
+      "hand": "200950-20",
+      "split": "test",
+      "board": [
+        "5S",
+        "8C",
+        "2C",
+        "2D"
+      ],
+      "hole": [
+        "3S",
+        "3C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 570,
+      "hand": "200950-24",
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "profile": null
+    },
+    {
+      "time": 585,
+      "hand": "200950-24",
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 600,
+      "hand": "200950-21",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "10C",
+        "9C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 615,
+      "hand": "200950-21",
+      "split": "train",
+      "board": [
+        "JC",
+        "JD",
+        "KS"
+      ],
+      "hole": [
+        "10C",
+        "9C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 630,
+      "hand": "200950-21",
+      "split": "train",
+      "board": [
+        "JC",
+        "JD",
+        "KS",
+        "5C",
+        "9H"
+      ],
+      "hole": [
+        "10C",
+        "9C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 645,
+      "hand": "200950-22",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KC",
+        "KD"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 660,
+      "hand": "200950-22",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "KC",
+        "KD"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 675,
+      "hand": "200950-22",
+      "split": "train",
+      "board": [
+        "7H",
+        "4D",
+        "5H"
+      ],
+      "hole": [
+        "KC",
+        "KD"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 690,
+      "hand": "200950-22",
+      "split": "train",
+      "board": [
+        "7H",
+        "4D",
+        "5H",
+        "KS"
+      ],
+      "hole": [
+        "KC",
+        "KD"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 705,
+      "hand": "200950-22",
+      "split": "train",
+      "board": [
+        "7H",
+        "4D",
+        "5H",
+        "KS",
+        "3D"
+      ],
+      "hole": [
+        "KC",
+        "KD"
+      ],
+      "profile": "pokerstars-desktop-six",
+      "revealed_opponents": [
+        "JH",
+        "JD",
+        "4H",
+        "6H"
+      ]
+    },
+    {
+      "time": 640,
+      "hand": "200950-25",
+      "split": "train",
+      "board": [],
+      "hole": [
+        "6H",
+        "4C"
+      ],
+      "profile": "pokerstars-desktop-six"
+    },
+    {
+      "time": 695,
+      "hand": "200950-22",
+      "split": "train",
+      "board": [
+        "7H",
+        "4D",
+        "5H",
+        "KS"
+      ],
+      "hole": [
+        "KC",
+        "KD"
+      ],
+      "profile": "pokerstars-desktop-six"
+    }
+  ],
+  "annotation_revision": "200950-manual-v1",
+  "review_note": "420s king verified as spades at full resolution; training labels corrected before final fit.",
+  "source_sha256": "55afc3eaf2c9ee584b96a991ee5f73b05f3da655e3f10620701316c495df5b75",
+  "source_size": [
+    1920,
+    1140
+  ],
+  "layout_review_note": "255s and 570s hide all opponent HUDs during table changes: fresh-frame capacity is not observable. Excluded from layout accuracy only; empty-card slots remain evaluated."
+}

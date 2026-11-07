@@ -45,7 +45,9 @@ SIX_NAMES={key:canonical_box(box) for key,box in {
     'lower_right':(1516,582,1724,688),'hero':(915,791,1135,915)}.items()}
 SIX_BACKS={key:canonical_box(box) for key,box in {
     'top':(844,78,1075,145),'upper_left':(287,184,517,249),
-    'upper_right':(1405,184,1635,249),'lower_left':(210,525,475,615),
+    # Six-seat backs extend left of the nine-seat search region. Keep both
+    # white card borders inside the ROI at small desktop-window sizes.
+    'upper_right':(1370,184,1665,249),'lower_left':(210,525,475,615),
     'lower_right':(1440,525,1710,615)}.items()}
 SIX_BETS={key:canonical_box(box) for key,box in {
     'top':(825,250,1130,325),'upper_left':(527,344,805,396),
@@ -61,13 +63,42 @@ def desktop_layout(profile):
     return dict(names=NINE_NAMES,backs=NINE_BACKS,bets=NINE_BETS,order=NINE_ORDER,centres=NINE_CENTRES)
 
 
-def desktop_seat_profile(frame):
+def desktop_stack_box(profile,seat):
+    x,y,right,bottom=desktop_layout(profile)['names'][seat]
+    # The six-seat hero HUD has extra space below the stack. A halfway split
+    # of that taller box cuts the top off digits and the "All-in" label.
+    fraction=.42 if profile==DESKTOP_SIX and seat=='hero' else .53
+    return x,round(y+(bottom-y)*fraction),right,bottom
+
+
+@lru_cache(maxsize=1)
+def desktop_six_hud_edges():
+    return [cv2.imread(str(ROOT/'assets/table-desktop-six'/name),cv2.IMREAD_GRAYSCALE)
+            for name in ('top-hud-edge.png','top-hud-edge-active.png','top-hud-edge-focus.png')]
+
+
+def desktop_seat_profile(frame, previous=None):
     native=cv2.resize(frame,(1918,round(frame.shape[0]*1918/frame.shape[1])))
     roi=native[145:225,875:1005]
     # A centred capsule HUD distinguishes the six-seat desktop table from the
     # two separated upper HUDs of the nine-seat table, independently of names.
     if roi.shape[:2]!=(80,130):return NINE
-    return DESKTOP_SIX if (roi.max(axis=2)<32).mean()>.55 else NINE
+    if (roi.max(axis=2)<32).mean()>.55:return DESKTOP_SIX
+    # Action highlights brighten the capsule. Its curved edge remains a
+    # geometric reference even when an absolute darkness test fails.
+    gray=cv2.cvtColor(native,cv2.COLOR_BGR2GRAY)
+    search=gray[110:255,762:862]
+    for reference in desktop_six_hud_edges():
+        if reference is not None and search.shape[0]>=reference.shape[0] and search.shape[1]>=reference.shape[1]:
+            if cv2.minMaxLoc(cv2.matchTemplate(search,reference,cv2.TM_CCOEFF_NORMED))[1]>=.6:
+                return DESKTOP_SIX
+    if previous==DESKTOP_SIX:
+        # Waiting/seat-change animations can hide every opponent HUD. Do not
+        # infer a larger table from the absence of the central capsule.
+        left=native[145:225,535:744];right=native[145:225,1185:1380]
+        if not ((left.max(axis=2)<32).mean()>.35 and (right.max(axis=2)<32).mean()>.35):
+            return previous
+    return NINE
 
 
 @lru_cache(maxsize=1)

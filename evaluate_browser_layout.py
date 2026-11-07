@@ -23,10 +23,15 @@ seats:['top','upper_right','lower_right','hero','lower_left','upper_left'].map((
 const qaImage=new Image();qaImage.onload=()=>{
 const c=document.getElementById('image'),v=document.getElementById('view');c.width=qaImage.width;c.height=qaImage.height;c.getContext('2d').drawImage(qaImage,0,0);c.hidden=false;document.getElementById('overlay').hidden=false;document.getElementById('empty').hidden=true;v.style.setProperty('--capture-aspect',c.width/c.height);fitCapturePreview();
 setTimeout(()=>{fitCapturePreview();
-const ids=['board','playerHand','opponentCount','handCount','tableObservation','view','potPanel'];
+const ids=['board','playerHand','opponentCount','handCount','tableObservation','view','potPanel','equityPanel'];
 const rectangles=Object.fromEntries(ids.map(id=>{const r=document.getElementById(id).getBoundingClientRect();return[id,{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}]}));
 const t=document.querySelector('.seat-table-wrap');
 const report={width:innerWidth,height:innerHeight,pageHeight:document.documentElement.scrollHeight,rectangles,tableNeedsScroll:t.scrollHeight>t.clientHeight,canvasSize:[c.width,c.height],aspectError:Math.abs(v.clientWidth/v.clientHeight-c.width/c.height)};
+const panelIds=['tableObservation','equityPanel'];
+report.populatedHeights=panelIds.map(id=>document.getElementById(id).getBoundingClientRect().height);
+renderTableObservation();renderEquity();
+report.waitingHeights=panelIds.map(id=>document.getElementById(id).getBoundingClientRect().height);
+report.columnScroll=getComputedStyle(document.querySelector('.left-column')).overflowY;
 const pre=document.createElement('pre');pre.id='layoutReport';pre.hidden=true;pre.textContent=JSON.stringify(report);document.body.append(pre);
 },500);};qaImage.src='data:image/png;base64,PICTURE';
 </script>""".replace('PICTURE',picture)
@@ -75,7 +80,9 @@ def main():
         assert not report['tableNeedsScroll'], 'Righe dei giocatori non tutte visibili'
         assert report['aspectError']<.02, 'Proporzioni anteprima alterate'
         assert all(r['bottom']<=report['height'] and r['right']<=report['width']
-                   for key,r in report['rectangles'].items() if key != 'equityPanel')
+                   for key,r in report['rectangles'].items() if key not in ('tableObservation','equityPanel'))
+        assert report['populatedHeights']==report['waitingHeights']==[360,620], 'Altezza variabile tra misure e attesa'
+        assert report['columnScroll']=='auto', 'Pannelli non raggiungibili tramite scorrimento'
         if args.equity_open:
             equity = report['rectangles']['equityPanel']
             assert equity['top'] >= report['rectangles']['tableObservation']['bottom']

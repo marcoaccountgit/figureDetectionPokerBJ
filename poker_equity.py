@@ -4,6 +4,7 @@ No OCR, network, betting rules or opponent behaviour belong in this module.
 Scores are lexicographically ordered tuples: category followed by tie breakers.
 """
 from collections import Counter
+from functools import lru_cache
 from itertools import combinations
 from math import comb, sqrt
 import random
@@ -105,7 +106,7 @@ def uncertainty(total, squares, n, exact=False):
 
 def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5000,
                      random_seed=None, exact_threshold=2000, max_opponents=9,
-                     cancelled=None, progress=None):
+                     cancelled=None, progress=None, backend='auto'):
     """Return probabilities in [0,1]. Progress receives cumulative snapshots.
 
     Exact enumeration is used only below exact_threshold legal labelled deals.
@@ -119,6 +120,14 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
         raise ValueError('Soglia di enumerazione non valida')
     if random_seed is not None and type(random_seed) is not int:
         raise ValueError('Il seed deve essere un intero')
+    if backend not in ('auto', 'python', 'rust'):
+        raise ValueError('Motore equity non valido: auto, python o rust')
+    library = None
+    if backend != 'python':
+        from native_equity import load_native
+        library = load_native()
+        if library is None and backend == 'rust':
+            raise RuntimeError('Motore Rust non disponibile: eseguire python build_native_equity.py')
     deck = tuple(c for c in range(52) if c not in hero+board)
     missing = 5-len(board)
     deals = comb(len(deck), missing)
@@ -126,10 +135,20 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
         deals *= comb(len(deck)-missing-2*i, 2)
     exact = deals <= exact_threshold
     current = evaluate(hero+board) if board else None
+    # The current board has only 1,326 possible opponent pairs. Flop/turn
+    # simulations revisit them often; river simulations reuse final scores too.
+    @lru_cache(maxsize=2048)
+    def current_score(hand):
+        return evaluate(hand+board)
+
+    @lru_cache(maxsize=2048)
+    def hero_score(runout):
+        return evaluate(hero+board+runout)
     totals = Counter()
     squares = Counter()
     categories = Counter()
     n = 0
+    backend_used = 'python'
 
     def snapshot():
         metrics = {key: uncertainty(totals[key], squares[key], n, exact)
@@ -137,7 +156,7 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
         for key in ('current_strength', 'currently_behind', 'current_tie',
                     'category_improvement', 'same_category_value_improvement', 'kicker_improvement'):
             metrics[key] = uncertainty(totals[key], squares[key], n, exact) if current else None
-        return dict(status='ready', method='exact' if exact else 'monte_carlo',
+        return dict(status='ready', method='exact' if exact else 'monte_carlo', backend=backend_used,
                     hero_cards=[card_code(c) for c in hero], community_cards=[card_code(c) for c in board],
                     street={0:'preflop',3:'flop',4:'turn',5:'river'}[len(board)],
                     opponents_count=opponents_count, current_category=CATEGORIES[current[0]] if current else None,
@@ -147,6 +166,30 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
                     simulations=n, requested_simulations=simulations, legal_deals=deals,
                     complete=exact or n == simulations, random_seed=random_seed,
                     processing_ms=round((perf_counter()-start)*1000, 2))
+
+    if library is not None and not exact:
+        from native_equity import METRICS, run_simulations
+        backend_used = 'rust'
+
+        def use_totals(values):
+            nonlocal n
+            n = values.n
+            for i, key in enumerate(METRICS):
+                totals[key], squares[key] = values.sums[i], values.squares[i]
+            for i, value in enumerate(values.categories):
+                categories[i] = value
+
+        def native_progress(values):
+            use_totals(values)
+            if progress:
+                progress(snapshot())
+
+        output = run_simulations(library, hero, board, opponents_count, simulations,
+                                 random_seed, cancelled, native_progress if progress else None)
+        if output is None:
+            return None
+        use_totals(output)
+        return snapshot()
 
     def enumerate_hands(remaining, hands=()):
         if len(hands) == opponents_count:
@@ -171,15 +214,16 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
         if n % 128 == 0 and cancelled and cancelled():
             return None
         final_board = board+runout
-        final = evaluate(hero+final_board)
-        scores = [evaluate(hand+final_board) for hand in hands]
+        final = hero_score(tuple(sorted(runout)))
+        scores = ([evaluate(hand+final_board) for hand in hands] if missing else
+                  [current_score(tuple(sorted(hand))) for hand in hands])
         best = max(scores)
         win, lose = final > best, final < best
         tie = not win and not lose
         share = 0. if lose else 1/(1+sum(score == final for score in scores))
         values = dict(win=win, lose=lose, tie=tie, equity=share)
         if current:
-            current_scores = [evaluate(hand+board) for hand in hands] if missing else scores
+            current_scores = [current_score(tuple(sorted(hand))) for hand in hands] if missing else scores
             current_best = max(current_scores)
             values.update(current_strength=current > current_best, currently_behind=current < current_best,
                           current_tie=current == current_best, category_improvement=final[0] > current[0],
@@ -192,6 +236,6 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
             squares[key] += value*value
         categories[final[0]] += 1
         n += 1
-        if progress and not exact and n in (5000, 50000) and n < simulations:
+        if progress and not exact and n in (256, 1024, 5000, 10000, 25000, 50000, 100000, 150000, 200000) and n < simulations:
             progress(snapshot())
     return snapshot()

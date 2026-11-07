@@ -14,6 +14,72 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class WindowCaptureTests(unittest.TestCase):
+    @unittest.skipUnless((ROOT/'models/pokerstars-nine.onnx').exists(),'Local trained weights unavailable')
+    def test_chip_stack_frame_through_http_confirms_cards_hand_and_opponents(self):
+        import http.client,json,threading,time
+        from http.server import ThreadingHTTPServer
+        from browser_capture import make_handler
+        from learned_detector import TableCardDetector
+        from equity_service import OCRGameState
+        detector=TableCardDetector()
+        server=ThreadingHTTPServer(('127.0.0.1',0),make_handler(detector,'fixture-test'))
+        worker=threading.Thread(target=server.serve_forever,daemon=True);worker.start()
+        client=http.client.HTTPConnection('127.0.0.1',server.server_port,timeout=30)
+        payload=(ROOT/'tests/fixtures/adelinda-six-chip-stack.jpg').read_bytes()
+        try:
+            for _ in range(10):
+                client.request('POST','/frame',payload,{'X-Capture-Token':'fixture-test','X-Capture-Session':'chip-stack'})
+                response=client.getresponse();result=json.loads(response.read())
+                self.assertEqual(response.status,200)
+                time.sleep(.08)
+            self.assertTrue(result['capture_alignment']['ready'])
+            self.assertEqual([c['card'] for c in result['board']],['8H','AH','5D',None,None])
+            self.assertEqual([c['card'] for c in result['player_hand']],['QD','8S'])
+            self.assertEqual(result['hand_cycle']['count'],1)
+            self.assertTrue(result['hand_cycle']['active'])
+            self.assertEqual(result['opponents']['count'],2)
+            state=OCRGameState().update(result,'chip-stack')
+            self.assertEqual(state['opponents_count'],2)
+            self.assertEqual(state['community_cards'],['8h','Ah','5d'])
+        finally:
+            client.close();server.shutdown();server.server_close();worker.join()
+
+    def test_chip_stack_does_not_block_registration_and_card_reading(self):
+        from learned_detector import TableCardDetector
+        from table_layout import arrange_table
+        from browser_capture import live_confirmation
+        frame=cv2.imread(str(ROOT/'tests/fixtures/adelinda-six-chip-stack.jpg'))
+        aligner=CaptureAligner();game,_=aligner.align(frame)
+        self.assertTrue(aligner.alignment_ready)
+        self.assertEqual(aligner.profile,DESKTOP_SIX)
+        self.assertEqual([c['present'] for c in player_card_presence(game,aligner.profile)],[True,True])
+        if not (ROOT/'models/pokerstars-nine.onnx').exists():
+            self.skipTest('Local trained weights unavailable')
+        detector=TableCardDetector();detector.profile=aligner.profile
+        result=arrange_table(detector.detect(game),game.shape)
+        tracker=live_confirmation()
+        for i in range(5):
+            confirmed=arrange_table(tracker.update(result,i*.1,game.shape),game.shape)
+        self.assertEqual([c['card'] for c in confirmed['board']],['8H','AH','5D',None,None])
+        self.assertEqual([c['card'] for c in confirmed['player_hand']],['QD','8S'])
+
+    def test_alternative_rails_require_two_consistent_references(self):
+        from unittest.mock import patch
+        frame=cv2.imread(str(ROOT/'tests/fixtures/adelinda-six-chip-stack.jpg'))
+        with patch('table_profiles._match_desktop_rail',side_effect=[None,((0,0,1192,860),.99),None,None,None]):
+            self.assertIsNone(desktop_table_viewport(frame))
+        with patch('table_profiles._match_desktop_rail',side_effect=[None,((0,0,1192,860),.99),((100,100,1292,960),.99),None,None]):
+            self.assertIsNone(desktop_table_viewport(frame))
+
+    def test_chip_stack_frame_recovers_a_previously_lost_alignment(self):
+        frame=cv2.imread(str(ROOT/'tests/fixtures/adelinda-six-chip-stack.jpg'))
+        aligner=CaptureAligner();aligner.desktop_viewport=(-110,19,1301,901)
+        aligner.desktop_shape=frame.shape[:2];aligner.profile=DESKTOP_SIX
+        states=[]
+        for _ in range(3):
+            aligner.align(frame);states.append(aligner.alignment_ready)
+        self.assertEqual(states,[False,False,True])
+
     def test_live_nine_showdown_animation_keeps_all_board_cards_confirmed(self):
         from learned_detector import TableCardDetector
         from table_layout import arrange_table

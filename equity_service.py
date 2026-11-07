@@ -60,6 +60,21 @@ class OCRGameState:
                     opponents_count=number, max_opponents=maximum)
 
 
+def _publish_response(responses, item):
+    """Keep fresh estimates and the final result even without a polling UI."""
+    while True:
+        try:
+            responses.put_nowait(item)
+            return
+        except Full:
+            try:
+                responses.get(timeout=.05)
+            except Empty:
+                # A multiprocessing queue's feeder can briefly lag behind
+                # its capacity semaphore. Retry until that item is readable.
+                pass
+
+
 def _worker(requests, responses, generation):
     while True:
         item = requests.get()
@@ -68,15 +83,12 @@ def _worker(requests, responses, generation):
         version, kwargs = item
         def send(result):
             if generation.value == version:
-                try:
-                    responses.put_nowait((version, result))
-                except Full:
-                    pass
+                _publish_response(responses, (version, result))
         try:
             result = calculate_equity(**kwargs, cancelled=lambda: generation.value != version, progress=send)
             if result is not None:
                 # Final response must not be dropped behind intermediate progress.
-                responses.put((version, result), timeout=2)
+                send(result)
         except Exception as error:
             send(dict(status='error', message=str(error)))
 

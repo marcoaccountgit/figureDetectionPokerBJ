@@ -5,7 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import Mock, patch
 
-from temporal_cards import TemporalCards
+from temporal_cards import TemporalCards, HandCardMemory
 from card_detector import np
 from recognize import main
 
@@ -14,6 +14,35 @@ def reading(code='AS', box=None, accepted=True):
     return {'accepted': accepted, 'card': code if accepted else None,
             'rank': code[:-1], 'suit': code[-1], 'confidence': .9,
             'bbox': box or [10, 10, 40, 80]}
+
+
+class HandCardMemoryTests(unittest.TestCase):
+    def test_confirmed_cards_survive_missing_uncertain_and_changed_readings(self):
+        memory = HandCardMemory()
+        cycle = dict(active=True, started=False, ended=False)
+        card = dict(reading(), table_group='board', board_slot=0)
+        memory.update(dict(cards=[card]), cycle)
+        for cards in ([], [dict(card, accepted=False, card=None)], [dict(card, card='KD')]):
+            result = memory.update(dict(cards=cards), cycle)
+            self.assertEqual(result['cards'][0]['card'], 'AS')
+            self.assertTrue(result['cards'][0]['accepted'])
+            self.assertTrue(result['cards'][0]['retained'])
+        turn = dict(reading('KD'), table_group='board', board_slot=3)
+        hero = dict(reading('QH'), table_group='player_hand', hand_slot=0)
+        result = memory.update(dict(cards=[turn, hero]), cycle)
+        self.assertEqual({c['card'] for c in result['cards']}, {'AS', 'KD', 'QH'})
+
+    def test_new_hand_and_end_clear_board_and_hole_cards(self):
+        for boundary in (dict(active=False, started=False, ended=True),
+                         dict(active=True, started=True, ended=False)):
+            memory = HandCardMemory()
+            cycle = dict(active=True, started=False, ended=False)
+            cards = [dict(reading(), table_group='board', board_slot=0),
+                     dict(reading('KD'), table_group='player_hand', hand_slot=0)]
+            memory.update(dict(cards=cards), cycle)
+            self.assertEqual(memory.update(dict(cards=[]), boundary)['cards'], [])
+            new = dict(reading('QH'), table_group='player_hand', hand_slot=0)
+            self.assertEqual(memory.update(dict(cards=[new]), cycle)['cards'][0]['card'], 'QH')
 
 
 class TemporalTests(unittest.TestCase):

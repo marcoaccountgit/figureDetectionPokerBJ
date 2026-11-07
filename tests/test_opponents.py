@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 
 from card_detector import cv2, np
 from opponent_detector import OpponentDetector, OpponentTracker
@@ -11,6 +12,39 @@ def observations(active=(True,False,False,False,False)):
 
 
 class OpponentTests(unittest.TestCase):
+    def test_six_seat_showdown_faces_are_not_counted_as_covered_pairs(self):
+        from capture_alignment import CaptureAligner
+        frame = cv2.imread(str(Path(__file__).resolve().parent / 'fixtures/six-revealed-showdown.jpg'))
+        aligner = CaptureAligner()
+        game, _ = aligner.align(frame)
+        self.assertEqual([s['present'] for s in OpponentDetector().detect(game, profile=aligner.profile)],
+                         [False] * 5)
+
+    def test_six_seat_diagnoses_count_all_five_or_only_two_real_opponents(self):
+        from capture_alignment import CaptureAligner
+        from table_profiles import DESKTOP_SIX
+        detector = OpponentDetector()
+        root = Path(__file__).resolve().parent / 'fixtures'
+        for name, expected in (
+                ('six-five-covered-opponents.jpg', [True] * 5),
+                ('six-two-covered-opponents.png', [True, False, False, True, False])):
+            original = cv2.imread(str(root / name))
+            for width in (762, 960, 1192, 1536):
+                frame = cv2.resize(original, (width, round(original.shape[0] * width / original.shape[1])))
+                aligner = CaptureAligner()
+                game, viewport = aligner.align(frame)
+                self.assertEqual(aligner.profile, DESKTOP_SIX)
+                visible_y = (max(0, -viewport[1]) * 1762 / game.shape[1],
+                             (min(frame.shape[0], viewport[3]) - viewport[1]) * 1762 / game.shape[1])
+                visible_x = (max(0, -viewport[0]) * 1762 / game.shape[1],
+                             (min(frame.shape[1], viewport[2]) - viewport[0]) * 1762 / game.shape[1])
+                seats = detector.detect(game, visible_y, aligner.profile, visible_x)
+                self.assertEqual([s['present'] for s in seats], expected, (name, width, seats))
+                tracker = OpponentTracker()
+                for i in range(5):
+                    result = tracker.update(seats, i * .1, [])
+                self.assertEqual(result['count'], sum(expected), (name, width))
+
     def test_variable_table_capacity_and_fold_count(self):
         for capacity in (2,5,6,8,9,10):
             tracker=OpponentTracker()

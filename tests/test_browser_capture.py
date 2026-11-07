@@ -10,6 +10,20 @@ from card_detector import cv2, np
 
 
 class BrowserCaptureTests(unittest.TestCase):
+    def test_desktop_six_diagnosis_confirms_five_opponents_via_http(self):
+        from pathlib import Path
+        frame = cv2.imread(str(Path(__file__).resolve().parent / 'fixtures/six-five-covered-opponents.jpg'))
+        encoded = cv2.imencode('.jpg', frame)[1].tobytes()
+        headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'six-five-opponents'}
+        with patch('browser_capture.perf_counter', side_effect=[i * .1 for i in range(200)]):
+            for index in range(5):
+                status, body = self.request('POST', '/frame', encoded, headers)
+                self.assertEqual(status, 200)
+                result = json.loads(body)
+                self.assertTrue(result['alignment_ready'])
+                self.assertEqual(result['table_profile'], 'pokerstars-desktop-six')
+                self.assertEqual(result['opponents']['count'], 5 if index == 4 else None)
+
     def test_http_confirmation_tracks_the_slot_during_card_lift(self):
         from temporal_cards import TemporalCards
         card=dict(card='AS',rank='A',suit='S',accepted=True,confidence=.99)

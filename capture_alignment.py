@@ -78,7 +78,7 @@ class CaptureAligner:
         return candidates[0]
 
     def align(self, frame):
-        from table_profiles import nine_layout_anchor, NINE,desktop_table_viewport,desktop_seat_profile
+        from table_profiles import nine_layout_anchor, NINE,is_desktop,desktop_table_viewport,desktop_seat_profile
         raw_nine = nine_layout_anchor(frame)
         registration=desktop_table_viewport(frame)
         self.alignment_ready=True
@@ -101,15 +101,15 @@ class CaptureAligner:
                 else:self.desktop_pending=None;self.desktop_samples=0
                 viewport=self.desktop_viewport
                 game=extract_viewport(frame,viewport)
-                self.profile=desktop_seat_profile(game)
+                self.profile=desktop_seat_profile(game,self.profile)
                 self.last_anchor=dict(score=round(score,4),method='table_rail',registered=self.alignment_ready)
                 return game,viewport
-        if self.desktop_viewport is not None and raw_nine is None:
+        if is_desktop(self.profile) and registration is None and raw_nine is None:
             # A lost reference must not silently route desktop pixels to browser
             # coordinates. Keep only the preview; discard analysis until reacquired.
             self.alignment_ready=False
             self.last_anchor=dict(method='table_rail',registered=False,reason='reference_lost')
-            viewport=self.desktop_viewport
+            viewport=self.desktop_viewport or (0,0,frame.shape[1],frame.shape[0])
             return extract_viewport(frame,viewport),viewport
         if raw_nine is not None:
             # Dark desktop-client wallpaper is content, not a browser side bar.
@@ -126,9 +126,7 @@ class CaptureAligner:
         horizontal = frame[:,left:right]
         anchor = nine_layout_anchor(horizontal)
         if anchor is not None:
-            self.profile = NINE
-            if registration is not None:
-                self.profile=desktop_seat_profile(horizontal)
+            self.profile = desktop_seat_profile(horizontal,self.profile) if registration is not None else NINE
         else:
             anchor = self.vertical_offset(horizontal)
             if anchor is not None:

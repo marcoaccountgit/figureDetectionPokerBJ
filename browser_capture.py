@@ -10,7 +10,7 @@ import webbrowser
 
 from card_detector import cv2, np
 from learned_detector import LearnedCardDetector, TableCardDetector
-from temporal_cards import TemporalCards
+from temporal_cards import TemporalCards, HandCardMemory
 from table_layout import arrange_table
 from capture_alignment import CaptureAligner, restore_coordinates
 from opponent_detector import OpponentDetector, OpponentTracker
@@ -31,7 +31,7 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
     opponents = OpponentDetector()
     state = {'session': None, 'viewport': None, 'temporal': live_confirmation(),
              'opponents': OpponentTracker(), 'hands': HandCounter(), 'dealt_seats': [], 'aligner': None,
-             'profile':'pokerstars'}
+             'profile':'pokerstars', 'card_memory': HandCardMemory()}
 
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, body, content_type='application/json'):
@@ -71,9 +71,9 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     profile = state['aligner'].profile
                     if state['session'] != session:
                         state.update(session=session, viewport=viewport, temporal=live_confirmation(),
-                                     opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[])
+                                     opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[], card_memory=HandCardMemory())
                     elif state['viewport'] != viewport or state['profile'] != profile:
-                        state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker())
+                        state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker(), card_memory=HandCardMemory())
                         state['hands'].reset_observations()
                         if state['profile'] != profile:
                             state.update(hands=HandCounter(),dealt_seats=[])
@@ -85,11 +85,14 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     result['alignment_ready'] = aligned
                     result = arrange_table(result, game.shape)
                     raw_hand = result['player_hand']
-                    result = state['temporal'].update(result, perf_counter(), game.shape)
-                    result = arrange_table(result, game.shape)
                     hand_start = perf_counter()
                     presence=player_card_presence(game,profile) if aligned else [dict(present=None),dict(present=None)]
                     result['hand_cycle'] = state['hands'].update(presence, raw_hand, perf_counter())
+                    if result['hand_cycle']['started'] and result['hand_cycle']['count'] > 1:
+                        state['temporal'] = live_confirmation()
+                    result = state['temporal'].update(result, perf_counter(), game.shape)
+                    result = state['card_memory'].update(result, result['hand_cycle'])
+                    result = arrange_table(result, game.shape)
                     if result['hand_cycle']['started']:
                         state['opponents'] = OpponentTracker()
                     result['hand_processing_ms'] = round((perf_counter()-hand_start)*1000, 3)

@@ -36,6 +36,9 @@ class OpponentDetector:
             self.nine_templates[path.stem.removeprefix('covered-')]=features(cv2.imread(str(path)))
         self.desktop_six_templates={path.stem.removeprefix('covered-'):features(cv2.imread(str(path)))
                                     for path in (Path(__file__).parent/'assets/table-desktop-six').glob('covered-*.png')}
+        self.desktop_six_variants={}
+        for path in (Path(__file__).parent/'assets/table-desktop-six/variants').glob('*/*.png'):
+            self.desktop_six_variants.setdefault(path.parent.name,[]).append(features(cv2.imread(str(path))))
 
     def detect(self, frame, visible_y=None, profile='pokerstars',visible_x=None):
         from table_profiles import NINE, DESKTOP_SIX,is_desktop,desktop_layout
@@ -59,11 +62,21 @@ class OpponentDetector:
                 continue
             roi = canonical[y:bottom, x:right]
             bbox, score = None, 0.0
-            if roi.shape[0] >= template.shape[0] and roi.shape[1] >= template.shape[1]:
-                _, score, _, location = cv2.minMaxLoc(cv2.matchTemplate(features(roi), template, cv2.TM_CCOEFF_NORMED))
+            candidates=[template]+(self.desktop_six_variants.get(key,[]) if profile==DESKTOP_SIX else [])
+            if profile==DESKTOP_SIX and 'pair' in self.desktop_six_templates:
+                # Match only the shared upper strip of both backs. Avatars
+                # and HUDs hide different lower edges in the six-seat client.
+                candidates.append(self.desktop_six_templates['pair'])
+            matches=[]
+            for candidate in candidates:
+                if roi.shape[0]>=candidate.shape[0] and roi.shape[1]>=candidate.shape[1]:
+                    _,value,_,location=cv2.minMaxLoc(cv2.matchTemplate(features(roi),candidate,cv2.TM_CCOEFF_NORMED))
+                    matches.append((value,location,candidate))
+            if matches:
+                score,location,matched=max(matches,key=lambda m:m[0])
                 if score >= .72:
                     px, py = x+location[0], y+location[1]
-                    bbox = [round(v*scale) for v in (px, py, px+template.shape[1], py+template.shape[0])]
+                    bbox = [round(v*scale) for v in (px, py, px+matched.shape[1], py+matched.shape[0])]
                 present = True if score >= .72 else None if score >= .5 else False
             else:
                 present = None

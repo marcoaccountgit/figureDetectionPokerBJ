@@ -19,9 +19,8 @@
     1198
   ],
   "dataset_manifest": {
-    "source": "Screen Recording 2026-11-06 125816.mp4",
-    "source_sha256": "e5a00f508df0ca85528f62c94af02b8404a5f6dc7ccc160b37efc2a763b94aab",
-    "cutoff_seconds": 840,
+    "source": "Screen Recording 2026-11-06 200950.mp4",
+    "source_sha256": "55afc3eaf2c9ee584b96a991ee5f73b05f3da655e3f10620701316c495df5b75",
     "real_frames_by_split": {
       "train": 91,
       "val": 4,
@@ -1728,14 +1727,2187 @@
       }
     ],
     "native_synthetic_frames": 416,
-    "annotation_revision": 2
+    "annotation_revision": "200950-manual-v1",
+    "new_real": [
+      {
+        "file": "real_200950_0000_1.0",
+        "time": 0,
+        "split": "train",
+        "hand": "200950-1",
+        "scale": 1.0,
+        "codes": [
+          "KS",
+          "6C"
+        ]
+      },
+      {
+        "file": "real_200950_0000_0.8",
+        "time": 0,
+        "split": "train",
+        "hand": "200950-1",
+        "scale": 0.8,
+        "codes": [
+          "KS",
+          "6C"
+        ]
+      },
+      {
+        "file": "real_200950_0000_0.6",
+        "time": 0,
+        "split": "train",
+        "hand": "200950-1",
+        "scale": 0.6,
+        "codes": [
+          "KS",
+          "6C"
+        ]
+      },
+      {
+        "file": "real_200950_0015_1.0",
+        "time": 15,
+        "split": "train",
+        "hand": "200950-1",
+        "scale": 1.0,
+        "codes": [
+          "QC",
+          "4S",
+          "3C",
+          "KS",
+          "6C"
+        ]
+      },
+      {
+        "file": "real_200950_0015_0.8",
+        "time": 15,
+        "split": "train",
+        "hand": "200950-1",
+        "scale": 0.8,
+        "codes": [
+          "QC",
+          "4S",
+          "3C",
+          "KS",
+          "6C"
+        ]
+      },
+      {
+        "file": "real_200950_0015_0.6",
+        "time": 15,
+        "split": "train",
+        "hand": "200950-1",
+        "scale": 0.6,
+        "codes": [
+          "QC",
+          "4S",
+          "3C",
+          "KS",
+          "6C"
+        ]
+      },
+      {
+        "file": "real_200950_0030_1.0",
+        "time": 30,
+        "split": "val",
+        "hand": "200950-2",
+        "scale": 1.0,
+        "codes": [
+          "QH",
+          "7S"
+        ]
+      },
+      {
+        "file": "real_200950_0045_1.0",
+        "time": 45,
+        "split": "train",
+        "hand": "200950-3",
+        "scale": 1.0,
+        "codes": [
+          "6H",
+          "8D",
+          "8H"
+        ]
+      },
+      {
+        "file": "real_200950_0045_0.8",
+        "time": 45,
+        "split": "train",
+        "hand": "200950-3",
+        "scale": 0.8,
+        "codes": [
+          "6H",
+          "8D",
+          "8H"
+        ]
+      },
+      {
+        "file": "real_200950_0045_0.6",
+        "time": 45,
+        "split": "train",
+        "hand": "200950-3",
+        "scale": 0.6,
+        "codes": [
+          "6H",
+          "8D",
+          "8H"
+        ]
+      },
+      {
+        "file": "real_200950_0075_1.0",
+        "time": 75,
+        "split": "train",
+        "hand": "200950-4",
+        "scale": 1.0,
+        "codes": [
+          "10H",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0075_0.8",
+        "time": 75,
+        "split": "train",
+        "hand": "200950-4",
+        "scale": 0.8,
+        "codes": [
+          "10H",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0075_0.6",
+        "time": 75,
+        "split": "train",
+        "hand": "200950-4",
+        "scale": 0.6,
+        "codes": [
+          "10H",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0090_1.0",
+        "time": 90,
+        "split": "test",
+        "hand": "200950-5",
+        "scale": 1.0,
+        "codes": [
+          "3C",
+          "10S",
+          "9C",
+          "6D",
+          "5C"
+        ]
+      },
+      {
+        "file": "real_200950_0105_1.0",
+        "time": 105,
+        "split": "train",
+        "hand": "200950-6",
+        "scale": 1.0,
+        "codes": [
+          "9S",
+          "8H"
+        ]
+      },
+      {
+        "file": "real_200950_0105_0.8",
+        "time": 105,
+        "split": "train",
+        "hand": "200950-6",
+        "scale": 0.8,
+        "codes": [
+          "9S",
+          "8H"
+        ]
+      },
+      {
+        "file": "real_200950_0105_0.6",
+        "time": 105,
+        "split": "train",
+        "hand": "200950-6",
+        "scale": 0.6,
+        "codes": [
+          "9S",
+          "8H"
+        ]
+      },
+      {
+        "file": "real_200950_0120_1.0",
+        "time": 120,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 1.0,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0120_0.8",
+        "time": 120,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 0.8,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0120_0.6",
+        "time": 120,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 0.6,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0135_1.0",
+        "time": 135,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 1.0,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "QS",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0135_0.8",
+        "time": 135,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 0.8,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "QS",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0135_0.6",
+        "time": 135,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 0.6,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "QS",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0150_1.0",
+        "time": 150,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 1.0,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "QS",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0150_0.8",
+        "time": 150,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 0.8,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "QS",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0150_0.6",
+        "time": 150,
+        "split": "train",
+        "hand": "200950-7",
+        "scale": 0.6,
+        "codes": [
+          "9H",
+          "10D",
+          "3D",
+          "QS",
+          "KS",
+          "10S"
+        ]
+      },
+      {
+        "file": "real_200950_0165_1.0",
+        "time": 165,
+        "split": "train",
+        "hand": "200950-8",
+        "scale": 1.0,
+        "codes": [
+          "AC",
+          "QC"
+        ]
+      },
+      {
+        "file": "real_200950_0165_0.8",
+        "time": 165,
+        "split": "train",
+        "hand": "200950-8",
+        "scale": 0.8,
+        "codes": [
+          "AC",
+          "QC"
+        ]
+      },
+      {
+        "file": "real_200950_0165_0.6",
+        "time": 165,
+        "split": "train",
+        "hand": "200950-8",
+        "scale": 0.6,
+        "codes": [
+          "AC",
+          "QC"
+        ]
+      },
+      {
+        "file": "real_200950_0180_1.0",
+        "time": 180,
+        "split": "train",
+        "hand": "200950-8",
+        "scale": 1.0,
+        "codes": [
+          "7C",
+          "5H",
+          "5S",
+          "4D",
+          "AC",
+          "QC"
+        ]
+      },
+      {
+        "file": "real_200950_0180_0.8",
+        "time": 180,
+        "split": "train",
+        "hand": "200950-8",
+        "scale": 0.8,
+        "codes": [
+          "7C",
+          "5H",
+          "5S",
+          "4D",
+          "AC",
+          "QC"
+        ]
+      },
+      {
+        "file": "real_200950_0180_0.6",
+        "time": 180,
+        "split": "train",
+        "hand": "200950-8",
+        "scale": 0.6,
+        "codes": [
+          "7C",
+          "5H",
+          "5S",
+          "4D",
+          "AC",
+          "QC"
+        ]
+      },
+      {
+        "file": "real_200950_0195_1.0",
+        "time": 195,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 1.0,
+        "codes": [
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0195_0.8",
+        "time": 195,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.8,
+        "codes": [
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0195_0.6",
+        "time": 195,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.6,
+        "codes": [
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0210_1.0",
+        "time": 210,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 1.0,
+        "codes": [
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0210_0.8",
+        "time": 210,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.8,
+        "codes": [
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0210_0.6",
+        "time": 210,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.6,
+        "codes": [
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0225_1.0",
+        "time": 225,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 1.0,
+        "codes": [
+          "10C",
+          "QS",
+          "9S",
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0225_0.8",
+        "time": 225,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.8,
+        "codes": [
+          "10C",
+          "QS",
+          "9S",
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0225_0.6",
+        "time": 225,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.6,
+        "codes": [
+          "10C",
+          "QS",
+          "9S",
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0240_1.0",
+        "time": 240,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 1.0,
+        "codes": [
+          "10C",
+          "QS",
+          "9S",
+          "9D",
+          "5S",
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0240_0.8",
+        "time": 240,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.8,
+        "codes": [
+          "10C",
+          "QS",
+          "9S",
+          "9D",
+          "5S",
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0240_0.6",
+        "time": 240,
+        "split": "train",
+        "hand": "200950-9",
+        "scale": 0.6,
+        "codes": [
+          "10C",
+          "QS",
+          "9S",
+          "9D",
+          "5S",
+          "KD",
+          "10H"
+        ]
+      },
+      {
+        "file": "real_200950_0255_1.0",
+        "time": 255,
+        "split": "train",
+        "hand": "200950-10",
+        "scale": 1.0,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0255_0.8",
+        "time": 255,
+        "split": "train",
+        "hand": "200950-10",
+        "scale": 0.8,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0255_0.6",
+        "time": 255,
+        "split": "train",
+        "hand": "200950-10",
+        "scale": 0.6,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0270_1.0",
+        "time": 270,
+        "split": "val",
+        "hand": "200950-11",
+        "scale": 1.0,
+        "codes": [
+          "7C",
+          "6D"
+        ]
+      },
+      {
+        "file": "real_200950_0285_1.0",
+        "time": 285,
+        "split": "train",
+        "hand": "200950-12",
+        "scale": 1.0,
+        "codes": [
+          "QH",
+          "2H"
+        ]
+      },
+      {
+        "file": "real_200950_0285_0.8",
+        "time": 285,
+        "split": "train",
+        "hand": "200950-12",
+        "scale": 0.8,
+        "codes": [
+          "QH",
+          "2H"
+        ]
+      },
+      {
+        "file": "real_200950_0285_0.6",
+        "time": 285,
+        "split": "train",
+        "hand": "200950-12",
+        "scale": 0.6,
+        "codes": [
+          "QH",
+          "2H"
+        ]
+      },
+      {
+        "file": "real_200950_0300_1.0",
+        "time": 300,
+        "split": "test",
+        "hand": "200950-13",
+        "scale": 1.0,
+        "codes": [
+          "7S",
+          "JS",
+          "3S",
+          "8D",
+          "7D"
+        ]
+      },
+      {
+        "file": "real_200950_0315_1.0",
+        "time": 315,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 1.0,
+        "codes": [
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0315_0.8",
+        "time": 315,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 0.8,
+        "codes": [
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0315_0.6",
+        "time": 315,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 0.6,
+        "codes": [
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0330_1.0",
+        "time": 330,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 1.0,
+        "codes": [
+          "8D",
+          "JH",
+          "2C",
+          "JD",
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0330_0.8",
+        "time": 330,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 0.8,
+        "codes": [
+          "8D",
+          "JH",
+          "2C",
+          "JD",
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0330_0.6",
+        "time": 330,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 0.6,
+        "codes": [
+          "8D",
+          "JH",
+          "2C",
+          "JD",
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0345_1.0",
+        "time": 345,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 1.0,
+        "codes": [
+          "8D",
+          "JH",
+          "2C",
+          "JD",
+          "9S",
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0345_0.8",
+        "time": 345,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 0.8,
+        "codes": [
+          "8D",
+          "JH",
+          "2C",
+          "JD",
+          "9S",
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0345_0.6",
+        "time": 345,
+        "split": "train",
+        "hand": "200950-14",
+        "scale": 0.6,
+        "codes": [
+          "8D",
+          "JH",
+          "2C",
+          "JD",
+          "9S",
+          "KS",
+          "3S"
+        ]
+      },
+      {
+        "file": "real_200950_0360_1.0",
+        "time": 360,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 1.0,
+        "codes": [
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0360_0.8",
+        "time": 360,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 0.8,
+        "codes": [
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0360_0.6",
+        "time": 360,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 0.6,
+        "codes": [
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0390_1.0",
+        "time": 390,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 1.0,
+        "codes": [
+          "10C",
+          "6C",
+          "8D",
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0390_0.8",
+        "time": 390,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 0.8,
+        "codes": [
+          "10C",
+          "6C",
+          "8D",
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0390_0.6",
+        "time": 390,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 0.6,
+        "codes": [
+          "10C",
+          "6C",
+          "8D",
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0405_1.0",
+        "time": 405,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 1.0,
+        "codes": [
+          "10C",
+          "6C",
+          "8D",
+          "9C",
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0405_0.8",
+        "time": 405,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 0.8,
+        "codes": [
+          "10C",
+          "6C",
+          "8D",
+          "9C",
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0405_0.6",
+        "time": 405,
+        "split": "train",
+        "hand": "200950-15",
+        "scale": 0.6,
+        "codes": [
+          "10C",
+          "6C",
+          "8D",
+          "9C",
+          "KS",
+          "8S"
+        ]
+      },
+      {
+        "file": "real_200950_0420_1.0",
+        "time": 420,
+        "split": "train",
+        "hand": "200950-16",
+        "scale": 1.0,
+        "codes": [
+          "QS",
+          "7C"
+        ]
+      },
+      {
+        "file": "real_200950_0420_0.8",
+        "time": 420,
+        "split": "train",
+        "hand": "200950-16",
+        "scale": 0.8,
+        "codes": [
+          "QS",
+          "7C"
+        ]
+      },
+      {
+        "file": "real_200950_0420_0.6",
+        "time": 420,
+        "split": "train",
+        "hand": "200950-16",
+        "scale": 0.6,
+        "codes": [
+          "QS",
+          "7C"
+        ]
+      },
+      {
+        "file": "real_200950_0435_1.0",
+        "time": 435,
+        "split": "val",
+        "hand": "200950-17",
+        "scale": 1.0,
+        "codes": [
+          "10H",
+          "10D"
+        ]
+      },
+      {
+        "file": "real_200950_0450_1.0",
+        "time": 450,
+        "split": "val",
+        "hand": "200950-17",
+        "scale": 1.0,
+        "codes": [
+          "4D",
+          "6C",
+          "QC",
+          "10H",
+          "10D"
+        ]
+      },
+      {
+        "file": "real_200950_0465_1.0",
+        "time": 465,
+        "split": "train",
+        "hand": "200950-18",
+        "scale": 1.0,
+        "codes": [
+          "9S",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0465_0.8",
+        "time": 465,
+        "split": "train",
+        "hand": "200950-18",
+        "scale": 0.8,
+        "codes": [
+          "9S",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0465_0.6",
+        "time": 465,
+        "split": "train",
+        "hand": "200950-18",
+        "scale": 0.6,
+        "codes": [
+          "9S",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0480_1.0",
+        "time": 480,
+        "split": "train",
+        "hand": "200950-18",
+        "scale": 1.0,
+        "codes": [
+          "9S",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0480_0.8",
+        "time": 480,
+        "split": "train",
+        "hand": "200950-18",
+        "scale": 0.8,
+        "codes": [
+          "9S",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0480_0.6",
+        "time": 480,
+        "split": "train",
+        "hand": "200950-18",
+        "scale": 0.6,
+        "codes": [
+          "9S",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0495_1.0",
+        "time": 495,
+        "split": "train",
+        "hand": "200950-19",
+        "scale": 1.0,
+        "codes": [
+          "2C",
+          "5C",
+          "JH",
+          "8H",
+          "4D"
+        ]
+      },
+      {
+        "file": "real_200950_0495_0.8",
+        "time": 495,
+        "split": "train",
+        "hand": "200950-19",
+        "scale": 0.8,
+        "codes": [
+          "2C",
+          "5C",
+          "JH",
+          "8H",
+          "4D"
+        ]
+      },
+      {
+        "file": "real_200950_0495_0.6",
+        "time": 495,
+        "split": "train",
+        "hand": "200950-19",
+        "scale": 0.6,
+        "codes": [
+          "2C",
+          "5C",
+          "JH",
+          "8H",
+          "4D"
+        ]
+      },
+      {
+        "file": "real_200950_0510_1.0",
+        "time": 510,
+        "split": "train",
+        "hand": "200950-19",
+        "scale": 1.0,
+        "codes": [
+          "2C",
+          "5C",
+          "JH",
+          "6H",
+          "8H",
+          "4D"
+        ]
+      },
+      {
+        "file": "real_200950_0510_0.8",
+        "time": 510,
+        "split": "train",
+        "hand": "200950-19",
+        "scale": 0.8,
+        "codes": [
+          "2C",
+          "5C",
+          "JH",
+          "6H",
+          "8H",
+          "4D"
+        ]
+      },
+      {
+        "file": "real_200950_0510_0.6",
+        "time": 510,
+        "split": "train",
+        "hand": "200950-19",
+        "scale": 0.6,
+        "codes": [
+          "2C",
+          "5C",
+          "JH",
+          "6H",
+          "8H",
+          "4D"
+        ]
+      },
+      {
+        "file": "real_200950_0525_1.0",
+        "time": 525,
+        "split": "train",
+        "hand": "200950-23",
+        "scale": 1.0,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0525_0.8",
+        "time": 525,
+        "split": "train",
+        "hand": "200950-23",
+        "scale": 0.8,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0525_0.6",
+        "time": 525,
+        "split": "train",
+        "hand": "200950-23",
+        "scale": 0.6,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0540_1.0",
+        "time": 540,
+        "split": "test",
+        "hand": "200950-20",
+        "scale": 1.0,
+        "codes": [
+          "3S",
+          "3C"
+        ]
+      },
+      {
+        "file": "real_200950_0555_1.0",
+        "time": 555,
+        "split": "test",
+        "hand": "200950-20",
+        "scale": 1.0,
+        "codes": [
+          "5S",
+          "8C",
+          "2C",
+          "2D",
+          "3S",
+          "3C"
+        ]
+      },
+      {
+        "file": "real_200950_0570_1.0",
+        "time": 570,
+        "split": "train",
+        "hand": "200950-24",
+        "scale": 1.0,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0570_0.8",
+        "time": 570,
+        "split": "train",
+        "hand": "200950-24",
+        "scale": 0.8,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0570_0.6",
+        "time": 570,
+        "split": "train",
+        "hand": "200950-24",
+        "scale": 0.6,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0585_1.0",
+        "time": 585,
+        "split": "train",
+        "hand": "200950-24",
+        "scale": 1.0,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0585_0.8",
+        "time": 585,
+        "split": "train",
+        "hand": "200950-24",
+        "scale": 0.8,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0585_0.6",
+        "time": 585,
+        "split": "train",
+        "hand": "200950-24",
+        "scale": 0.6,
+        "codes": []
+      },
+      {
+        "file": "real_200950_0600_1.0",
+        "time": 600,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 1.0,
+        "codes": [
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0600_0.8",
+        "time": 600,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 0.8,
+        "codes": [
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0600_0.6",
+        "time": 600,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 0.6,
+        "codes": [
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0615_1.0",
+        "time": 615,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 1.0,
+        "codes": [
+          "JC",
+          "JD",
+          "KS",
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0615_0.8",
+        "time": 615,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 0.8,
+        "codes": [
+          "JC",
+          "JD",
+          "KS",
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0615_0.6",
+        "time": 615,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 0.6,
+        "codes": [
+          "JC",
+          "JD",
+          "KS",
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0630_1.0",
+        "time": 630,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 1.0,
+        "codes": [
+          "JC",
+          "JD",
+          "KS",
+          "5C",
+          "9H",
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0630_0.8",
+        "time": 630,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 0.8,
+        "codes": [
+          "JC",
+          "JD",
+          "KS",
+          "5C",
+          "9H",
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0630_0.6",
+        "time": 630,
+        "split": "train",
+        "hand": "200950-21",
+        "scale": 0.6,
+        "codes": [
+          "JC",
+          "JD",
+          "KS",
+          "5C",
+          "9H",
+          "10C",
+          "9C"
+        ]
+      },
+      {
+        "file": "real_200950_0645_1.0",
+        "time": 645,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 1.0,
+        "codes": [
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0645_0.8",
+        "time": 645,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.8,
+        "codes": [
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0645_0.6",
+        "time": 645,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.6,
+        "codes": [
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0660_1.0",
+        "time": 660,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 1.0,
+        "codes": [
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0660_0.8",
+        "time": 660,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.8,
+        "codes": [
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0660_0.6",
+        "time": 660,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.6,
+        "codes": [
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0675_1.0",
+        "time": 675,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 1.0,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0675_0.8",
+        "time": 675,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.8,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0675_0.6",
+        "time": 675,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.6,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0690_1.0",
+        "time": 690,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 1.0,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0690_0.8",
+        "time": 690,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.8,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0690_0.6",
+        "time": 690,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.6,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0705_1.0",
+        "time": 705,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 1.0,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "3D",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0705_0.8",
+        "time": 705,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.8,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "3D",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0705_0.6",
+        "time": 705,
+        "split": "train",
+        "hand": "200950-22",
+        "scale": 0.6,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "3D",
+          "KC",
+          "KD"
+        ]
+      }
+    ],
+    "new_frames_by_split": {
+      "train": 114,
+      "val": 4,
+      "test": 4
+    },
+    "new_training_codes": [
+      "10C",
+      "10D",
+      "10H",
+      "10S",
+      "2C",
+      "2H",
+      "3C",
+      "3D",
+      "3S",
+      "4C",
+      "4D",
+      "4S",
+      "5C",
+      "5H",
+      "5S",
+      "6C",
+      "6H",
+      "7C",
+      "7H",
+      "8D",
+      "8H",
+      "8S",
+      "9C",
+      "9D",
+      "9H",
+      "9S",
+      "AC",
+      "JC",
+      "JD",
+      "JH",
+      "KC",
+      "KD",
+      "KS",
+      "QC",
+      "QH",
+      "QS"
+    ],
+    "protocol": "Manual labels; complete hands separated across train/val/test; preserved old replay; lower-resolution training only",
+    "low_resolution_training": [
+      {
+        "file": "real_200950_0000_0.5",
+        "time": 0,
+        "hand": "200950-1",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0000_0.4",
+        "time": 0,
+        "hand": "200950-1",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0015_0.5",
+        "time": 15,
+        "hand": "200950-1",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0015_0.4",
+        "time": 15,
+        "hand": "200950-1",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0045_0.5",
+        "time": 45,
+        "hand": "200950-3",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0045_0.4",
+        "time": 45,
+        "hand": "200950-3",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0075_0.5",
+        "time": 75,
+        "hand": "200950-4",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0075_0.4",
+        "time": 75,
+        "hand": "200950-4",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0105_0.5",
+        "time": 105,
+        "hand": "200950-6",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0105_0.4",
+        "time": 105,
+        "hand": "200950-6",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0120_0.5",
+        "time": 120,
+        "hand": "200950-7",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0120_0.4",
+        "time": 120,
+        "hand": "200950-7",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0135_0.5",
+        "time": 135,
+        "hand": "200950-7",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0135_0.4",
+        "time": 135,
+        "hand": "200950-7",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0150_0.5",
+        "time": 150,
+        "hand": "200950-7",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0150_0.4",
+        "time": 150,
+        "hand": "200950-7",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0165_0.5",
+        "time": 165,
+        "hand": "200950-8",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0165_0.4",
+        "time": 165,
+        "hand": "200950-8",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0180_0.5",
+        "time": 180,
+        "hand": "200950-8",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0180_0.4",
+        "time": 180,
+        "hand": "200950-8",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0195_0.5",
+        "time": 195,
+        "hand": "200950-9",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0195_0.4",
+        "time": 195,
+        "hand": "200950-9",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0210_0.5",
+        "time": 210,
+        "hand": "200950-9",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0210_0.4",
+        "time": 210,
+        "hand": "200950-9",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0225_0.5",
+        "time": 225,
+        "hand": "200950-9",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0225_0.4",
+        "time": 225,
+        "hand": "200950-9",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0240_0.5",
+        "time": 240,
+        "hand": "200950-9",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0240_0.4",
+        "time": 240,
+        "hand": "200950-9",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0255_0.5",
+        "time": 255,
+        "hand": "200950-10",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0255_0.4",
+        "time": 255,
+        "hand": "200950-10",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0285_0.5",
+        "time": 285,
+        "hand": "200950-12",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0285_0.4",
+        "time": 285,
+        "hand": "200950-12",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0315_0.5",
+        "time": 315,
+        "hand": "200950-14",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0315_0.4",
+        "time": 315,
+        "hand": "200950-14",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0330_0.5",
+        "time": 330,
+        "hand": "200950-14",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0330_0.4",
+        "time": 330,
+        "hand": "200950-14",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0345_0.5",
+        "time": 345,
+        "hand": "200950-14",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0345_0.4",
+        "time": 345,
+        "hand": "200950-14",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0360_0.5",
+        "time": 360,
+        "hand": "200950-15",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0360_0.4",
+        "time": 360,
+        "hand": "200950-15",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0390_0.5",
+        "time": 390,
+        "hand": "200950-15",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0390_0.4",
+        "time": 390,
+        "hand": "200950-15",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0405_0.5",
+        "time": 405,
+        "hand": "200950-15",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0405_0.4",
+        "time": 405,
+        "hand": "200950-15",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0420_0.5",
+        "time": 420,
+        "hand": "200950-16",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0420_0.4",
+        "time": 420,
+        "hand": "200950-16",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0465_0.5",
+        "time": 465,
+        "hand": "200950-18",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0465_0.4",
+        "time": 465,
+        "hand": "200950-18",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0480_0.5",
+        "time": 480,
+        "hand": "200950-18",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0480_0.4",
+        "time": 480,
+        "hand": "200950-18",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0495_0.5",
+        "time": 495,
+        "hand": "200950-19",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0495_0.4",
+        "time": 495,
+        "hand": "200950-19",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0510_0.5",
+        "time": 510,
+        "hand": "200950-19",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0510_0.4",
+        "time": 510,
+        "hand": "200950-19",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0525_0.5",
+        "time": 525,
+        "hand": "200950-23",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0525_0.4",
+        "time": 525,
+        "hand": "200950-23",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0570_0.5",
+        "time": 570,
+        "hand": "200950-24",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0570_0.4",
+        "time": 570,
+        "hand": "200950-24",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0585_0.5",
+        "time": 585,
+        "hand": "200950-24",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0585_0.4",
+        "time": 585,
+        "hand": "200950-24",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0600_0.5",
+        "time": 600,
+        "hand": "200950-21",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0600_0.4",
+        "time": 600,
+        "hand": "200950-21",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0615_0.5",
+        "time": 615,
+        "hand": "200950-21",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0615_0.4",
+        "time": 615,
+        "hand": "200950-21",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0630_0.5",
+        "time": 630,
+        "hand": "200950-21",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0630_0.4",
+        "time": 630,
+        "hand": "200950-21",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0645_0.5",
+        "time": 645,
+        "hand": "200950-22",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0645_0.4",
+        "time": 645,
+        "hand": "200950-22",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0660_0.5",
+        "time": 660,
+        "hand": "200950-22",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0660_0.4",
+        "time": 660,
+        "hand": "200950-22",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0675_0.5",
+        "time": 675,
+        "hand": "200950-22",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0675_0.4",
+        "time": 675,
+        "hand": "200950-22",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0690_0.5",
+        "time": 690,
+        "hand": "200950-22",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0690_0.4",
+        "time": 690,
+        "hand": "200950-22",
+        "scale": 0.4
+      },
+      {
+        "file": "real_200950_0705_0.5",
+        "time": 705,
+        "hand": "200950-22",
+        "scale": 0.5
+      },
+      {
+        "file": "real_200950_0705_0.4",
+        "time": 705,
+        "hand": "200950-22",
+        "scale": 0.4
+      }
+    ],
+    "audit_reviewed_train": [
+      {
+        "file": "real_200950_0640_1.0",
+        "time": 640,
+        "hand": "200950-25",
+        "split": "train",
+        "scale": 1.0,
+        "codes": [
+          "6H",
+          "4C"
+        ]
+      },
+      {
+        "file": "real_200950_0640_0.8",
+        "time": 640,
+        "hand": "200950-25",
+        "split": "train",
+        "scale": 0.8,
+        "codes": [
+          "6H",
+          "4C"
+        ]
+      },
+      {
+        "file": "real_200950_0640_0.6",
+        "time": 640,
+        "hand": "200950-25",
+        "split": "train",
+        "scale": 0.6,
+        "codes": [
+          "6H",
+          "4C"
+        ]
+      },
+      {
+        "file": "real_200950_0640_0.5",
+        "time": 640,
+        "hand": "200950-25",
+        "split": "train",
+        "scale": 0.5,
+        "codes": [
+          "6H",
+          "4C"
+        ]
+      },
+      {
+        "file": "real_200950_0640_0.4",
+        "time": 640,
+        "hand": "200950-25",
+        "split": "train",
+        "scale": 0.4,
+        "codes": [
+          "6H",
+          "4C"
+        ]
+      },
+      {
+        "file": "real_200950_0695_1.0",
+        "time": 695,
+        "hand": "200950-22",
+        "split": "train",
+        "scale": 1.0,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0695_0.8",
+        "time": 695,
+        "hand": "200950-22",
+        "split": "train",
+        "scale": 0.8,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0695_0.6",
+        "time": 695,
+        "hand": "200950-22",
+        "split": "train",
+        "scale": 0.6,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0695_0.5",
+        "time": 695,
+        "hand": "200950-22",
+        "split": "train",
+        "scale": 0.5,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      },
+      {
+        "file": "real_200950_0695_0.4",
+        "time": 695,
+        "hand": "200950-22",
+        "split": "train",
+        "scale": 0.4,
+        "codes": [
+          "7H",
+          "4D",
+          "5H",
+          "KS",
+          "KC",
+          "KD"
+        ]
+      }
+    ],
+    "replay_source": {
+      "source": "Screen Recording 2026-11-06 125816.mp4",
+      "source_sha256": "e5a00f508df0ca85528f62c94af02b8404a5f6dc7ccc160b37efc2a763b94aab",
+      "cutoff_seconds": 840,
+      "annotation_revision": 2
+    },
+    "source_duration_seconds": 719.9333333333,
+    "new_augmented_training_frames": 200
   },
-  "training_run": "artifacts\\training\\pokerstars-nine-final-125816",
-  "epochs_requested": 8,
+  "training_run": "artifacts\\training\\desktop-200950-v4",
+  "epochs_requested": 4,
   "files": [
     {
       "local": "pokerstars-nine.onnx",
-      "sha256": "ea5194ba978dc9d538078afd2ae1abd461401d98fa157c46c19f9b39350527b6"
+      "sha256": "8b0d5a5f7cb3b4a9b0e9b1e0be4a7b7432e66cdcd38c0f314c4c7cd420b4bde9"
     },
     {
       "local": "pokerstars-nine.classes.json",
@@ -1743,14 +3915,15 @@
     }
   ],
   "warm_start": {
-    "file": "artifacts\\training\\pokerstars-nine-reviewed-125816\\weights\\best.pt",
-    "sha256": "56b2067b313eb1879e1ca6a17eed49d4ba6e68c775763758b5470fa44c55ae61"
+    "file": "artifacts\\training\\desktop-200950-v3\\weights\\best.pt",
+    "sha256": "f216e678a8016a425e11937aabffb75c1020c03fa807506e536f8e04bcb022a4"
   },
-  "epochs_completed": 7,
-  "best_epoch": 7,
+  "epochs_completed": 4,
+  "best_epoch": 4,
   "deployment_validation": {
     "deployment/precision": 1.0,
     "deployment/recall": 1.0,
     "deployment/f1": 1.0
-  }
+  },
+  "runtime_validation_report": "artifacts/desktop-200950/final-evaluation.json"
 }

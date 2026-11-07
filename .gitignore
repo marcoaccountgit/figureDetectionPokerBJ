@@ -9,3 +9,4 @@ artifacts/
 models/*.onnx
 models/*.part
 *.pt
+native/equity/target/

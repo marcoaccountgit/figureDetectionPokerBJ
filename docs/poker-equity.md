@@ -67,7 +67,8 @@ result = calculate_equity(
 ```
 
 Parametri ulteriori: `exact_threshold=2000`, `max_opponents=9`,
-`cancelled=None` (callback bool), `progress=None` (callback snapshot cumulativo).
+`cancelled=None` (callback bool), `progress=None` (callback snapshot cumulativo),
+`backend='auto'` (`auto`, `python` o `rust`).
 `exact_threshold=0` forza Monte Carlo. Le simulazioni accettate vanno da 2 a
 1.000.000. Il limite standard è nove avversari; la UI del tavolo a sei posti
 ne ammette cinque; il nuovo profilo desktop a nove posti ne ammette otto.
@@ -200,7 +201,12 @@ Una lettura assente non viene riempita con una carta storica. Una cattura inizia
 senza evidenza visiva delle carte comuni non può ricostruire carte mai osservate.
 
 I profili FAST/BALANCED/ACCURATE corrispondono a 5.000/50.000/250.000 iterazioni.
-I profili maggiori pubblicano snapshot cumulativi a 5.000 e 50.000, poi il finale.
+Tutti i profili pubblicano prime stime cumulative a 256 e 1.024 campioni.
+I profili maggiori proseguono con aggiornamenti a 5.000, 10.000, 25.000,
+50.000, 100.000, 150.000 e 200.000 campioni, fino al totale richiesto.
+Le stime iniziali hanno intervalli di confidenza più ampi; il numero finale
+di simulazioni rimane invariato. Le valutazioni delle coppie avversarie sul
+board attuale e dei runout personali vengono riutilizzate durante il calcolo.
 Non sono stime indipendenti concatenate. La UI scarta anche risposte HTTP arrivate
 dopo un cambiamento locale delle impostazioni.
 
@@ -212,6 +218,69 @@ L'integrazione principale è nel browser; webcam e riconoscimento offline non
 avviano autonomamente il processo ma possono usare l'API matematica.
 
 ## Uso, controlli e benchmark
+
+### Motore Rust su un solo core
+
+Il calcolo Monte Carlo seleziona automaticamente la libreria nativa Rust se
+disponibile. Cattura, riconoscimento, interfaccia e gestione del processo restano
+in Python. Non vengono avviati thread o processi aggiuntivi per parallelizzare
+le simulazioni. Il processo separato già esistente continua a proteggere la
+scansione dal lavoro di calcolo.
+
+Compilazione locale, a bot chiuso, con Rust/Cargo installato:
+
+```powershell
+.\.venv-training\Scripts\python.exe build_native_equity.py
+```
+
+La compilazione è offline e non richiede crate esterni. `build.rs` genera
+tabelle esatte per gli istogrammi dei ranghi di 5, 6 e 7 carte e per le maschere
+di colore (circa 326 KiB complessivi). Un indice combinatorio senza collisioni
+permette di consultarle durante le simulazioni. Non si usano probabilità
+precalcolate o approssimazioni del valore delle mani.
+
+Python carica la libreria tramite `ctypes` da `native/equity/target/release`;
+non sono necessari pacchetti Python aggiuntivi. La risposta contiene
+`backend='rust'` oppure `backend='python'`, mostrato anche accanto ai tempi.
+`auto` ripiega su Python se la libreria manca o non è caricabile;
+`backend='rust'` segnala invece un errore in quel caso. I casi sotto la soglia
+di enumerazione esatta continuano a usare l'enumeratore Python, anche quando
+la libreria Rust è disponibile.
+
+Il generatore Rust è xoshiro256++, inizializzato con SplitMix64; gli indici del
+mazzo usano rejection sampling e Fisher-Yates parziale per evitare distorsioni
+da modulo e duplicati. Il runout e tutte le mani avversarie sono estratti
+congiuntamente senza reinserimento. Pareggi, quote del piatto, categorie,
+miglioramenti, errori standard e intervalli mantengono le stesse formule.
+Un seed ripete il risultato all'interno dello stesso motore; Python e Rust
+usano generatori diversi e non producono lo stesso campionamento con lo stesso
+seed. La precisione statistica a parità di simulazioni resta equivalente.
+
+I test confrontano tutti gli istogrammi legali dei ranghi per mani di 5–7
+carte, tutte le maschere di colore di 5–7 ranghi e 30.000 mani casuali con
+il valutatore Python. Un confronto separato sulle medesime distribuzioni
+congiunte verifica tutte le metriche e gli intervalli su ogni street e con
+1, 3, 8 e 9 avversari. Sono verificati anche seed, cancellazione, aggiornamenti
+progressivi, ripiego Python e consegna del risultato finale con coda piena.
+
+Benchmark locale del 7 novembre 2026, mediane di tre esecuzioni, 5.000
+simulazioni con 8 avversari:
+
+| Fase | Python | Rust |
+| --- | ---: | ---: |
+| Preflop | 416,10 ms | 4,02 ms |
+| Flop | 418,29 ms | 4,84 ms |
+| Turn | 413,73 ms | 4,21 ms |
+| River | 80,11 ms | 2,67 ms |
+
+Misure del solo calcolo a libreria caricata: il primo caricamento e l'avvio
+del processo aggiungono latenza. Il pannello riceve i risultati al frame
+successivo, quindi questi tempi non misurano cattura, OCR o aggiornamento UI.
+Riproduzione: `python benchmark_equity.py --compare --repeats 3`; report in
+`artifacts/equity-benchmark.json`. Test Rust:
+`cargo test --release --offline --manifest-path native/equity/Cargo.toml`.
+
+### Pannello e verifiche precedenti
 
 Avviare normalmente `Avvia-Browser-PokerStars.cmd`, ricaricare il pannello,
 selezionare la scheda e avviare la scansione. **PROBABILITÀ ED EQUITÀ DELLA MANO**
@@ -268,7 +337,7 @@ Family 6 Model 186. Intervalli misurati fra i casi Monte Carlo descritti sopra:
 | River heads-up esatto | 990 distribuzioni | 0,025–0,030 s |
 
 Il primo avvio aggiunge il costo di creazione del processo. Le stime progressive
-arrivano al completamento dei primi 5.000 campioni, prima del risultato finale
+arrivano al completamento dei primi 256 campioni, prima del risultato finale
 dei profili maggiori. Il tempo mostrato in UI è il tempo matematico cumulativo,
 non la latenza completa di cattura/OCR/HTTP.
 
@@ -287,7 +356,7 @@ non la latenza completa di cattura/OCR/HTTP.
   carte nascoste o l'errore del modello. Una carta non vista non viene dedotta.
 - I tempi ACCURATE possono superare la durata di una street: cancellazione e
   snapshot progressivi mantengono utilizzabili scansione e interfaccia.
-- Possibili ottimizzazioni: lookup table del valutatore con licenza verificata,
-  cache dei punteggi per board, enumerazione dei soli runout per metriche hero,
-  worker compilato e IC più robusti per eventi rari. Nessuna è necessaria per
+- Possibili ottimizzazioni ulteriori: enumerazione dei soli runout per metriche
+  hero e IC più robusti per eventi rari. Lookup table e motore compilato sono
+  già implementati nella variante Rust. Nessuna ulteriore ottimizzazione è necessaria per
   usare questa versione e nessuna introduce automazione di gioco.

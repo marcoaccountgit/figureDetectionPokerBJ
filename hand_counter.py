@@ -34,7 +34,7 @@ def player_card_presence(frame, profile='pokerstars'):
         hue,saturation,value = cv2.split(cv2.cvtColor(canonical[y:bottom,x:right],cv2.COLOR_BGR2HSV))
         white = float(np.mean((saturation < 65) & (value > 180)))
         felt = float(np.mean((hue > 30) & (hue < 100) & (saturation > 65) & (value > 35)))
-        visible_face = (white >= .55 and felt <= .2) if nine else (white >= .4 and felt <= .1)
+        visible_face = (white >= .4 and felt <= .2) if nine else (white >= .4 and felt <= .1)
         present = (True if context_ok and visible_face else
                    False if context_ok and white <= .08 and felt >= .3 else None)
         slots.append(dict(present=present, white_fraction=round(white,4), felt_fraction=round(felt,4)))

@@ -106,7 +106,8 @@ def ocr_mosaic(frame,profile='pokerstars'):
     if is_desktop(profile):
         layout=desktop_layout(profile)
         regions = [(f'seat:{key}',box,3) for key,box in layout['names'].items()]
-        regions += [(f'stack:{key}',(box[0],round(box[1]+(box[3]-box[1])*.53),box[2],box[3]),4) for key,box in layout['names'].items()]
+        from table_profiles import desktop_stack_box
+        regions += [(f'stack:{key}',desktop_stack_box(profile,key),4) for key in layout['names']]
         regions += [(f'bet:{key}',box,3) for key,box in layout['bets'].items()]
         regions += [('pot',canonical_box((835,310,1095,397)),3)]
         regions += [('collected_pot',canonical_box((903,567,1030,610)),4)]
@@ -341,8 +342,9 @@ class TableVisualReader:
                 stack=next((v for line in reversed(lines[1:]) if (v:=amount(line))),None)
             if is_desktop(self.profile):
                 from table_profiles import NINE_NAMES
-                a,b,c,d=desktop_layout(self.profile)['names'][key]
-                fallback=self.chip_numbers.read(canonical[round(b+(d-b)*.53):d,a:c])
+                from table_profiles import desktop_stack_box
+                a,b,c,d=desktop_stack_box(self.profile,key)
+                fallback=self.chip_numbers.read(canonical[b:d,a:c])
                 if stack is None:stack=fallback
                 elif fallback is not None and fallback['value']!=stack['value']:stack=None
             glyph = yellow_action_glyph(canonical,key,self.profile)
@@ -355,8 +357,8 @@ class TableVisualReader:
                 action='all_in'
             if is_desktop(self.profile) and self.all_in_template is not None:
                 from table_profiles import NINE_NAMES
-                a,b,c,d=desktop_layout(self.profile)['names'][key]
-                glyph=white_stack_glyph(canonical[round(b+(d-b)*.53):d,a:c])
+                a,b,c,d=desktop_stack_box(self.profile,key)
+                glyph=white_stack_glyph(canonical[b:d,a:c])
                 if glyph is not None:
                     ref=self.all_in_template>0;sample=cv2.resize(glyph,(192,40))>0
                     if 2*(ref&sample).sum()/max(1,ref.sum()+sample.sum())>=.91:

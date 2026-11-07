@@ -186,12 +186,24 @@ class LearnedCardDetector:
             if bottom>native.shape[0]:continue
             bbox=[round(v*scale) for v in box]
             existing=[c for c in cards if overlap(bbox,c['bbox'])>=.3]
-            if any(c['accepted'] for c in existing):continue
+            accepted=[c for c in existing if c['accepted']]
+            if accepted and all(c['confidence']>=.85 for c in accepted):continue
             image=native[y:bottom,x:right]
             hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
             if np.mean((hsv[:,:,1]<65)&(hsv[:,:,2]>180))<.5:continue
             reading=self._symbol_reading(image)
             if reading is None:continue
+            if accepted:
+                # A one-pixel-taller neural box can merge the club's lobes.
+                # Cross-check only uncertain suits of the SAME rank against
+                # the reviewed native index; never guess from card duplicates.
+                if reading.get('rank_score',0)>=.9 and reading.get('suit_score',0)>=.95 and reading.get('suit_margin',0)>=.08:
+                    for old in accepted:
+                        if old['confidence']<.85 and old['rank']==reading['rank'] and old['suit']!=reading['suit']:
+                            original,confidence=old['card'],old['confidence']
+                            old.update(reading,neural_candidate=original,neural_confidence=confidence,
+                                       symbol_corrected=True,decision_source='nine_seat_suit_crosscheck')
+                continue
             a,b,c,d=bbox
             reading.update(domain='physical',group='card_index',bbox=bbox,
                            polygon=[[a,b],[c,b],[c,d],[a,d]],decision_source='nine_seat_index_recovery',neural_confidence=None)

@@ -572,6 +572,17 @@ Riavviare `Avvia-Browser-PokerStars.cmd` e ricaricare il pannello. Il calcolo
 Le stime sono riferite a carte avversarie casuali uniformi e a un piatto comune,
 senza side pot o rake. Nessuna azione viene eseguita sul tavolo.
 
+Il calcolo Monte Carlo usa automaticamente il motore Rust su un solo core
+quando la libreria è compilata; il pannello indica il motore utilizzato.
+Per compilarla con Rust/Cargo già installato:
+
+```powershell
+.\.venv-training\Scripts\python.exe build_native_equity.py
+```
+
+In assenza della libreria resta disponibile il motore Python. Il numero di
+simulazioni e la precisione statistica sono gli stessi.
+
 API, schema dati, test, benchmark e limiti: [Motore equity](docs/poker-equity.md).
 
 La sezione **Valutazione della decisione** confronta equità, piatto totale e
@@ -626,3 +637,10 @@ Il motore di equità e l'input manuale consentono fino a otto avversari.
 Riavviare il bot e ricaricare il pannello. Per il video sono stati utilizzati
 solo fotogrammi precedenti a 14:00. Risultati, limiti della verifica delle carte
 personali e comandi: [Profilo a nove posti](docs/tavolo-nove-posti.md).
+
+Il modello desktop condiviso dai tavoli a sei e nove posti è stato inoltre
+aggiornato con il video `Screen Recording 2026-11-06 200950.mp4`: nuovi esempi
+reali, risoluzioni inferiori e controlli su assi, semi neri e carte scoperte.
+Sono corretti anche il cambio di profilo durante le azioni evidenziate e il
+ritaglio dello stack del giocatore. Dati, verifiche e limiti:
+[Addestramento desktop 200950](docs/training-desktop-200950.md).

@@ -117,9 +117,20 @@ class EquityTests(unittest.TestCase):
         self.assertIsNone(calculate_equity(['As','Kh'],[],2,cancelled=lambda:True))
         results=[]
         final=calculate_equity(['As','Kh'],[],1,simulations=5001,random_seed=7,progress=results.append)
-        self.assertEqual(results[0]['simulations'],5000)
+        self.assertEqual([r['simulations'] for r in results],[256,1024,5000])
         self.assertFalse(results[0]['complete'])
         self.assertTrue(final['complete'])
+
+    def test_fast_profile_publishes_estimates_before_completion(self):
+        updates=[]
+        final=calculate_equity(['As','Kh'],['2s','7d','Jh'],3,
+                               simulations=5000,random_seed=42,progress=updates.append)
+        self.assertEqual([r['simulations'] for r in updates],[256,1024])
+        self.assertTrue(all(not r['complete'] for r in updates))
+        self.assertEqual(final['simulations'],5000)
+        self.assertTrue(final['complete'])
+        self.assertGreater(updates[0]['metrics']['equity']['standard_error'],
+                           final['metrics']['equity']['standard_error'])
 
     def test_sampling_uses_distinct_joint_cards(self):
         observed=[]
@@ -131,7 +142,7 @@ class EquityTests(unittest.TestCase):
             observed.append(k)
             return sample
         with patch.object(random.Random,'sample',inspect):
-            calculate_equity(['As','Kh'],['2s','3d','4c'],5,simulations=100,random_seed=42)
+            calculate_equity(['As','Kh'],['2s','3d','4c'],5,simulations=100,random_seed=42,backend='python')
         self.assertEqual(observed,[12]*100)
 
     def test_equity_variance_uses_fractional_shares(self):

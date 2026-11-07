@@ -19,6 +19,40 @@ def same_table_slot(current, previous):
             and current[field] == previous.get(field))
 
 
+class HandCardMemory:
+    """Keep confirmed slot identities until the physical hand cycle changes."""
+
+    def __init__(self):
+        self.cards = {}
+
+    def update(self, result, cycle):
+        if cycle['started'] or cycle['ended']:
+            self.cards.clear()
+        if not cycle['active']:
+            return result
+        current = []
+        seen = set()
+        for card in result['cards']:
+            group = card.get('table_group')
+            field = {'board': 'board_slot', 'player_hand': 'hand_slot'}.get(group)
+            slot = card.get(field) if field else None
+            if not isinstance(slot, int):
+                current.append(card)
+                continue
+            key = (group, slot)
+            if key in seen:
+                continue
+            seen.add(key)
+            if key not in self.cards and card['accepted']:
+                self.cards[key] = dict(card)
+            saved = self.cards.get(key)
+            current.append(dict(saved, bbox=card['bbox'],
+                                retained=not card['accepted'] or card['card'] != saved['card'])
+                           if saved else card)
+        current.extend(dict(card, retained=True) for key, card in self.cards.items() if key not in seen)
+        return dict(result, cards=current)
+
+
 class TemporalCards:
     """Require a matching reading in one of the two preceding frames (<=650ms).
 

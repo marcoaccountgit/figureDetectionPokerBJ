@@ -27,6 +27,7 @@ class OpponentTests(unittest.TestCase):
         root = Path(__file__).resolve().parent / 'fixtures'
         for name, expected in (
                 ('six-five-covered-opponents.jpg', [True] * 5),
+                ('six-four-covered-opponents.jpg', [True, True, False, True, True]),
                 ('six-two-covered-opponents.png', [True, False, False, True, False])):
             original = cv2.imread(str(root / name))
             for width in (762, 960, 1192, 1536):

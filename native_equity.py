@@ -24,9 +24,9 @@ BYTE_POINTER = ct.POINTER(ct.c_uint8)
 
 
 def library_path():
-    name = ('poker_equity_native.dll' if sys.platform == 'win32' else
-            'libpoker_equity_native.dylib' if sys.platform == 'darwin' else
-            'libpoker_equity_native.so')
+    name = ('poker_equity_native_v2.dll' if sys.platform == 'win32' else
+            'libpoker_equity_native_v2.dylib' if sys.platform == 'darwin' else
+            'libpoker_equity_native_v2.so')
     return Path(__file__).resolve().parent / 'native' / 'equity' / 'target' / 'release' / name
 
 
@@ -36,11 +36,15 @@ def load_native():
         library = ct.CDLL(str(library_path()))
         library.poker_equity_abi_version.argtypes = []
         library.poker_equity_abi_version.restype = ct.c_uint32
-        if library.poker_equity_abi_version() != 1:
+        if library.poker_equity_abi_version() != 2:
             return None
         library.poker_simulate.argtypes = [BYTE_POINTER, ct.c_size_t, ct.c_size_t,
                                           ct.c_uint64, ct.c_uint64, CALLBACK, ct.POINTER(Totals)]
         library.poker_simulate.restype = ct.c_int
+        library.poker_simulate_bets.argtypes = [BYTE_POINTER, ct.c_size_t, ct.c_size_t,
+                                               ct.c_uint64, ct.c_uint64, BYTE_POINTER,
+                                               CALLBACK, ct.POINTER(Totals)]
+        library.poker_simulate_bets.restype = ct.c_int
         library.poker_evaluate_many.argtypes = [BYTE_POINTER, ct.c_size_t, ct.c_size_t, ct.POINTER(ct.c_uint32)]
         library.poker_evaluate_many.restype = ct.c_int
         library.poker_score_deals.argtypes = [BYTE_POINTER, ct.c_size_t, ct.c_size_t,
@@ -51,7 +55,7 @@ def load_native():
         return None
 
 
-def run_simulations(library, hero, board, opponents, simulations, seed, cancelled, progress):
+def run_simulations(library, hero, board, opponents, simulations, seed, cancelled, progress, strengths=None):
     known = (ct.c_uint8 * (len(hero) + len(board)))(*hero, *board)
     # Preserve all bits of arbitrary Python integer seeds by folding through
     # a stable digest. A missing seed gets a fresh OS-generated 64-bit value.
@@ -61,6 +65,7 @@ def run_simulations(library, hero, board, opponents, simulations, seed, cancelle
         import hashlib
         seed = int.from_bytes(hashlib.blake2b(str(seed).encode('ascii'), digest_size=8).digest(), 'little')
     errors = []
+    published = set()
 
     @CALLBACK
     def notify(pointer):
@@ -68,7 +73,8 @@ def run_simulations(library, hero, board, opponents, simulations, seed, cancelle
             if cancelled and cancelled():
                 return 1
             totals = pointer.contents
-            if progress and totals.n in PROGRESS_SAMPLES and totals.n < simulations:
+            if progress and totals.n in PROGRESS_SAMPLES and totals.n < simulations and totals.n not in published:
+                published.add(totals.n)
                 progress(totals)
             return 0
         except BaseException as error:
@@ -78,13 +84,18 @@ def run_simulations(library, hero, board, opponents, simulations, seed, cancelle
             return 1
 
     output = Totals()
-    code = library.poker_simulate(known, len(known), opponents, simulations, seed, notify, ct.byref(output))
+    if strengths is None:
+        code = library.poker_simulate(known, len(known), opponents, simulations, seed, notify, ct.byref(output))
+    else:
+        levels = (ct.c_uint8 * opponents)(*strengths)
+        code = library.poker_simulate_bets(known, len(known), opponents, simulations, seed, levels, notify, ct.byref(output))
     if errors:
         raise errors[0]
     if code == 1:
         return None
     if code != 0:
-        raise RuntimeError('Parametri non validi per il motore equity Rust')
+        raise RuntimeError('Campionamento del modello non completato' if code == -2 else
+                           'Parametri non validi per il motore equity Rust')
     return output
 
 

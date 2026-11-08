@@ -583,6 +583,13 @@ Per compilarla con Rust/Cargo già installato:
 In assenza della libreria resta disponibile il motore Python. Il numero di
 simulazioni e la precisione statistica sono gli stessi.
 
+Il confronto facoltativo **Confronta anche un modello fisso delle puntate**
+mostra una seconda equità e il valore atteso della chiamata sotto un'ipotesi
+esplicita sugli importi confermati. Non costruisce profili dei giocatori né
+prevede azioni future. Il modello non è calibrato su dati di gioco; pesi e
+importi usati sono visibili nel pannello. Se gli importi non sono affidabili,
+resta disponibile la stima contro mani casuali.
+
 API, schema dati, test, benchmark e limiti: [Motore equity](docs/poker-equity.md).
 
 La sezione **Valutazione della decisione** confronta equità, piatto totale e
@@ -644,3 +651,9 @@ reali, risoluzioni inferiori e controlli su assi, semi neri e carte scoperte.
 Sono corretti anche il cambio di profilo durante le azioni evidenziate e il
 ritaglio dello stack del giocatore. Dati, verifiche e limiti:
 [Addestramento desktop 200950](docs/training-desktop-200950.md).
+
+L'ulteriore addestramento sul video `Screen Recording 2026-11-07 212305.mp4`
+comprende una revisione preliminare delle letture del bot, esempi a bassa
+risoluzione e un affinamento sui casi limite. Sono inclusi controlli sulla
+fusione dei rilevamenti sovrapposti e sul river nelle finestre piccole.
+Dati e verifiche: [Addestramento desktop 212305](docs/training-desktop-212305.md).

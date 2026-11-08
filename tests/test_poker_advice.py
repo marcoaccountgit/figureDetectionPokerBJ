@@ -20,6 +20,17 @@ def table(cost=50,pot=150):
 
 
 class AdviceTests(unittest.TestCase):
+    def test_fixed_bet_assumption_changes_equity_not_the_price_of_calling(self):
+        baseline = analyze_decision(equity(), table(), 1)
+        scenario = equity(.2, (.19, .21))
+        scenario['opponent_model'] = 'fixed_bets'
+        result = analyze_decision(scenario, table(), 1)
+        self.assertEqual(result['required_equity'], baseline['required_equity'])
+        self.assertEqual(result['signal'], 'fold_model')
+        self.assertEqual(result['expected_value'], -10)
+        self.assertIn('non calibrata', result['limits'][0])
+        self.assertIn('nessun profilo', result['limits'][0])
+
     def test_cost_can_be_on_same_line_as_call_button(self):
         self.assertEqual(parse_call_amount('Vedi 12 BB')['value'],12)
         self.assertEqual(parse_call_amount('Call 0,50 EUR')['value'],.5)

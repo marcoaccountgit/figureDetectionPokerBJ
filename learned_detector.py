@@ -1,6 +1,7 @@
 """YOLO11 ONNX card-index detector, using the existing OpenCV CPU runtime."""
 import json
 import os
+from collections import OrderedDict
 from time import perf_counter
 from card_detector import Recognizer, cv2, np, stacked_index_symbols
 from download_model import MODEL_DIR, model_manifest, verified_model_files
@@ -121,6 +122,16 @@ class LearnedCardDetector:
         symbols = stacked_index_symbols(image)
         if not symbols:
             return None
+        # Cache symbol comparisons, not card identities or positions. Every
+        # frame still supplies its current glyphs; changed cards get new keys.
+        cache = getattr(self, '_symbol_cache', None)
+        if cache is None:
+            cache = self._symbol_cache = OrderedDict()
+        glyphs, color = symbols
+        key = (glyphs[0].tobytes(), glyphs[1].tobytes(), color) if all(g is not None for g in glyphs) else None
+        if key is not None and key in cache:
+            cache.move_to_end(key)
+            return dict(cache[key]) if cache[key] is not None else None
         # Preserve the existing strong decisions. Extra reviewed templates
         # recover ambiguous glyphs without narrowing the original S/C margin.
         for candidate,source in [(classifier,'training_symbol_references'),
@@ -130,8 +141,67 @@ class LearnedCardDetector:
             reading = candidate.classify_symbols(*symbols)
             if reading['accepted'] and min(reading['rank_score'],reading['suit_score']) >= .90:
                 reading.update(decision_source=source,confidence=min(reading['rank_score'],reading['suit_score']))
+                if key is not None:
+                    cache[key] = dict(reading)
+                    if len(cache) > 2048:
+                        cache.popitem(last=False)
                 return reading
+        if key is not None:
+            cache[key] = None
+            if len(cache) > 2048:
+                cache.popitem(last=False)
         return None
+
+    def _retry_uncertain_indices(self, frame, cards):
+        """One bounded enlarged tile, only for still rejected neural indices."""
+        from temporal_cards import overlap
+        uncertain = [c for c in cards if not c['accepted']]
+        if not uncertain:
+            return 0
+        eligible = []
+        for card in uncertain:
+            x, y, right, bottom = card['bbox']
+            patch = frame[y:bottom, x:right]
+            if not patch.size:
+                continue
+            hsv = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
+            if np.mean((hsv[:,:,1] < 85) & (hsv[:,:,2] > 170)) < .5:
+                continue
+            eligible.append(card)
+            reading = self._symbol_reading(cv2.resize(patch, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC))
+            if reading:
+                card.update(neural_candidate=card['rank']+card['suit'], neural_confidence=card['confidence'])
+                card.update(reading, decision_source='enlarged_symbol_recovery')
+        uncertain = [c for c in eligible if not c['accepted']]
+        if not uncertain:
+            return 0
+        target = uncertain[0]
+        x, y, right, bottom = target['bbox']
+        side = max(64, round((bottom-y)*6.5))
+        side = min(side, frame.shape[0], frame.shape[1])
+        ax = max(0, min(frame.shape[1]-side, round((x+right-side)/2)))
+        ay = max(0, min(frame.shape[0]-side, round((y+bottom-side)/2)))
+        tile = frame[ay:ay+side, ax:ax+side]
+        blob, scale, left, top = letterbox(tile)
+        self.net.setInput(blob)
+        proposals = decode_indices(self.net.forward(), self.names, tile.shape, scale, left, top)
+        for card in uncertain:
+            matches = []
+            for proposal in proposals:
+                box = [v+(ax if i%2==0 else ay) for i,v in enumerate(proposal['bbox'])]
+                if proposal['accepted'] and overlap(card['bbox'], box) >= .5:
+                    matches.append(proposal)
+            if len(matches) != 1:
+                continue
+            reading = matches[0]
+            # Two independent crops must agree on identity. A contradictory
+            # retry remains uncertain rather than replacing one guess by another.
+            if reading['card'] != card['rank']+card['suit']:
+                continue
+            card.update(neural_confidence=card['confidence'], neural_candidate=reading['card'],
+                        accepted=True, card=reading['card'], confidence=reading['confidence'],
+                        class_margin=reading['class_margin'], decision_source='enlarged_model_recovery')
+        return 1
 
     def _recover_player_indices(self, frame, cards):
         """Read exposed hole-card strips when YOLO misses or doubts an index.
@@ -276,17 +346,21 @@ class LearnedCardDetector:
                 cards.append(reading)
         if len(regions) > 1 and cards:
             boxes = [[c['bbox'][0], c['bbox'][1], c['bbox'][2]-c['bbox'][0], c['bbox'][3]-c['bbox'][1]] for c in cards]
-            priority = [c['confidence'] + (1 if c['accepted'] and c['decision_source'] == 'model' else 0) for c in cards]
+            # All confirmed readings outrank rejected proposals. A weak neural
+            # duplicate must not suppress a stronger verified symbol reading.
+            priority = [c['confidence'] + (1 if c['accepted'] else 0) for c in cards]
             kept = cv2.dnn.NMSBoxes(boxes, priority, .25, .45)
             cards = [cards[i] for i in np.asarray(kept).reshape(-1)]
         if self.profile == 'pokerstars':
             self._recover_player_indices(frame, cards)
         elif self.profile == 'pokerstars-nine':
             self._recover_nine_indices(frame,cards)
+        retries = self._retry_uncertain_indices(frame, cards) if self.profile in ('pokerstars','pokerstars-nine') else 0
         return {'scene': 'card_model', 'scene_score': None,
                 'detector': 'lgd-cards-gen3' if self.profile == 'general' else 'pokerstars-finetuned-yolo11n',
                 'profile': self.profile,
                 'regions_analyzed': len(regions),
+                'uncertain_retries': retries,
                 'detection_kind': 'card_index', 'cards': cards,
                 'processing_ms': round((perf_counter() - start) * 1000, 3)}
 

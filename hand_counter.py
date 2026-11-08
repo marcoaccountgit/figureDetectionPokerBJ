@@ -54,7 +54,7 @@ class HandCounter:
         self.samples = 0
         self.since = None
 
-    def update(self, presence, hand, timestamp):
+    def update(self, presence, hand, timestamp, board_cleared=False):
         if self.last_timestamp is not None and (timestamp <= self.last_timestamp or timestamp-self.last_timestamp > 2):
             self.reset_observations()
         self.last_timestamp = timestamp
@@ -64,6 +64,8 @@ class HandCounter:
             if self.active:
                 if all(value is False for value in visible):
                     candidate = ('end',)
+                elif board_cleared and all(value is True for value in visible):
+                    candidate = ('restart',)
             elif all(value is True for value in visible):
                 # Count physical deals, even if a rank/suit is unreadable.
                 candidate = ('start',)
@@ -75,7 +77,7 @@ class HandCounter:
             self.samples += 1
         started = ended = False
         if candidate and self.samples >= 5 and timestamp-self.since >= .3:
-            if candidate[0] == 'start':
+            if candidate[0] in ('start', 'restart'):
                 self.count += 1
                 self.active = started = True
             else:

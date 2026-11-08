@@ -25,6 +25,14 @@ class HandCardMemory:
     def __init__(self):
         self.cards = {}
 
+    def rescale(self, factor):
+        """A registered viewport resize changes geometry, not card identities."""
+        for key, card in self.cards.items():
+            item = dict(card, bbox=[round(v * factor) for v in card['bbox']])
+            if card.get('polygon') is not None:
+                item['polygon'] = [[round(x * factor), round(y * factor)] for x, y in card['polygon']]
+            self.cards[key] = item
+
     def update(self, result, cycle):
         if cycle['started'] or cycle['ended']:
             self.cards.clear()

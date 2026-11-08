@@ -1,10 +1,12 @@
 """Confirmed OCR adapter and latest-state-only multiprocessing equity service."""
 from collections import OrderedDict
+from copy import deepcopy
 import multiprocessing as mp
 from queue import Empty, Full
 from time import monotonic
 
 from poker_equity import PROFILES, calculate_equity, card_code, validate
+from bet_equity_model import fixed_bet_model, VERSION
 
 
 class OCRGameState:
@@ -81,14 +83,35 @@ def _worker(requests, responses, generation):
         if item is None:
             return
         version, kwargs = item
+        kwargs = dict(kwargs)
+        strengths = kwargs.pop('bet_strengths', None)
+        uniform_result = kwargs.pop('_uniform_result', None)
         def send(result):
             if generation.value == version:
                 _publish_response(responses, (version, result))
         try:
-            result = calculate_equity(**kwargs, cancelled=lambda: generation.value != version, progress=send)
+            result = uniform_result if uniform_result is not None else calculate_equity(
+                **kwargs, cancelled=lambda: generation.value != version, progress=send)
             if result is not None:
-                # Final response must not be dropped behind intermediate progress.
-                send(result)
+                if strengths is None:
+                    send(result)
+                elif not any(strengths):
+                    # Identical assumptions must reuse the identical estimate,
+                    # including exact enumeration and its zero sampling error.
+                    send(dict(result, bet_scenario=dict(result, opponent_model='fixed_bets')))
+                else:
+                    baseline = result
+                    send(dict(baseline, bet_scenario=dict(status='calculating', complete=False)))
+                    def scenario_progress(value):
+                        send(dict(baseline, bet_scenario=value))
+                    try:
+                        scenario = calculate_equity(**kwargs, opponent_strengths=strengths,
+                                                    cancelled=lambda: generation.value != version,
+                                                    progress=scenario_progress)
+                        if scenario is not None:
+                            send(dict(baseline, bet_scenario=scenario))
+                    except (ValueError, RuntimeError) as error:
+                        send(dict(baseline, bet_scenario=dict(status='error', complete=True, message=str(error))))
         except Exception as error:
             send(dict(status='error', message=str(error)))
 
@@ -98,10 +121,13 @@ class EquityService:
         self.adapter = OCRGameState()
         self.debounce, self.cache_size = debounce, cache_size
         self.cache = OrderedDict()
+        self.uniform_cache = OrderedDict()
         self.key = None
         self.since = 0
         self.result = None
         self.sent = False
+        self.opponent_context = None
+        self.opponent_snapshot = None
         self.process = None
         self.context = mp.get_context('spawn')
         self.generation = self.context.Value('q', 0)
@@ -112,7 +138,20 @@ class EquityService:
         self.generation.value += 1
         self.result, self.sent = None, False
 
-    def submit(self, result, session, profile='FAST', manual_opponents=None, random_seed=None):
+    def submit(self, result, session, profile='FAST', manual_opponents=None, random_seed=None, bet_model=False):
+        # Keep the opponents used for this card state stable. Live detections
+        # must not cancel a simulation, including while a seat is uncertain.
+        context = (session, result.get('hand_cycle', {}).get('count'),
+                   result.get('table_profile'),
+                   tuple((c.get('card'), c.get('accepted'), c.get('detected'))
+                         for c in result.get('player_hand', [])),
+                   tuple((c.get('card'), c.get('accepted'), c.get('detected'))
+                         for c in result.get('board', [])),
+                   profile, random_seed, manual_opponents, bet_model)
+        if context != self.opponent_context:
+            self.opponent_context, self.opponent_snapshot = context, None
+        if manual_opponents is None and self.opponent_snapshot is not None:
+            result = dict(result, opponents=self.opponent_snapshot)
         try:
             if result.get('alignment_ready') is False:
                 raise ValueError('Allineamento del tavolo in corso: probabilità sospese fino alla conferma dei riferimenti')
@@ -125,8 +164,23 @@ class EquityService:
                 self._invalidate()
                 self.key = None
             return dict(status='waiting', message=str(error))
-        key = (self.adapter.identity, tuple(sorted(kwargs['hero_cards'])), tuple(kwargs['community_cards']),
-               kwargs['opponents_count'], profile, random_seed)
+        if manual_opponents is None and self.opponent_snapshot is None:
+            self.opponent_snapshot = deepcopy(result.get('opponents', {}))
+        model = fixed_bet_model(result, kwargs['opponents_count'], manual_opponents) if bet_model else None
+        strengths = tuple(model['strengths']) if model and model['status'] == 'ready' else None
+        if strengths is not None:
+            kwargs['bet_strengths'] = strengths
+        uniform_key = (self.adapter.identity, tuple(sorted(kwargs['hero_cards'])), tuple(kwargs['community_cards']),
+                       kwargs['opponents_count'], profile, random_seed)
+        key = uniform_key + (VERSION if bet_model else None, strengths)
+        if uniform_key in self.uniform_cache:
+            kwargs['_uniform_result'] = self.uniform_cache[uniform_key]
+        def decorate(response):
+            if model is not None:
+                response = dict(response, bet_model=model)
+                if model['status'] != 'ready':
+                    response['bet_scenario'] = dict(status='waiting', message=model['message'])
+            return response
         if key != self.key:
             self._invalidate()
             self.key, self.since = key, monotonic()
@@ -138,12 +192,18 @@ class EquityService:
             if version == self.generation.value:
                 self.result = response
                 if response.get('complete'):
+                    self.uniform_cache[uniform_key] = {k: v for k, v in response.items()
+                                                       if k not in ('bet_scenario', 'bet_model', 'cached')}
+                    self.uniform_cache.move_to_end(uniform_key)
+                    while len(self.uniform_cache) > self.cache_size:
+                        self.uniform_cache.popitem(last=False)
+                if response.get('complete') and (strengths is None or response.get('bet_scenario', {}).get('complete')):
                     self.cache[key] = response
                     self.cache.move_to_end(key)
                     while len(self.cache) > self.cache_size:
                         self.cache.popitem(last=False)
         if key in self.cache:
-            return dict(self.cache[key], cached=True)
+            return decorate(dict(self.cache[key], cached=True))
         if self.sent and self.process is not None and not self.process.is_alive():
             self.result = None
             return dict(status='error', message='Processo equity terminato; riavviare il servizio')
@@ -162,8 +222,8 @@ class EquityService:
             except Full:
                 # The queued obsolete request is cancelled by its generation.
                 pass
-        return self.result or dict(status='calculating' if self.sent else 'debouncing',
-                                   message='Calcolo locale in corso' if self.sent else 'Attesa di uno stato stabile')
+        return decorate(self.result or dict(status='calculating' if self.sent else 'debouncing',
+                                           message='Calcolo locale in corso' if self.sent else 'Attesa di uno stato stabile'))
 
     def close(self):
         self._invalidate()

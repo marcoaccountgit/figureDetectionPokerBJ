@@ -49,6 +49,37 @@ test('counter distinguishes zero opponents from a pending observation and resets
   assert.equal(elements.get('opponentState').textContent,'In attesa di scansione');
   assert.equal(descendants(elements.get('playerHand')).filter(n=>n.tagName==='img').length,0);
 });
+
+test('discarded cards appear only after the confirmed end and persist beside a new hand',()=>{
+  const {elements,context}=panel();
+  assert.equal(elements.get('discardedHandPanel').hidden,true);
+  vm.runInContext(`renderHand([{accepted:true,card:'8C'},{accepted:true,card:'5D'}],{count:1,active:true});
+    renderHand([],{count:1,active:true});`,context);
+  assert.equal(elements.get('discardedHandPanel').hidden,true);
+  vm.runInContext('renderHand([],{count:1,active:false,ended:true})',context);
+  assert.equal(elements.get('discardedHandPanel').hidden,false);
+  const codes=id=>descendants(elements.get(id)).filter(n=>n.tagName==='span').map(n=>n.textContent);
+  assert.deepEqual(codes('discardedHand'),['8C','5D']);
+  assert.equal(descendants(elements.get('playerHand')).filter(n=>n.tagName==='img').length,0);
+  vm.runInContext("renderHand([{accepted:true,card:'AS'},{accepted:true,card:'KH'}],{count:2,active:true,started:true})",context);
+  assert.deepEqual(codes('discardedHand'),['8C','5D']);
+  assert.deepEqual(codes('playerHand'),['AS','KH']);
+  vm.runInContext('renderHand([],{count:2,active:false,ended:true});renderHand([],{count:2,active:false,ended:true});',context);
+  assert.deepEqual(codes('discardedHand'),['AS','KH']);
+  assert.deepEqual(descendants(elements.get('discardedHand')).filter(n=>n.tagName==='img').map(n=>n.alt),['picche','cuori']);
+});
+
+test('discarded cards never include uncertain readings or cards from another cycle',()=>{
+  const {elements,context}=panel();
+  vm.runInContext(`renderHand([{accepted:true,card:'AS'},{accepted:true,card:'KH'}],{count:1,active:true});
+    renderHand([{accepted:true,card:'2D'},{accepted:false,detected:true,card:'7C'}],{count:2,active:true,started:true});
+    renderHand([],{count:2,active:false,ended:true});`,context);
+  assert.deepEqual(descendants(elements.get('discardedHand')).filter(n=>n.tagName==='span').map(n=>n.textContent),['2D']);
+  assert.equal(elements.get('discardedHand').children.length,2);
+  vm.runInContext('resetDiscardedHand();renderHand([],{count:3,active:false,ended:true});',context);
+  assert.equal(elements.get('discardedHandPanel').hidden,true);
+  assert.equal(elements.get('discardedHand').children.length,0);
+});
 test('hand count starts at zero, updates independently of card reading, and resets on new capture',()=>{
   const {elements,context} = panel();
   assert.equal(elements.get('handCount').textContent,0);
@@ -184,6 +215,32 @@ test('equity translates final categories and current category labels',()=>{
  assert.ok(labels.includes('Carta alta'));
  assert.ok(labels.includes('Coppia'));
  assert.ok(labels.includes('Scala colore'));
+});
+
+test('fixed bet comparison displays both assumptions and clears stale scenarios',()=>{
+ const {elements,context}=panel();
+ elements.get('equityBetModel').checked=true;
+ assert.equal(vm.runInContext('equityOptions().betModel',context),'1');
+ vm.runInContext(`const baseMetric={value:.35,standard_error:.01,ci95:[.33,.37]};
+ const betMetric={value:.2,standard_error:.01,ci95:[.18,.22]};
+ renderEquity({status:'ready',method:'monte_carlo',complete:true,hero_cards:['As','Kh'],community_cards:['2s','7d','Jh'],street:'flop',opponents_count:1,current_label:'High Card',metrics:{equity:baseMetric},categories:{},simulations:5000,processing_ms:5,
+ bet_model:{status:'ready',message:'Ipotesi fissa',unit:'CHIPS',seats:[{label:'Alto',commitment:50,ratio:.25,strong_weight:6,note:'Impegno confermato'}]},
+ bet_scenario:{status:'ready',complete:true,metrics:{equity:betMetric}}},
+ {status:'conditional',title:'Confronto',unit:'CHIPS',pot_before_call:150,call_cost:50,pot_after_call:200,required_equity:.25,equity:.35,margin:.1,expected_value:20,expected_value_ci95:[16,24],complete:true},
+ {status:'conditional',expected_value:-10});`,context);
+ const lines=descendants(elements.get('betModelNumbers')).map(n=>n.textContent);
+ assert.ok(lines.includes('Equità contro mani casuali'));
+ assert.ok(lines.includes('Equità con ipotesi sulle puntate'));
+ assert.ok(lines.includes('20 fiches'));
+ assert.ok(lines.includes('-10 fiches'));
+ assert.match(elements.get('betModelSeats').children[0].textContent,/Peso mani forti 6/);
+ vm.runInContext('renderEquity({status:"waiting"})',context);
+ assert.equal(elements.get('betModelNumbers').children.length,0);
+ assert.equal(elements.get('betModelSeats').children.length,0);
+ elements.get('equityBetModel').checked=false;
+ elements.get('equityBetModel').onchange();
+ assert.equal(vm.runInContext('equityOptions().betModel',context),'0');
+ assert.match(elements.get('betModelState').textContent,/disattivato/);
 });
 
 test('conditional advice shows prices and clears them when the next state is incomplete',()=>{

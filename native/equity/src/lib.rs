@@ -94,7 +94,158 @@ fn valid(cards: &[u8]) -> bool {
 
 #[no_mangle]
 pub extern "C" fn poker_equity_abi_version() -> u32 {
-    1
+    2
+}
+
+fn pair_strength(pair: &[u8; 2], board: &[u8]) -> u32 {
+    if board.is_empty() {
+        let a = pair[0] as u32 / 4 + 2;
+        let b = pair[1] as u32 / 4 + 2;
+        // Explicit preflop heuristic: pair first, then high/low rank, then
+        // suitedness. This is a model assumption, not exact preflop equity.
+        ranking::score(
+            (a == b) as u32,
+            &[a.max(b), a.min(b), (pair[0] % 4 == pair[1] % 4) as u32],
+        )
+    } else {
+        let mut hand = [0; 7];
+        hand[..2].copy_from_slice(pair);
+        hand[2..2 + board.len()].copy_from_slice(board);
+        evaluate(&hand[..2 + board.len()])
+    }
+}
+
+/// Fixed commitment model; separate from the uniform sampler and its seed.
+/// # Safety
+/// Known/output follow poker_simulate. Strengths contains opponents bytes,
+/// each in 0..=3, identifying the documented fixed weight schedule.
+#[no_mangle]
+pub unsafe extern "C" fn poker_simulate_bets(
+    known: *const u8,
+    known_len: usize,
+    opponents: usize,
+    simulations: u64,
+    seed: u64,
+    strengths: *const u8,
+    callback: Option<extern "C" fn(*const Totals) -> i32>,
+    output: *mut Totals,
+) -> i32 {
+    if known.is_null()
+        || strengths.is_null()
+        || output.is_null()
+        || ![2, 5, 6, 7].contains(&known_len)
+        || !(1..=9).contains(&opponents)
+        || !(2..=1_000_000).contains(&simulations)
+    {
+        return -1;
+    }
+    let known = std::slice::from_raw_parts(known, known_len);
+    let strengths = std::slice::from_raw_parts(strengths, opponents);
+    if !valid(known) || strengths.iter().any(|&s| s > 3) {
+        return -1;
+    }
+    if strengths.iter().all(|&s| s == 0) {
+        return poker_simulate(
+            known.as_ptr(),
+            known_len,
+            opponents,
+            simulations,
+            seed,
+            callback,
+            output,
+        );
+    }
+    let (hero, board) = known.split_at(2);
+    let deck: Vec<u8> = (0..52).filter(|c| !known.contains(c)).collect();
+    let mut pairs = Vec::new();
+    for i in 0..deck.len() {
+        for j in i + 1..deck.len() {
+            pairs.push([deck[i], deck[j]]);
+        }
+    }
+    let scores: Vec<u32> = pairs.iter().map(|p| pair_strength(p, board)).collect();
+    let mut ordered = scores.clone();
+    ordered.sort_unstable();
+    let cutoff = ordered[ordered.len() * 3 / 4];
+    // Integer CDFs make weighted selection exact; no floating-point weights.
+    let cdfs: Vec<Vec<usize>> = strengths
+        .iter()
+        .map(|&level| {
+            let strong = [1, 3, 6, 10][level as usize];
+            let mut sum = 0;
+            scores
+                .iter()
+                .map(|&s| {
+                    sum += if s >= cutoff { strong } else { 1 };
+                    sum
+                })
+                .collect()
+        })
+        .collect();
+    let mut random = Random::new(seed);
+    let mut totals = Totals::default();
+    let mut sample = [0; 23];
+    let missing = 5 - board.len();
+    let mut attempts = 0u64;
+    while totals.n < simulations {
+        if attempts.is_multiple_of(128) {
+            if let Some(notify) = callback {
+                if notify(&totals) != 0 {
+                    *output = totals;
+                    return 1;
+                }
+            }
+        }
+        attempts += 1;
+        if attempts > simulations * 10000 {
+            return -2;
+        }
+        let mut used = 0u64;
+        let mut collision = false;
+        for (i, cdf) in cdfs.iter().enumerate() {
+            let draw = random.below(*cdf.last().unwrap());
+            let pair = pairs[cdf.partition_point(|&n| n <= draw)];
+            let mask = (1u64 << pair[0]) | (1u64 << pair[1]);
+            if mask & used != 0 {
+                collision = true;
+                break;
+            }
+            used |= mask;
+            sample[missing + i * 2..missing + i * 2 + 2].copy_from_slice(&pair);
+        }
+        // Reject the WHOLE joint tuple, never just the colliding opponent.
+        // This preserves probability proportional to the product of weights.
+        if collision {
+            continue;
+        }
+        let mut remaining: Vec<u8> = deck
+            .iter()
+            .copied()
+            .filter(|c| used & (1u64 << c) == 0)
+            .collect();
+        for i in 0..missing {
+            let j = i + random.below(remaining.len() - i);
+            remaining.swap(i, j);
+            sample[i] = remaining[i];
+        }
+        record(
+            hero,
+            board,
+            &sample[..missing + opponents * 2],
+            opponents,
+            &mut totals,
+        );
+        if [256, 1024, 5000, 10000, 25000, 50000, 100000, 150000, 200000].contains(&totals.n) {
+            if let Some(notify) = callback {
+                if notify(&totals) != 0 {
+                    *output = totals;
+                    return 1;
+                }
+            }
+        }
+    }
+    *output = totals;
+    0
 }
 
 /// # Safety

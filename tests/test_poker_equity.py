@@ -208,14 +208,42 @@ class OCRIntegrationTests(unittest.TestCase):
             self.assertEqual(service.generation.value,old)
             data['opponents']['count']=3
             service.submit(data,'one')
+            self.assertEqual(service.generation.value,old)
+            data['opponents']['pending']=True
+            self.assertEqual(service.submit(data,'one')['status'],'debouncing')
+            self.assertEqual(service.generation.value,old)
+            data['opponents']['pending']=False
+            data['hand_cycle']['count']=2
+            service.submit(data,'one')
             service.responses.put((old,dict(status='ready',complete=True)))
             self.assertEqual(service.submit(data,'one')['status'],'debouncing')
             self.assertIsNone(service.result)
-            data['hand_cycle']['count']=2
+            data['hand_cycle']['count']=3
             service.submit(data,'one')
             self.assertGreater(service.generation.value,old+1)
         finally:
             service.responses=original
+            service.close()
+
+    def test_new_board_uses_latest_opponents_but_manual_changes_restart(self):
+        service = EquityService(debounce=100)
+        try:
+            data = frame(('2s','3d','4c'), opponents=1)
+            service.submit(data, 'one')
+            generation = service.generation.value
+            data['opponents']['count'] = 3
+            service.submit(data, 'one')
+            self.assertEqual(service.generation.value, generation)
+            self.assertEqual(service.opponent_snapshot['count'], 1)
+            service.submit(frame(('2s','3d','4c','5h'), opponents=3), 'one')
+            self.assertGreater(service.generation.value, generation)
+            self.assertEqual(service.opponent_snapshot['count'], 3)
+            data = frame(('2s','3d','4c','5h'), opponents=3)
+            service.submit(data, 'one', manual_opponents=2)
+            generation = service.generation.value
+            service.submit(data, 'one', manual_opponents=4)
+            self.assertGreater(service.generation.value, generation)
+        finally:
             service.close()
 
     def test_preflop_starts_from_confirmed_hole_cards_before_cycle_confirmation(self):
@@ -267,7 +295,11 @@ class OCRIntegrationTests(unittest.TestCase):
             self.assertTrue(service.submit(data,'one',random_seed=12)['cached'])
             data['opponents']['count']=2
             pending=service.submit(data,'one',random_seed=12)
-            self.assertNotEqual(pending.get('status'),'ready')
+            self.assertTrue(pending['cached'])
+            self.assertEqual(pending['opponents_count'],1)
+            # An explicit setting change starts a new calculation and takes
+            # the latest confirmed automatic count.
+            service.submit(data,'one',profile='BALANCED',random_seed=12)
             second=ready(data)
             self.assertAlmostEqual(second['metrics']['equity']['value'],1/3)
             data['player_hand'][0]['accepted']=False

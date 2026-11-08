@@ -9,7 +9,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parent
 
 
-def fixture(equity_open=False):
+def fixture(equity_open=False,discarded_hand=False):
     page = (ROOT/'browser_ui.html').read_text(encoding='utf-8')
     picture = base64.b64encode((ROOT/'artifacts/capture10-improvement/dataset/reviewed/80.png').read_bytes()).decode()
     script = """<script>
@@ -35,6 +35,12 @@ report.columnScroll=getComputedStyle(document.querySelector('.left-column')).ove
 const pre=document.createElement('pre');pre.id='layoutReport';pre.hidden=true;pre.textContent=JSON.stringify(report);document.body.append(pre);
 },500);};qaImage.src='data:image/png;base64,PICTURE';
 </script>""".replace('PICTURE',picture)
+    if discarded_hand:
+        script=script.replace("renderHand(['8C','2C'].map(card=>({card,accepted:true})));",
+            "renderHand(['QH','JS'].map(card=>({card,accepted:true})),{count:17,active:true});"
+            "renderHand([],{count:17,active:false,ended:true});"
+            "renderHand(['8C','2C'].map(card=>({card,accepted:true})),{count:18,active:true});")
+        script=script.replace("'board','playerHand','opponentCount'","'board','playerHand','discardedHandPanel','opponentCount'")
     if equity_open:
         from poker_equity import calculate_equity
         from poker_advice import analyze_decision
@@ -53,11 +59,12 @@ def main():
     parser.add_argument('--browser',type=Path,default=Path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'))
     parser.add_argument('--output',type=Path,default=ROOT/'artifacts/dashboard-layout')
     parser.add_argument('--equity-open',action='store_true')
+    parser.add_argument('--discarded-hand',action='store_true')
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True,exist_ok=True)
     path = output/'preview.html'
-    path.write_text(fixture(args.equity_open),encoding='utf-8')
+    path.write_text(fixture(args.equity_open,args.discarded_hand),encoding='utf-8')
     reports = []
     for width,height in ((1366,768),(1280,720),(1100,650)):
         key = f'{width}x{height}'
@@ -83,6 +90,11 @@ def main():
                    for key,r in report['rectangles'].items() if key not in ('tableObservation','equityPanel'))
         assert report['populatedHeights']==report['waitingHeights']==[360,620], 'Altezza variabile tra misure e attesa'
         assert report['columnScroll']=='auto', 'Pannelli non raggiungibili tramite scorrimento'
+        if args.discarded_hand:
+            discarded=report['rectangles']['discardedHandPanel']
+            assert discarded['width']>0, 'Carte scartate nascoste'
+            assert discarded['left']>=report['rectangles']['playerHand']['right'], 'Carte scartate sovrapposte alla mano'
+            assert discarded['width']<report['rectangles']['playerHand']['width'], 'Carte scartate non compatte'
         if args.equity_open:
             equity = report['rectangles']['equityPanel']
             assert equity['top'] >= report['rectangles']['tableObservation']['bottom']

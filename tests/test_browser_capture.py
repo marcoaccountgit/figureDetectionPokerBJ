@@ -10,6 +10,116 @@ from card_detector import cv2, np
 
 
 class BrowserCaptureTests(unittest.TestCase):
+    def test_fast_new_deal_clears_old_board_without_observing_empty_hero(self):
+        from test_live_card_cache import known_flop
+        source, game, viewport, _, cards, _ = known_flop()
+        self.detector.detect.return_value = dict(cards=cards, processing_ms=1)
+        headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'fast-deal'}
+        def send(frame):
+            status, body = self.request('POST', '/frame', cv2.imencode('.png', frame)[1].tobytes(), headers)
+            self.assertEqual(status, 200)
+            return json.loads(body)
+        with patch('browser_capture.perf_counter', side_effect=[i*.05 for i in range(2000)]):
+            for _ in range(5):
+                packet = send(source)
+            self.assertEqual(packet['hand_cycle']['count'], 1)
+            self.assertEqual(packet['board'][0]['card'], '7S')
+            scale = game.shape[1] / 1762
+            new_deal = source.copy()
+            for slot in range(3):
+                cx = 654 + 101*slot
+                a, b, c, d = [round(v*scale) for v in (cx-24,365,cx+26,430)]
+                new_deal[b+viewport[1]:d+viewport[1], a+viewport[0]:c+viewport[0]] = (30,120,30)
+            self.detector.detect.return_value = dict(
+                cards=[dict(card, card=code) for card, code in zip(cards[3:], ('AC','8H'))], processing_ms=1)
+            for _ in range(9):
+                packet = send(new_deal)
+            self.assertEqual(packet['hand_cycle']['count'], 2)
+            self.assertEqual([c['card'] for c in packet['player_hand']], ['AC','8H'])
+            self.assertEqual([c['card'] for c in packet['board']], [None]*5)
+            self.assertTrue(send(new_deal)['card_cache']['inference_skipped'])
+
+    def test_confirmed_cards_skip_detector_across_actions_resize_and_read_new_turn(self):
+        from test_live_card_cache import known_flop
+        source, game, viewport, _, cards, _ = known_flop()
+        self.detector.detect.return_value = dict(cards=cards, processing_ms=1)
+        headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'card-cache'}
+        def send(frame):
+            data = cv2.imencode('.png', frame)[1].tobytes()
+            status, body = self.request('POST', '/frame', data, headers)
+            self.assertEqual(status, 200)
+            return json.loads(body)
+        with patch('browser_capture.perf_counter', side_effect=[i * .05 for i in range(2000)]):
+            for _ in range(5):
+                packet = send(source)
+            self.assertEqual(self.detector.detect.call_count, 5)
+            original_board = [c['card'] for c in packet['board']]
+            changed = source.copy()
+            cv2.putText(changed, 'CALL / RAISE', (20, changed.shape[0] - 20), 0, .5, (255,255,255), 1)
+            for _ in range(3):
+                packet = send(changed)
+                self.assertTrue(packet['card_cache']['inference_skipped'])
+                self.assertEqual([c['card'] for c in packet['board']], original_board)
+            smaller = cv2.resize(changed, (round(changed.shape[1] * .8), round(changed.shape[0] * .8)))
+            packet = send(smaller)
+            self.assertTrue(packet['card_cache']['inference_skipped'])
+            self.assertEqual(self.detector.detect.call_count, 5)
+            # Return to the original pose and reveal the previously empty turn.
+            x, y = 654 + 101 * 3, 395
+            scale = game.shape[1] / 1762
+            box = [round(v * scale) for v in (x - 24, y - 30, x + 26, y + 35)]
+            left, top, right, bottom = box
+            source[top + viewport[1]:bottom + viewport[1], left + viewport[0]:right + viewport[0]] = 255
+            turn = dict(card='AS', accepted=True, confidence=.99,
+                        bbox=[round(v * scale) for v in (x - 12, y - 20, x + 12, y + 20)])
+            self.detector.detect.return_value = dict(cards=cards + [turn], processing_ms=1)
+            for _ in range(5):
+                packet = send(source)
+                self.assertFalse(packet['card_cache']['inference_skipped'])
+            self.assertEqual(packet['board'][3]['card'], 'AS')
+            packet = send(source)
+            self.assertTrue(packet['card_cache']['inference_skipped'])
+            self.assertEqual(self.detector.detect.call_count, 10)
+            # Removing the hero's physical cards must end this cycle, and a
+            # new deal must acquire fresh identities rather than cached ones.
+            from table_profiles import NINE_HERO
+            folded = source.copy()
+            for region in NINE_HERO:
+                a, b, c, d = [round(v * scale) for v in region]
+                folded[b + viewport[1]:d + viewport[1], a + viewport[0]:c + viewport[0]] = (30, 120, 30)
+            self.detector.detect.return_value = dict(cards=cards[:3] + [turn], processing_ms=1)
+            for _ in range(5):
+                packet = send(folded)
+                self.assertFalse(packet['card_cache']['inference_skipped'])
+            self.assertFalse(packet['hand_cycle']['active'])
+            self.assertEqual([c['card'] for c in packet['player_hand']], [None, None])
+            new_deal = source.copy()
+            for slot in range(4):
+                cx = 654 + 101 * slot
+                a, b, c, d = [round(v * scale) for v in (cx - 24, 365, cx + 26, 430)]
+                new_deal[b + viewport[1]:d + viewport[1], a + viewport[0]:c + viewport[0]] = (30,120,30)
+            new_hand = [dict(card, card=code) for card, code in zip(cards[3:], ('AH', 'KD'))]
+            self.detector.detect.return_value = dict(cards=new_hand, processing_ms=1)
+            for _ in range(9):
+                packet = send(new_deal)
+            self.assertEqual(packet['hand_cycle']['count'], 2)
+            self.assertEqual([c['card'] for c in packet['player_hand']], ['AH', 'KD'])
+            self.assertEqual([c['card'] for c in packet['board']], [None] * 5)
+            packet = send(new_deal)
+            self.assertTrue(packet['card_cache']['inference_skipped'])
+
+    def test_fixed_bet_model_option_reaches_service_without_player_profiles(self):
+        service = Mock()
+        service.submit.return_value = dict(status='waiting', bet_scenario=dict(status='waiting'))
+        self.server.RequestHandlerClass = make_handler(self.detector, 'test-token', equity_service=service)
+        frame = cv2.imencode('.png', np.full((100, 200, 3), 80, np.uint8))[1].tobytes()
+        headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'fixed-bets',
+                   'X-Equity-Bet-Model': '1'}
+        status, body = self.request('POST', '/frame', frame, headers)
+        self.assertEqual(status, 200)
+        self.assertTrue(service.submit.call_args.kwargs['bet_model'])
+        self.assertEqual(json.loads(body)['poker_advice_bets']['status'], 'waiting')
+
     def test_desktop_six_diagnosis_confirms_five_opponents_via_http(self):
         from pathlib import Path
         frame = cv2.imread(str(Path(__file__).resolve().parent / 'fixtures/six-five-covered-opponents.jpg'))

@@ -16,6 +16,7 @@ from capture_alignment import CaptureAligner, restore_coordinates
 from opponent_detector import OpponentDetector, OpponentTracker
 from hand_counter import HandCounter, player_card_presence
 from poker_advice import analyze_decision
+from live_card_cache import card_inference_needed
 
 ROOT = Path(__file__).resolve().parent
 MAX_FRAME = 12 * 1024 * 1024
@@ -73,29 +74,42 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                         state.update(session=session, viewport=viewport, temporal=live_confirmation(),
                                      opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[], card_memory=HandCardMemory())
                     elif state['viewport'] != viewport or state['profile'] != profile:
-                        state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker(), card_memory=HandCardMemory())
+                        old_width = state['viewport'][2] - state['viewport'][0]
+                        state['card_memory'].rescale(game.shape[1] / old_width)
+                        state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker())
                         state['hands'].reset_observations()
                         if state['profile'] != profile:
-                            state.update(hands=HandCounter(),dealt_seats=[])
+                            state.update(hands=HandCounter(),dealt_seats=[], card_memory=HandCardMemory())
                     state['profile'] = profile
                     if isinstance(detector,TableCardDetector):detector.profile=profile
                     aligned = state['aligner'].alignment_ready
-                    result = detector.detect(game) if aligned else dict(cards=[],processing_ms=0)
+                    presence_start = perf_counter()
+                    presence=player_card_presence(game,profile) if aligned else [dict(present=None),dict(present=None)]
+                    needed, cache_info = card_inference_needed(
+                        game, state['card_memory'], state['hands'].active, presence, profile)
+                    presence_ms = (perf_counter() - presence_start) * 1000
+                    if aligned and needed:
+                        result = detector.detect(game)
+                    else:
+                        result = dict(cards=[], processing_ms=0, scene='card_memory' if aligned else 'alignment_lost')
+                    result['card_cache'] = cache_info
+                    result['card_cache']['probe_ms'] = round(presence_ms, 3)
                     result['table_profile'] = profile
                     result['alignment_ready'] = aligned
                     result = arrange_table(result, game.shape)
                     raw_hand = result['player_hand']
                     hand_start = perf_counter()
-                    presence=player_card_presence(game,profile) if aligned else [dict(present=None),dict(present=None)]
-                    result['hand_cycle'] = state['hands'].update(presence, raw_hand, perf_counter())
+                    result['hand_cycle'] = state['hands'].update(
+                        presence, raw_hand, perf_counter(), board_cleared=cache_info.get('board_cleared', False))
                     if result['hand_cycle']['started'] and result['hand_cycle']['count'] > 1:
                         state['temporal'] = live_confirmation()
                     result = state['temporal'].update(result, perf_counter(), game.shape)
                     result = state['card_memory'].update(result, result['hand_cycle'])
                     result = arrange_table(result, game.shape)
+                    result['hand_cycle']['recognized_cards'] = sum(c['accepted'] for c in result['player_hand'])
                     if result['hand_cycle']['started']:
                         state['opponents'] = OpponentTracker()
-                    result['hand_processing_ms'] = round((perf_counter()-hand_start)*1000, 3)
+                    result['hand_processing_ms'] = round(presence_ms+(perf_counter()-hand_start)*1000, 3)
                     opponent_start = perf_counter()
                     visible_y = (max(0,-viewport[1])*1762/game.shape[1],
                                  (min(frame.shape[0],viewport[3])-viewport[1])*1762/game.shape[1])
@@ -122,9 +136,14 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                         result['equity'] = equity_service.submit(
                             result, session, profile=self.headers.get('X-Equity-Profile', 'FAST'),
                             manual_opponents=int(manual) if manual else None,
-                            random_seed=int(seed) if seed else None)
+                            random_seed=int(seed) if seed else None,
+                            **({'bet_model': True} if self.headers.get('X-Equity-Bet-Model') == '1' else {}))
                         result['poker_advice'] = analyze_decision(
                             result['equity'],result.get('table_observation'),result['hand_cycle']['count'])
+                        scenario = result['equity'].get('bet_scenario')
+                        if scenario is not None:
+                            result['poker_advice_bets'] = analyze_decision(
+                                scenario, result.get('table_observation'), result['hand_cycle']['count'])
                     result = restore_coordinates(result, viewport, frame.shape)
                     result['capture_alignment']['vertical_anchor'] = state['aligner'].last_anchor
                     result['capture_alignment']['ready'] = aligned

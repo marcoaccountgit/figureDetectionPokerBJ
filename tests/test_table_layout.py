@@ -15,6 +15,14 @@ def detection(code, slot, confidence=.9, accepted=True):
 
 
 class TableLayoutTests(unittest.TestCase):
+    def test_small_desktop_river_survives_scale_drift_but_between_slots_is_rejected(self):
+        cards=[dict(card='KC',accepted=True,confidence=.95,bbox=[496,174,512,206])]
+        result=arrange_table(dict(cards=cards,profile='pokerstars-nine'),(506,811,3))
+        self.assertEqual(result['board'][4]['card'],'KC')
+        between=dict(card='AS',accepted=True,confidence=.99,bbox=[694,375,716,415])
+        result=arrange_table(dict(cards=[between],profile='pokerstars-nine'),(1101,1762,3))
+        self.assertTrue(all(c['card'] is None for c in result['board']))
+
     def arrange(self, cards, shape=(840, 1762, 3)):
         return arrange_table({'cards': cards, 'processing_ms': 1}, shape)
 

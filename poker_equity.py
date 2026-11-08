@@ -106,7 +106,7 @@ def uncertainty(total, squares, n, exact=False):
 
 def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5000,
                      random_seed=None, exact_threshold=2000, max_opponents=9,
-                     cancelled=None, progress=None, backend='auto'):
+                     cancelled=None, progress=None, backend='auto', opponent_strengths=None):
     """Return probabilities in [0,1]. Progress receives cumulative snapshots.
 
     Exact enumeration is used only below exact_threshold legal labelled deals.
@@ -122,6 +122,10 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
         raise ValueError('Il seed deve essere un intero')
     if backend not in ('auto', 'python', 'rust'):
         raise ValueError('Motore equity non valido: auto, python o rust')
+    if opponent_strengths is not None:
+        if (not isinstance(opponent_strengths, (list, tuple)) or len(opponent_strengths) != opponents_count
+                or any(type(s) is not int or not 0 <= s <= 3 for s in opponent_strengths)):
+            raise ValueError('Pesi delle puntate non validi')
     library = None
     if backend != 'python':
         from native_equity import load_native
@@ -133,7 +137,9 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
     deals = comb(len(deck), missing)
     for i in range(opponents_count):
         deals *= comb(len(deck)-missing-2*i, 2)
-    exact = deals <= exact_threshold
+    exact = deals <= exact_threshold and opponent_strengths is None
+    if opponent_strengths is not None and (library is None or backend == 'python'):
+        raise RuntimeError('Il confronto con le puntate richiede il motore Rust compilato')
     current = evaluate(hero+board) if board else None
     # The current board has only 1,326 possible opponent pairs. Flop/turn
     # simulations revisit them often; river simulations reuse final scores too.
@@ -157,6 +163,7 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
                     'category_improvement', 'same_category_value_improvement', 'kicker_improvement'):
             metrics[key] = uncertainty(totals[key], squares[key], n, exact) if current else None
         return dict(status='ready', method='exact' if exact else 'monte_carlo', backend=backend_used,
+                    opponent_model='fixed_bets' if opponent_strengths is not None else 'uniform',
                     hero_cards=[card_code(c) for c in hero], community_cards=[card_code(c) for c in board],
                     street={0:'preflop',3:'flop',4:'turn',5:'river'}[len(board)],
                     opponents_count=opponents_count, current_category=CATEGORIES[current[0]] if current else None,
@@ -185,7 +192,7 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
                 progress(snapshot())
 
         output = run_simulations(library, hero, board, opponents_count, simulations,
-                                 random_seed, cancelled, native_progress if progress else None)
+                                 random_seed, cancelled, native_progress if progress else None, opponent_strengths)
         if output is None:
             return None
         use_totals(output)

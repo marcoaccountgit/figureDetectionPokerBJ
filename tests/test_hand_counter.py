@@ -38,6 +38,17 @@ class HandCounterTests(unittest.TestCase):
         self.assertEqual(started['count'],2)
         self.assertTrue(started['started'])
 
+    def test_board_reset_recovers_missed_end_without_restarting_on_one_frame(self):
+        self.feed(0, presence(), cards())
+        self.counter.update(presence(), cards(), .5, board_cleared=True)
+        self.counter.update(presence(), cards(), .6)
+        self.assertEqual(self.counter.count, 1)
+        for i in range(5):
+            result = self.counter.update(presence(), cards(('AS','8H')), .7+i*.1, board_cleared=True)
+        self.assertTrue(result['started'])
+        self.assertEqual(result['count'], 2)
+        self.assertTrue(result['active'])
+
     def test_missing_reading_single_card_or_occlusion_does_not_close_hand(self):
         self.feed(0,presence(),cards())
         for t, visible in ((.5,presence()),(1,presence(True,False)),(1.5,presence(None,None))):

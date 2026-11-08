@@ -145,3 +145,29 @@ nello screenshot delle 14:30:44. I test verificano cinque e due avversari a
 762, 960, 1192 e 1536 pixel, senza contare i posti che hanno passato. Una prova
 HTTP verifica la conferma dei cinque posti attraverso il server del pannello;
 le carte scoperte allo showdown continuano a non contare come coppie coperte.
+
+## Riconoscimento su richiesta nella stessa mano
+
+Una volta confermate entrambe le carte personali e un board contiguo di
+0, 3, 4 o 5 carte, il server controlla soltanto la presenza dei volti delle
+carte nelle posizioni attese. Se le posizioni note restano occupate e gli
+slot successivi vuoti, non esegue nuovamente il riconoscimento delle identità.
+Fold, call, raise, cambio del giocatore attivo e modifiche dei pulsanti non
+invalidano questa memoria. Avversari e importi continuano a essere osservati.
+
+Un volto in uno slot nuovo riattiva il riconoscitore fino alla conferma:
+un primo tentativo fallito non viene memorizzato come assenza. Perdita della
+presenza delle carte personali, geometria incompleta o possibili carte
+avversarie scoperte richiedono nuovamente il riconoscimento. La fine e
+l'inizio fisico della mano cancellano le identità precedenti. Un cambio di
+sessione o profilo le azzera; una variazione della sola area registrata
+mantiene le identità e riproietta le coordinate, evitando nuove conferme
+causate dal ridimensionamento della finestra.
+
+La risposta `card_cache` distingue `inference_skipped`, numero di slot
+memorizzati, motivo dell'eventuale lettura e tempo dei controlli di presenza.
+I fotogrammi che usano la memoria non aggiungono osservazioni inventate alla
+conferma temporale (`raw_cards` resta vuoto).
+
+Una prova HTTP verifica conferma iniziale, cambiamenti esterni alle carte,
+ridimensionamento, riconoscimento del turn e una nuova mano con carte diverse.

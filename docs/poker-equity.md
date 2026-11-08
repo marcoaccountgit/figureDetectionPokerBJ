@@ -54,6 +54,14 @@ Aggiornati:
 
 ## API matematica
 
+Il conteggio automatico degli avversari viene fissato alla prima lettura valida
+per le carte e le impostazioni correnti. Nuovi avversari rilevati, fold e letture
+incerte non interrompono la simulazione. Il conteggio visivo continua ad aggiornarsi;
+il calcolo adotta il conteggio corrente alla nuova mano, al cambio delle carte
+o delle impostazioni. Il numero manuale resta un comando esplicito di ricalcolo.
+Le probabilità mostrate si riferiscono al numero di avversari indicato nel risultato,
+che può quindi differire dal conteggio visivo aggiornato.
+
 ```python
 from poker_equity import calculate_equity
 
@@ -218,6 +226,80 @@ L'integrazione principale è nel browser; webcam e riconoscimento offline non
 avviano autonomamente il processo ma possono usare l'API matematica.
 
 ## Uso, controlli e benchmark
+
+### Confronto con un modello fisso delle puntate
+
+Il pannello può affiancare all'equità uniforme una seconda stima con
+`X-Equity-Bet-Model: 1` (`EquityService.submit(..., bet_model=True)`).
+L'equità di base e il relativo consiglio restano contro mani casuali.
+`equity.bet_scenario` contiene la seconda stima;
+`equity.bet_model` descrive versione, ipotesi, posti, importi e pesi applicati.
+`poker_advice_bets` confronta questa stima con la stessa soglia per vedere.
+La casella nel pannello permette di disattivare il confronto.
+
+Il modello `visible-commitment-v1` è un'ipotesi fissa e non calibrata su dati
+di gioco, non una relazione dimostrata fra puntate e carte. Usa solo impegni
+visibili confermati nella fase corrente, rapportati al piatto totale attuale
+che già include le puntate. Non li presenta come dimensione di un singolo
+rilancio né come rapporto rispetto al piatto precedente.
+
+| Impegno / piatto totale attuale | Peso combinazioni forti | Peso altre combinazioni |
+| --- | ---: | ---: |
+| Nessun importo utilizzabile | 1 | 1 |
+| Positivo, fino al 15% | 3 | 1 |
+| Oltre il 15%, fino a un terzo | 6 | 1 |
+| Oltre un terzo | 10 | 1 |
+
+Per ciascun board si ordinano tutte le coppie legali: il gruppo forte parte
+dal 75º percentile e include tutti i pari merito al limite. Dopo il flop il
+criterio è il punteggio attuale delle 5–7 carte; i progetti non ricevono un peso
+specifico. Preflop si usa una graduatoria indicativa (prima coppie, poi rango
+alto/basso, poi stesso seme), che non equivale all'equità preflop. Bui e call
+preflop non attivano pesi: serve un'etichetta confermata bet/raise/all-in.
+
+Nomi, stack, stile, azioni di mani precedenti, cronologia degli eventi e
+pulsanti di azioni offerte non determinano i pesi. Non viene calcolata la
+probabilità di un futuro call, fold o rilancio. Non sono aggiunte azioni
+automatiche sul tavolo.
+
+Servono piatto positivo, unità coerenti, posti attivi identificati e dati
+recenti della stessa mano e street. Conteggio manuale senza corrispondenza
+dei posti, side pot o somma delle puntate maggiore del totale sospendono solo
+il confronto. Un importo mancante mantiene casuali le carte di quel posto,
+con indicazione esplicita nel pannello; non viene interpretato come zero.
+
+Il kernel Rust v2 estrae indipendentemente una coppia pesata per ogni posto;
+se due coppie condividono una carta, scarta l'intera distribuzione e riprova.
+Questo conserva la probabilità congiunta proporzionale al prodotto dei pesi,
+condizionata all'assenza di duplicati. Il runout viene estratto uniformemente
+dal mazzo rimanente. Le statistiche derivano da distribuzioni accettate
+indipendenti; 5.000 simulazioni significano 5.000 distribuzioni accettate,
+non 5.000 tentativi. Progressione e cancellazione restano disponibili anche
+durante gli scarti. Il calcolo usa un solo core.
+
+La stima di base arriva prima e resta disponibile durante il confronto o se
+quest'ultimo fallisce. Si memorizzano i risultati completi di entrambi;
+cambi di mano, carte, numero avversari o fascia dei pesi invalidano il lavoro
+precedente. Senza alcun peso attivo si riutilizza esattamente il risultato di
+base, anche nei casi di enumerazione esatta.
+
+La stima uniforme ha anche una cache separata: una variazione delle sole
+puntate o l'attivazione del confronto non ripete le simulazioni contro mani
+casuali già completate. Un fold che cambia il numero degli avversari modifica
+invece il problema matematico e richiede un nuovo calcolo, pur conservando le
+identità delle carte del board e della mano.
+
+Il confronto pesato richiede Rust; senza libreria la stima uniforme continua
+a usare Python. Ricompilazione: `python build_native_equity.py`.
+La nuova libreria è `poker_equity_native_v2.dll` su Windows e può essere
+compilata mentre il vecchio bot usa ancora la v1. Il bot va poi riavviato.
+
+Gli IC 95% descrivono solo l'errore Monte Carlo condizionato ai pesi scelti;
+non quantificano l'errore dell'ipotesi sui range. Un test indipendente enumera
+tutte le distribuzioni congiunte legali di due avversari con pesi diversi al
+river e confronta l'equità esatta pesata con il campionatore. Altri test
+verificano prezzi invariati, assenza di profilazione, importi mancanti/scaduti,
+unità, bui preflop, cache, errori, cancellazione e rimozione dei dati UI scaduti.
 
 ### Motore Rust su un solo core
 

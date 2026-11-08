@@ -20,6 +20,83 @@ def output_for(rows):
 
 
 class LearnedDetectorTests(unittest.TestCase):
+    def test_weaker_neural_duplicate_cannot_suppress_confirmed_symbol_reading(self):
+        detector=LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.profile='pokerstars-nine';detector.crop=None;detector.names=NAMES
+        detector.net=Mock()
+        detector.net.forward.side_effect=[
+            output_for([([100,200,40,80],{'7D':.98})]),
+            output_for([([100,200,22,78],{'JD':.71})])]
+        detector._symbol_reading=Mock(side_effect=[dict(
+            rank='7',suit='D',card='7D',accepted=True,confidence=.92,
+            decision_source='training_symbol_references'),None])
+        detector._recover_nine_indices=Mock()
+        with patch('learned_detector.additional_table_regions',return_value=([[0,0,640,640]],[])):
+            result=detector.detect(np.full((640,640,3),255,np.uint8))
+        self.assertEqual([c['card'] for c in result['cards']],['7D'])
+
+    def test_real_small_window_recovers_5c_without_changing_8c(self):
+        from capture_alignment import CaptureAligner
+        from table_layout import arrange_table
+        frame = cv2.imread(str(Path(__file__).parent/'fixtures/six-8c5c-uncertain.png'))
+        aligner = CaptureAligner(); game, _ = aligner.align(frame)
+        detector = LearnedCardDetector('pokerstars-nine')
+        result = detector.detect(game)
+        result['table_profile'] = aligner.profile
+        arranged = arrange_table(result,game.shape)
+        self.assertEqual([c['card'] for c in arranged['player_hand']],['8C','5C'])
+        recovered = [c for c in result['cards'] if c['card']=='5C'][0]
+        self.assertGreaterEqual(recovered['confidence'],.60)
+        if recovered['decision_source'] in ('model','enlarged_model_recovery'):
+            self.assertGreaterEqual(recovered['class_margin'],.15)
+        else:
+            self.assertGreaterEqual(recovered['rank_score'],.90)
+            self.assertGreaterEqual(recovered['suit_score'],.90)
+        self.assertLessEqual(result['uncertain_retries'],1)
+
+    def test_symbol_cache_reuses_comparison_but_returns_independent_results(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.symbol_classifier = Mock()
+        detector.symbol_classifier.classify_symbols.return_value = dict(
+            card='5C',accepted=True,rank_score=.96,suit_score=.95)
+        glyph = np.ones((26,22),np.uint8)
+        with patch('learned_detector.stacked_index_symbols',return_value=((glyph,glyph),'black')):
+            first = detector._symbol_reading(np.zeros((40,20,3),np.uint8))
+            first['card'] = 'AS'
+            self.assertEqual(detector._symbol_reading(np.zeros((40,20,3),np.uint8))['card'], '5C')
+            detector.symbol_classifier.classify_symbols.assert_called_once()
+            glyph[0,0] = 0
+            detector._symbol_reading(np.zeros((40,20,3),np.uint8))
+            self.assertEqual(detector.symbol_classifier.classify_symbols.call_count,2)
+
+    def test_enlarged_retry_is_bounded_and_rejects_conflicting_codes(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.net = Mock(); detector.names = NAMES
+        detector._symbol_reading = Mock(return_value=None)
+        card = dict(card=None,rank='5',suit='C',accepted=False,confidence=.32,bbox=[100,100,120,140])
+        proposal = dict(card='5C',rank='5',suit='C',accepted=True,confidence=.8,class_margin=.6,bbox=[100,100,120,140])
+        frame = np.full((640,640,3),255,np.uint8)
+        with patch('learned_detector.decode_indices', return_value=[proposal]):
+            self.assertEqual(detector._retry_uncertain_indices(frame,[card]),1)
+        self.assertEqual(card['card'],'5C')
+        self.assertEqual(card['decision_source'],'enlarged_model_recovery')
+        detector.net.forward.assert_called_once()
+        detector.net.reset_mock()
+        self.assertEqual(detector._retry_uncertain_indices(frame,[card]),0)
+        detector.net.forward.assert_not_called()
+        card.update(card=None,accepted=False)
+        with patch('learned_detector.decode_indices', return_value=[dict(proposal,card='6C')]):
+            detector._retry_uncertain_indices(frame,[card])
+        self.assertFalse(card['accepted'])
+        self.assertIsNone(card['card'])
+
+    def test_retry_does_not_infer_cards_from_background(self):
+        detector = LearnedCardDetector.__new__(LearnedCardDetector)
+        detector.net = Mock()
+        card = dict(card=None,rank='5',suit='C',accepted=False,bbox=[100,100,120,140])
+        self.assertEqual(detector._retry_uncertain_indices(np.zeros((640,640,3),np.uint8),[card]),0)
+        detector.net.forward.assert_not_called()
+
     def test_reviewed_references_cannot_override_an_existing_strong_symbol_reading(self):
         detector = LearnedCardDetector.__new__(LearnedCardDetector)
         detector.symbol_classifier = Mock()

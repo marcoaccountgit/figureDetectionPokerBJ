@@ -23,6 +23,10 @@ def analyze_decision(equity, table, hand_id):
         'Piatti secondari e diritto a incassare tutto il piatto non sono verificati automaticamente.',
         'I pulsanti visibili possono essere opzioni preselezionabili: non certificano che sia il tuo turno.',
     ]
+    if equity and equity.get('opponent_model') == 'fixed_bets':
+        limits[0] = ('Confronto sotto ipotesi fissa, non calibrata, delle puntate osservate; '
+                     'nessun profilo dei giocatori o previsione delle mosse. '
+                     'Gli intervalli non misurano l’incertezza di questa ipotesi.')
     result = dict(status='waiting', title='Valutazione in attesa', message='', limits=limits, factors=[])
     if not equity or equity.get('status') != 'ready':
         result['message'] = 'Servono entrambe le carte confermate e una stima di equità disponibile.'

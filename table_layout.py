@@ -22,7 +22,9 @@ def arrange_table(result, shape):
         slot = min(range(5), key=lambda i: abs(x-(board_x+board_step*i)))
         # Reviewed index centres: x=615+116*i, y approximately 441.
         # Reject neighbouring player cards and detections between slots.
-        if abs(x-(board_x+board_step*slot)) <= (33 if nine else 46) and abs(y-board_y) <= (44 if nine else 58):
+        # Small desktop captures can accumulate a few pixels of rail-scale
+        # error toward the river. Stay below half the distance between slots.
+        if abs(x-(board_x+board_step*slot)) <= (40 if nine else 46) and abs(y-board_y) <= (44 if nine else 58):
             card.update(table_group='board', board_slot=slot)
             previous = slots[slot]
             if previous is None or (card['accepted'], card.get('confidence', 0)) > (

@@ -1,0 +1,2542 @@
+{
+  "source": "C:\\Users\\jhonn\\Videos\\Screen Recordings\\Screen Recording 2026-11-09 135641.mp4",
+  "sha256": "ba5ea0288efcfadfb4eea293d924ca2aa99dea895114f98147588c9f776ca8c8",
+  "duration": 793.4,
+  "frames": [
+    {
+      "time": 0,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 5,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 10,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 15,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D",
+        "6H",
+        "7C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 20,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D",
+        "6H",
+        "7C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 25,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D",
+        "6H",
+        "7C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 30,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D",
+        "6H",
+        "7C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 35,
+      "hand": 1,
+      "split": "train",
+      "board": [
+        "JS",
+        "4H",
+        "2D",
+        "6H",
+        "7C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "3H",
+        "3D"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 50,
+      "hand": 2,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "3H",
+        "3D"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 55,
+      "hand": 2,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "3H",
+        "3D"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 60,
+      "hand": 2,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "3H",
+        "3D"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 65,
+      "hand": 2,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "3H",
+        "3D"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 75,
+      "hand": 3,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 80,
+      "hand": 3,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 85,
+      "hand": 3,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 90,
+      "hand": 3,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 95,
+      "hand": 3,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 100,
+      "hand": 3,
+      "split": "val",
+      "board": [
+        "2D",
+        "9D",
+        "7C"
+      ],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 105,
+      "hand": 3,
+      "split": "val",
+      "board": [
+        "2D",
+        "9D",
+        "7C"
+      ],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 110,
+      "hand": 3,
+      "split": "val",
+      "board": [
+        "2D",
+        "9D",
+        "7C"
+      ],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 115,
+      "hand": 3,
+      "split": "val",
+      "board": [
+        "2D",
+        "9D",
+        "7C"
+      ],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 120,
+      "hand": 3,
+      "split": "val",
+      "board": [
+        "2D",
+        "9D",
+        "7C",
+        "4S"
+      ],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 125,
+      "hand": 3,
+      "split": "val",
+      "board": [
+        "2D",
+        "9D",
+        "7C",
+        "4S",
+        "QC"
+      ],
+      "hole": [
+        "JD",
+        "10C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 135,
+      "hand": 4,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 205,
+      "hand": 4,
+      "split": "train",
+      "board": [
+        "9H",
+        "3D",
+        "7C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 215,
+      "hand": 4,
+      "split": "train",
+      "board": [
+        "9H",
+        "3D",
+        "7C",
+        "6H",
+        "7H"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": null
+    },
+    {
+      "time": 220,
+      "hand": 5,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 225,
+      "hand": 5,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 240,
+      "hand": 5,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 245,
+      "hand": 5,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 250,
+      "hand": 5,
+      "split": "train",
+      "board": [
+        "QS",
+        "JS",
+        "QC"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 255,
+      "hand": 5,
+      "split": "train",
+      "board": [
+        "QS",
+        "JS",
+        "QC",
+        "8S",
+        "4C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 270,
+      "hand": 6,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 275,
+      "hand": 6,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 280,
+      "hand": 6,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 285,
+      "hand": 6,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 290,
+      "hand": 6,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 295,
+      "hand": 6,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 300,
+      "hand": 6,
+      "split": "train",
+      "board": [
+        "3S",
+        "AS",
+        "2H"
+      ],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 305,
+      "hand": 6,
+      "split": "train",
+      "board": [
+        "3S",
+        "AS",
+        "2H"
+      ],
+      "hole": [
+        "QH",
+        "7C"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 310,
+      "hand": 6,
+      "split": "train",
+      "board": [
+        "3S",
+        "AS",
+        "2H"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 320,
+      "hand": 7,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "6D",
+        "5H"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 325,
+      "hand": 7,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "6D",
+        "5H"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 340,
+      "hand": 7,
+      "split": "test",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 345,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 350,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 355,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 360,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C",
+        "KC"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 365,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C",
+        "KC"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 370,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C",
+        "KC",
+        "8D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "hero"
+    },
+    {
+      "time": 375,
+      "hand": 7,
+      "split": "test",
+      "board": [
+        "9D",
+        "8S",
+        "10C",
+        "KC",
+        "8D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "hero"
+    },
+    {
+      "time": 380,
+      "hand": 8,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "KH",
+        "10H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 385,
+      "hand": 8,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "KH",
+        "10H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 395,
+      "hand": 8,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "KH",
+        "10H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 400,
+      "hand": 8,
+      "split": "val",
+      "board": [],
+      "hole": [
+        "KH",
+        "10H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": true,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 405,
+      "hand": 8,
+      "split": "val",
+      "board": [
+        "4H",
+        "6S",
+        "10C"
+      ],
+      "hole": [
+        "KH",
+        "10H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 410,
+      "hand": 8,
+      "split": "val",
+      "board": [
+        "4H",
+        "6S",
+        "10C",
+        "2D",
+        "7S"
+      ],
+      "hole": [
+        "KH",
+        "10H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "lower_left"
+    },
+    {
+      "time": 415,
+      "hand": 9,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 425,
+      "hand": 9,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 430,
+      "hand": 9,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 435,
+      "hand": 9,
+      "split": "train",
+      "board": [],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 440,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 445,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 450,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 455,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 460,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 465,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 470,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 475,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 480,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 485,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 490,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 495,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D",
+        "7S"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 500,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D",
+        "7S"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 505,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D",
+        "7S"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 510,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D",
+        "7S"
+      ],
+      "hole": [
+        "QH",
+        "6S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 515,
+      "hand": 9,
+      "split": "train",
+      "board": [
+        "4H",
+        "3S",
+        "KC",
+        "2D",
+        "7S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_left"
+    },
+    {
+      "time": 530,
+      "hand": 10,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 550,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 555,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 565,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 570,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 575,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 580,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 585,
+      "hand": 10,
+      "split": "train",
+      "board": [
+        "JS",
+        "8D",
+        "9S"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "top_right"
+    },
+    {
+      "time": 590,
+      "hand": 11,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 595,
+      "hand": 11,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 600,
+      "hand": 11,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 605,
+      "hand": 11,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 610,
+      "hand": 11,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 615,
+      "hand": 11,
+      "split": "train",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 620,
+      "hand": 11,
+      "split": "train",
+      "board": [
+        "KS",
+        "10H",
+        "4D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 625,
+      "hand": 11,
+      "split": "train",
+      "board": [
+        "KS",
+        "10H",
+        "4D",
+        "6S",
+        "JC"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 630,
+      "hand": 11,
+      "split": "train",
+      "board": [
+        "KS",
+        "10H",
+        "4D",
+        "6S",
+        "JC"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "upper_right"
+    },
+    {
+      "time": 640,
+      "hand": 12,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10C",
+        "4H"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "middle_right"
+    },
+    {
+      "time": 645,
+      "hand": 12,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10C",
+        "4H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "middle_right"
+    },
+    {
+      "time": 650,
+      "hand": 12,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10C",
+        "4H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "middle_right"
+    },
+    {
+      "time": 660,
+      "hand": 12,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10C",
+        "4H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "middle_right"
+    },
+    {
+      "time": 665,
+      "hand": 12,
+      "split": "test",
+      "board": [
+        "6S",
+        "QC",
+        "6D"
+      ],
+      "hole": [
+        "10C",
+        "4H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "middle_right"
+    },
+    {
+      "time": 670,
+      "hand": 12,
+      "split": "test",
+      "board": [
+        "6S",
+        "QC",
+        "6D"
+      ],
+      "hole": [
+        "10C",
+        "4H"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": true
+      },
+      "button": "middle_right"
+    },
+    {
+      "time": 675,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": false,
+        "upper_left": false,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": null
+    },
+    {
+      "time": 680,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": true,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 690,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 700,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 705,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": true,
+        "middle_left": false,
+        "middle_right": true,
+        "lower_left": true,
+        "lower_right": true
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 710,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 715,
+      "hand": 13,
+      "split": "test",
+      "board": [],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 720,
+      "hand": 13,
+      "split": "test",
+      "board": [
+        "6D",
+        "KC",
+        "7H"
+      ],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 725,
+      "hand": 13,
+      "split": "test",
+      "board": [
+        "6D",
+        "KC",
+        "7H"
+      ],
+      "hole": [
+        "10S",
+        "2S"
+      ],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": true,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    },
+    {
+      "time": 730,
+      "hand": 13,
+      "split": "test",
+      "board": [
+        "6D",
+        "KC",
+        "7H",
+        "2D"
+      ],
+      "hole": [],
+      "seats": {
+        "top_left": false,
+        "top_right": true,
+        "upper_left": true,
+        "upper_right": false,
+        "middle_left": false,
+        "middle_right": false,
+        "lower_left": false,
+        "lower_right": false
+      },
+      "button": "lower_right"
+    }
+  ],
+  "excluded_times": [
+    40.0,
+    70.0,
+    130.0,
+    140.0,
+    145.0,
+    150.0,
+    155.0,
+    160.0,
+    165.0,
+    170.0,
+    175.0,
+    180.0,
+    185.0,
+    190.0,
+    195.0,
+    200.0,
+    210.0,
+    230.0,
+    235.0,
+    260.0,
+    265.0,
+    315.0,
+    330.0,
+    335.0,
+    390.0,
+    420.0,
+    520.0,
+    525.0,
+    535.0,
+    540.0,
+    545.0,
+    560.0,
+    635.0,
+    655.0,
+    685.0,
+    695.0,
+    735.0,
+    740.0,
+    745.0,
+    750.0,
+    755.0,
+    760.0,
+    765.0,
+    770.0,
+    775.0,
+    780.0,
+    785.0,
+    790.0
+  ],
+  "protocol": "Manual visual transcription of cards and all eight back positions; complete hands disjoint. Partial deals, overlays and transitions excluded from identity training and separately tested."
+}

@@ -83,6 +83,11 @@ def desktop_seat_profile(frame, previous=None):
     # A centred capsule HUD distinguishes the six-seat desktop table from the
     # two separated upper HUDs of the nine-seat table, independently of names.
     if roi.shape[:2]!=(80,130):return NINE
+    # Two separated top capsules are stronger evidence than a spurious
+    # six-seat edge match against a dimmed all-in avatar or action highlight.
+    left=native[145:225,535:744];right=native[145:225,1185:1380]
+    if ((left.max(axis=2)<32).mean()>.35 and (right.max(axis=2)<32).mean()>.35):
+        return NINE
     if (roi.max(axis=2)<32).mean()>.55:return DESKTOP_SIX
     # Action highlights brighten the capsule. Its curved edge remains a
     # geometric reference even when an absolute darkness test fails.
@@ -143,6 +148,17 @@ def desktop_table_viewport(frame):
     if template is None:return None
     hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
     mask=cv2.inRange(hsv,(35,80,35),(95,255,255))
+    # Green avatars can touch the felt through a thin bridge and enlarge its
+    # bounding box by an entire seat. Remove these narrow connections before
+    # estimating rail scale; identities and names play no part in registration.
+    kernel=max(3,round(frame.shape[1]*.015))
+    if kernel%2==0:kernel+=1
+    initial_contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    if initial_contours:
+        _,_,felt_width,felt_height=cv2.boundingRect(max(initial_contours,key=cv2.contourArea))
+        if felt_width/felt_height>2.3:
+            mask=cv2.morphologyEx(mask,cv2.MORPH_OPEN,
+                                 cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(kernel,kernel)))
     contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     if not contours:return None
     contour=max(contours,key=cv2.contourArea)

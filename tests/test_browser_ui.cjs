@@ -6,6 +6,9 @@ const vm = require('node:vm');
 // Exercise the actual page renderers without requesting screen permissions.
 class Element {
   constructor(tag) { this.tagName = tag; this.children = []; this.textContent = ''; }
+  setAttribute(key,value) { this[key]=value; }
+  showModal() { this.open=true; }
+  close() { this.open=false; }
   append(...nodes) { this.children.push(...nodes); }
   replaceChildren(...nodes) { this.children = nodes; }
 }
@@ -322,4 +325,39 @@ test('analysis pixels come directly from the source, independently of the previe
  assert.match(elements.get('alignmentStatus').textContent,/sospese/);
  vm.runInContext('renderAlignment({ready:true,profile:"pokerstars-desktop-six"})',context);
  assert.match(elements.get('alignmentStatus').textContent,/Desktop a 6 posti/);
+});
+
+test('live card slots are editable buttons and discarded cards stay read only',()=>{
+ const {elements,context}=panel();
+ vm.runInContext("renderBoard([{accepted:true,card:'AH',manual:true}]);renderHand([{accepted:true,card:'7S'}]);renderSlots('discardedHand',['Sinistra'],[{accepted:true,card:'2C'}]);",context);
+ for(const id of ['board','playerHand'])for(const slot of elements.get(id).children){
+  assert.equal(slot.tagName,'button');assert.equal(typeof slot.onclick,'function');
+ }
+ assert.match(elements.get('board').children[0].children[0].textContent,/manuale/);
+ assert.equal(elements.get('discardedHand').children[0].tagName,'div');
+ assert.equal(typeof elements.get('newHand').onclick,'function');
+});
+
+test('card picker applies only after separate rank and suit choices in either order',()=>{
+ const {elements,context}=panel();const actions=[];context.actions=actions;
+ vm.runInContext("scanning=true;session='test';lastPacket={result:{hand_cycle:{count:3}}};sendIntervention=action=>actions.push(action);editCard('board',2,{card:'7S'});",context);
+ assert.equal(elements.get('cardPicker').open,true);
+ assert.equal(elements.get('pickerRanks').children.length,13);
+ assert.equal(elements.get('pickerSuits').children.length,4);
+ elements.get('pickerRanks').children[8].onclick();
+ assert.equal(actions.length,0);assert.equal(elements.get('pickerPreview').textContent,'10');
+ elements.get('pickerSuits').children[2].onclick();
+ assert.equal(actions.length,1);assert.equal(actions[0].card,'TH');assert.equal(actions[0].slot,2);
+ assert.equal(elements.get('cardPicker').open,false);
+ vm.runInContext("editCard('player_hand',0,{card:'AS'});",context);
+ elements.get('pickerSuits').children[0].onclick();assert.equal(actions.length,1);
+ elements.get('pickerRanks').children[12].onclick();assert.equal(actions[1].card,'AC');
+});
+test('card picker cancellation and hand changes never apply a correction',()=>{
+ const {elements,context}=panel();const actions=[];context.actions=actions;
+ vm.runInContext("scanning=true;session='test';lastPacket={result:{hand_cycle:{count:3}}};sendIntervention=action=>actions.push(action);editCard('board',0,{});",context);
+ elements.get('pickerRanks').children[0].onclick();elements.get('pickerClose').onclick();
+ assert.equal(actions.length,0);assert.equal(elements.get('cardPicker').open,false);
+ vm.runInContext("editCard('board',0,{});chooseCardPart('suit','H');lastPacket.result.hand_cycle.count=4;chooseCardPart('rank','A');",context);
+ assert.equal(actions.length,0);assert.equal(elements.get('cardPicker').open,false);
 });

@@ -34,10 +34,14 @@ class HandCardMemory:
             self.cards[key] = item
 
     def update(self, result, cycle):
-        if cycle['started'] or cycle['ended']:
+        if cycle['started'] or (not cycle['active'] and cycle.get('board_cleared')):
             self.cards.clear()
+        elif cycle['ended']:
+            # Folding removes the hero's cards, not the shared board.
+            self.cards = {key: card for key, card in self.cards.items() if key[0] == 'board'}
         if not cycle['active']:
-            return result
+            result = dict(result, cards=[card for card in result['cards']
+                                        if card.get('table_group') != 'player_hand'])
         current = []
         seen = set()
         for card in result['cards']:

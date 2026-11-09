@@ -13,6 +13,22 @@ def cards(codes=('3S','4C'), accepted=True):
 
 
 class HandCounterTests(unittest.TestCase):
+    def test_reviewed_compact_faces_survive_partial_hud_cover_at_multiple_sizes(self):
+        from pathlib import Path
+        from card_detector import cv2
+        from capture_alignment import CaptureAligner
+        for name in ('compact-ten-nine', 'compact-next-preflop'):
+            source = cv2.imread(str(Path(__file__).parent/'fixtures'/f'{name}.png'))
+            aligner = CaptureAligner()
+            game, _ = aligner.align(source)
+            for factor in (1, .8, 1.5):
+                frame = cv2.resize(game, (round(game.shape[1]*factor), round(game.shape[0]*factor)))
+                with self.subTest(name=name, factor=factor):
+                    self.assertEqual([s['present'] for s in player_card_presence(frame, aligner.profile)], [True, True])
+            # Local white pixels without surrounding felt are not a deal.
+            game[:] = 255
+            self.assertEqual([s['present'] for s in player_card_presence(game, aligner.profile)], [None, None])
+
     def setUp(self):
         self.counter = HandCounter()
 

@@ -1,0 +1,14 @@
+{
+  "source": "C:\\Users\\jhonn\\Videos\\Screen Recordings\\Screen Recording 2026-11-09 135641.mp4",
+  "sha256": "ba5ea0288efcfadfb4eea293d924ca2aa99dea895114f98147588c9f776ca8c8",
+  "time": 140,
+  "hand": 4,
+  "split": "train",
+  "crop": [
+    540,
+    46,
+    950,
+    73
+  ],
+  "purpose": "Identify an occluding statistics panel without assigning hidden seat occupancy"
+}

@@ -26,6 +26,12 @@
 #equityPanel>h2{flex-shrink:0}
 #equityContent{flex:1;min-height:0;overflow-y:auto;scrollbar-gutter:stable}
 .hand-row{display:flex;align-items:flex-start;gap:12px}.hand-row>#playerHand{flex:1;min-width:0}.discarded-hand{flex:0 0 132px;margin-left:auto;margin-top:7px}.discarded-hand>small{font-size:10px}.discarded-hand .board{margin-top:4px;gap:4px}.discarded-hand .board-slot{padding:4px 2px}.discarded-hand .board-slot small{font-size:9px}.discarded-hand .board-slot strong{font-size:16px;min-height:21px;gap:3px}.discarded-hand .suit-icon{width:14px;height:14px}.discarded-hand .board-slot.confirmed{border-color:#415463;color:#aebfc9}
+
+.card-picker{width:min(520px,calc(100vw - 28px));max-height:calc(100dvh - 28px);overflow:auto;background:#18252f;color:#edf3f6;border:1px solid #49606f;border-radius:18px;padding:24px;box-shadow:0 24px 90px #0009}
+.card-picker::backdrop{background:#050b10bd;backdrop-filter:blur(5px)}
+.picker-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.picker-heading h2{font-size:21px;margin:5px 0 8px}.picker-eyebrow{font-size:10px;letter-spacing:1.5px;color:#88e2b1;text-transform:uppercase}.picker-close{font-size:20px;padding:3px 10px;background:transparent}
+.picker-context{display:flex;gap:16px;align-items:center;margin:20px 0;padding:14px;background:#101b23;border-radius:12px}.picker-preview{display:grid;place-items:center;min-width:64px;height:84px;border-radius:8px;background:#f2f5f3;color:#14202a;font-size:26px;font-weight:700;box-shadow:0 3px 8px #0005}.picker-preview.red{color:#c73549}.picker-context p{line-height:1.6}.picker-label{display:flex;justify-content:space-between;align-items:center;margin:18px 0 9px;font-size:12px;font-weight:650}.picker-label small{font-weight:400;color:#88e2b1}
+.picker-ranks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}.picker-ranks button{height:44px;font-size:17px;font-weight:650;padding:4px}.picker-suits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.picker-suits button{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:70px;padding:9px 4px;background:#edf2ef;color:#14202a}.picker-suits .red{color:#c73549}.picker-suits strong{font-size:27px;line-height:1}.picker-suits span{font-size:11px}.card-picker button[aria-pressed="true"]{border-color:#88e2b1;box-shadow:0 0 0 2px #88e2b1;background:#294b3d;color:#b9ffda}.card-picker button:hover{border-color:#88e2b1;transform:translateY(-1px)}.picker-footer{margin-top:20px;padding-top:14px;border-top:1px solid #30434f;font-size:11px;color:#aebfc9;line-height:1.6}
 </style>
 </head>
 <body>
@@ -43,6 +49,7 @@
 <div class="seat-table-wrap"><table class="seat-table"><thead><tr><th>Posto</th><th>Pos.</th><th>Azione</th><th>Stack</th><th>Puntata</th></tr></thead><tbody id="observedSeats"></tbody></table></div>
 <div class="table-footer"><small>Importi nelle unit&agrave; del tavolo</small><details class="dropdown above"><summary>Azioni e pulsanti</summary><div class="popover popover-scroll"><p class="small">Totale: <strong id="observedPot">&mdash;</strong> &middot; Centro: <strong id="collectedPot">&mdash;</strong> &middot; Contributo: <strong id="observedContribution">&mdash;</strong></p><p class="small">Primo totale confermato della fase: <span id="streetPots">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</span></p><p class="small" id="offeredActions"></p><div id="observedEvents"></div></div></details></div></section>
 <section id="equityPanel" class="panel" aria-label="Probabilità ed equità della mano"><h2>PROBABILITÀ ED EQUITÀ DELLA MANO</h2><div id="equityContent">
+<button id="newHand" type="button">Nuova mano</button><p id="interventionStatus" class="small" role="status"></p>
 <div class="equity-controls"><label>Calcolo <select id="equityProfile"><option value="FAST">Veloce · 5.000</option><option value="BALANCED">Bilanciato · 50.000</option><option value="ACCURATE">Accurato · 250.000</option></select></label><label><input id="equityManual" type="checkbox">Imposta gli avversari manualmente</label><label id="equityManualField" hidden>Numero di avversari <input id="equityOpponents" type="number" min="1" max="5" step="1" value="1" disabled></label></div>
 <p id="equityOpponentSource" class="small" role="status">Avversari: in attesa del riconoscimento visivo delle carte coperte.</p>
 <label class="small"><input id="equityBetModel" type="checkbox" checked>Confronta anche un modello fisso delle puntate</label>
@@ -64,11 +71,69 @@
 <div class="support-bar"><details class="dropdown above"><summary>Guida</summary><div class="popover popover-scroll" style="left:0;right:auto"><p>Premi Scegli sorgente: puoi condividere una scheda del browser, una finestra del gioco o uno schermo intero. Per il client desktop scegli Finestra e massimizza il tavolo. Se condividi uno schermo, mantieni il tavolo a tutto schermo e il pannello del bot su un altro monitor o fuori dalla vista del gioco. Il conteggio considera le coppie di carte coperte visibili, non nomi e avatar.</p><p>Il video WebM non contiene audio. Se attiva, la registrazione include i riquadri del bot. Scaricala prima di chiudere la pagina: rimane in memoria fino al download.</p></div></details><details class="dropdown above"><summary>Registrazioni</summary><div id="downloads" class="popover popover-scroll" hidden><strong>Video da scaricare</strong></div></details></div>
 </div>
 </main>
+<dialog id="cardPicker" class="card-picker" aria-labelledby="pickerTitle" aria-describedby="pickerHelp">
+ <div class="picker-heading"><div><span class="picker-eyebrow">Correzione manuale</span><h2 id="pickerTitle">Scegli la carta</h2><p id="pickerPosition" class="small"></p></div><button id="pickerClose" class="picker-close" type="button" aria-label="Annulla correzione">&times;</button></div>
+ <div class="picker-context"><div id="pickerPreview" class="picker-preview" aria-label="Anteprima carta">?</div><div><p id="pickerOriginal" class="small"></p><p id="pickerHelp" role="status">Scegli un valore e un seme, in qualsiasi ordine.</p></div></div>
+ <div class="picker-label">1. Valore <small id="pickerRankState">Da scegliere</small></div><div id="pickerRanks" class="picker-ranks" role="group" aria-label="Valore della carta"></div>
+ <div class="picker-label">2. Seme <small id="pickerSuitState">Da scegliere</small></div><div id="pickerSuits" class="picker-suits" role="group" aria-label="Seme della carta"></div>
+ <p class="picker-footer">La seconda scelta applica la correzione. Screenshot e analisi vengono salvati automaticamente. La carta resta manuale fino alla nuova mano.</p>
+</dialog>
 <script>
 'use strict';
 const $=id=>document.getElementById(id), token=new URLSearchParams(location.search).get('token');
 let stream=null, session=null, recorder=null, chunks=[], generation=0, scanning=false, pending=null;
-let lastPacket=null;
+let lastPacket=null, interventionBusy=false;
+async function sendIntervention(action){
+ if(interventionBusy)return;
+ if(!scanning||!lastPacket||!session){fail('Avvia la scansione prima di correggere la lettura.');return;}
+ interventionBusy=true;
+ try{
+  const response=await fetch('/intervention',{method:'POST',headers:{'Content-Type':'application/json','X-Capture-Token':token},body:JSON.stringify({...action,session,hand_id:lastPacket.result.hand_cycle.count})});
+  const data=await response.json();if(!response.ok)throw Error(data.error||'Intervento non riuscito');
+  $('interventionStatus').textContent='Intervento registrato. Screenshot e analisi: '+data.saved;
+  renderEquity({message:'Intervento applicato: attesa della prossima lettura'});
+ }catch(error){fail(error.message);}finally{interventionBusy=false;}
+}
+let cardEdit=null;
+function closeCardPicker(){cardEdit=null;$('cardPicker').close();}
+$('pickerClose').onclick=closeCardPicker;
+$('cardPicker').oncancel=()=>{cardEdit=null;};
+function editCard(group,slot,card){
+ if(!scanning||!lastPacket||interventionBusy)return;
+ cardEdit={group,slot,rank:null,suit:null,session,handId:lastPacket.result.hand_cycle.count};
+ $('pickerPosition').textContent=group==='board'?['Flop 1','Flop 2','Flop 3','Turn','River'][slot]:['Mano ? carta sinistra','Mano ? carta destra'][slot];
+ $('pickerOriginal').textContent='Lettura attuale: '+(card?.card||'Non riconosciuta');
+ renderCardPicker();$('cardPicker').showModal();
+}
+function chooseCardPart(part,value){
+ if(!cardEdit)return;
+ cardEdit[part]=value;renderCardPicker();
+ if(!cardEdit.rank||!cardEdit.suit)return;
+ const edit=cardEdit;
+ if(edit.session!==session||edit.handId!==lastPacket?.result.hand_cycle.count){
+  closeCardPicker();fail('La mano ? cambiata: seleziona di nuovo la carta.');return;
+ }
+ closeCardPicker();sendIntervention({kind:'card',group:edit.group,slot:edit.slot,card:edit.rank+edit.suit});
+}
+function renderCardPicker(){
+ const edit=cardEdit;if(!edit)return;
+ const names={C:'Fiori',D:'Quadri',H:'Cuori',S:'Picche'},symbols={C:'\u2663',D:'\u2666',H:'\u2665',S:'\u2660'};
+ $('pickerRanks').replaceChildren(...'23456789TJQKA'.split('').map(rank=>{
+  const button=document.createElement('button');button.type='button';button.textContent=rank==='T'?'10':rank;
+  button.setAttribute('aria-pressed',String(edit.rank===rank));button.onclick=()=>chooseCardPart('rank',rank);return button;
+ }));
+ $('pickerSuits').replaceChildren(...Object.entries(names).map(([suit,name])=>{
+  const button=document.createElement('button'),icon=document.createElement('strong'),label=document.createElement('span');
+  button.type='button';button.className=suit==='H'||suit==='D'?'red':'';button.setAttribute('aria-pressed',String(edit.suit===suit));
+  icon.textContent=symbols[suit];label.textContent=name;button.append(icon,label);button.onclick=()=>chooseCardPart('suit',suit);return button;
+ }));
+ $('pickerPreview').textContent=(edit.rank==='T'?'10':edit.rank||'?')+(symbols[edit.suit]||'');
+ $('pickerPreview').className='picker-preview'+(edit.suit==='H'||edit.suit==='D'?' red':'');
+ $('pickerRankState').textContent=edit.rank?(edit.rank==='T'?'10':edit.rank):'Da scegliere';
+ $('pickerSuitState').textContent=names[edit.suit]||'Da scegliere';
+ $('pickerHelp').textContent=edit.rank&&!edit.suit?'Ora scegli il seme.':edit.suit&&!edit.rank?'Ora scegli il valore.':'Scegli un valore e un seme, in qualsiasi ordine.';
+}
+$('newHand').onclick=()=>sendIntervention({kind:'new_hand'});
 const image=$('image'), overlay=$('overlay'), video=$('video');
 const captureCanvas=document.createElement('canvas');
 function copySourceFrame(source){
@@ -206,9 +271,13 @@ function renderTableObservation(data){
 renderTableObservation();
 function renderSlots(target,labels,board=[]){
  $(target).replaceChildren(...labels.map((label,i)=>{
-  const card=board[i], slot=document.createElement('div'), title=document.createElement('small'), value=document.createElement('strong');
+  const card=board[i], slot=document.createElement(target==='discardedHand'?'div':'button'), title=document.createElement('small'), value=document.createElement('strong');
   slot.className='board-slot'+(card?.accepted?' confirmed':card?.detected?' uncertain':'');
-  title.textContent=label;if(card?.accepted)value.append(cardValue(card.card));else value.textContent=card?.detected?'?':'—';slot.append(title,value);return slot;
+  if(target==='board'||target==='playerHand'){
+   slot.type='button';slot.title='Clicca per correggere la carta';
+   slot.onclick=()=>editCard(target==='board'?'board':'player_hand',i,card);
+  }
+  title.textContent=label+(card?.manual?' ? manuale':'');if(card?.accepted)value.append(cardValue(card.card));else value.textContent=card?.detected?'?':'—';slot.append(title,value);return slot;
  }));
 }
 function renderBoard(board=[]){renderSlots('board',['Flop 1','Flop 2','Flop 3','Turn','River'],board);}
@@ -250,7 +319,7 @@ $('diagnose').onclick=async()=>{
  const link=document.createElement('a');link.href=url;link.download='diagnosi-carte-'+Date.now()+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
 };
 function stopRecording(){if(recorder && recorder.state!=='inactive'){recorder.stop();$('record').disabled=true;}}
-function stop(){resetDiscardedHand();renderAlignment();renderEquity();renderBoard();renderHand();renderOpponents();renderTableObservation();generation++;scanning=false;if(pending)pending.abort();$('choose').disabled=false;stopRecording();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('start').disabled=true;$('stop').disabled=true;$('record').disabled=true;$('status').textContent='Acquisizione ferma';$('source').textContent='Nessuna acquisizione attiva';$('empty').hidden=false;$('view').classList.remove('preview');image.hidden=true;overlay.hidden=true;$('cards').textContent='—';$('metrics').textContent='';overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);}
+function stop(){if(cardEdit)closeCardPicker();resetDiscardedHand();renderAlignment();renderEquity();renderBoard();renderHand();renderOpponents();renderTableObservation();generation++;scanning=false;if(pending)pending.abort();$('choose').disabled=false;stopRecording();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$('start').disabled=true;$('stop').disabled=true;$('record').disabled=true;$('status').textContent='Acquisizione ferma';$('source').textContent='Nessuna acquisizione attiva';$('empty').hidden=false;$('view').classList.remove('preview');image.hidden=true;overlay.hidden=true;$('cards').textContent='—';$('metrics').textContent='';overlay.getContext('2d').clearRect(0,0,overlay.width,overlay.height);}
 function captureOptions(){return {video:{frameRate:10},audio:false,monitorTypeSurfaces:'include',selfBrowserSurface:'exclude',surfaceSwitching:'exclude'};}
 function captureSurfaceLabel(surface){return {browser:'Scheda',window:'Finestra',monitor:'Schermo'}[surface]||'Sorgente condivisa';}
 $('stop').onclick=stop;

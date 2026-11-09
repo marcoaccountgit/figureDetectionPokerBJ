@@ -321,6 +321,10 @@ class TableVisualReader:
         x,y = location[0]+20,location[1]+150+19
         from table_profiles import NINE_CENTRES
         centres=desktop_layout(self.profile)['centres'] if is_desktop(self.profile) else SEAT_CENTRES
+        if self.profile=='pokerstars-nine':
+            # The button sits on the felt, inward from the HUD. Matching HUD
+            # centres directly assigns the middle-right button to lower-right.
+            centres={key:(.65*cx+.35*881,.65*cy+.35*474) for key,(cx,cy) in centres.items()}
         key = min(centres,key=lambda k:(centres[k][0]-x)**2+(centres[k][1]-y)**2)
         return dict(seat=key if score >= .75 else None,score=round(score,4))
 

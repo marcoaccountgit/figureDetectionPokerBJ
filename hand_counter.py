@@ -35,6 +35,21 @@ def player_card_presence(frame, profile='pokerstars'):
         white = float(np.mean((saturation < 65) & (value > 180)))
         felt = float(np.mean((hue > 30) & (hue < 100) & (saturation > 65) & (value > 35)))
         visible_face = (white >= .4 and felt <= .2) if nine else (white >= .4 and felt <= .1)
+        if nine and not visible_face:
+            # Compact HUDs and the winning-card lift can cover part of the
+            # fixed index box. Require a contiguous half-height face instead
+            # of weakening the full-box white/felt thresholds.
+            height = bottom-y
+            for offset in (0, height//4, height//2):
+                band = slice(offset, offset+height//2)
+                band_white = np.mean((saturation[band] < 65) & (value[band] > 180))
+                band_felt = np.mean((hue[band] > 30) & (hue[band] < 100) &
+                                    (saturation[band] > 65) & (value[band] > 35))
+                # A red ten can occupy most of the narrow index; require
+                # white in both the full index and the unobscured band.
+                if white >= .25 and band_white >= .3 and band_felt <= .1:
+                    visible_face = True
+                    break
         present = (True if context_ok and visible_face else
                    False if context_ok and white <= .08 and felt >= .3 else None)
         slots.append(dict(present=present, white_fraction=round(white,4), felt_fraction=round(felt,4)))

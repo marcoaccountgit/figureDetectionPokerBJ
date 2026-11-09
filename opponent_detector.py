@@ -39,6 +39,12 @@ class OpponentDetector:
         self.desktop_six_variants={}
         for path in (Path(__file__).parent/'assets/table-desktop-six/variants').glob('*/*.png'):
             self.desktop_six_variants.setdefault(path.parent.name,[]).append(features(cv2.imread(str(path))))
+        self.nine_variants={}
+        for path in (Path(__file__).parent/'assets/table-nine/variants').glob('*/*.png'):
+            self.nine_variants.setdefault(path.parent.name,[]).append(features(cv2.imread(str(path))))
+        for seat,variants in self.nine_variants.items():
+            self.nine_variants[seat]=[scaled for variant in variants for scaled in
+                (variant,cv2.resize(variant,None,fx=.96,fy=.96),cv2.resize(variant,None,fx=1.04,fy=1.04))]
 
     def detect(self, frame, visible_y=None, profile='pokerstars',visible_x=None):
         from table_profiles import NINE, DESKTOP_SIX,is_desktop,desktop_layout
@@ -53,6 +59,11 @@ class OpponentDetector:
         canonical = cv2.resize(frame, (1762, round(frame.shape[0]/scale)))
         seats = []
         for key, label, (x, y, right, bottom) in definitions:
+            if profile==NINE:
+                # A few pixels of rail-scale uncertainty must not cut either
+                # back off at compact window sizes. Adjacent seats remain far
+                # outside these small margins.
+                x,y,right,bottom=max(0,x-24),max(0,y-8),right+24,bottom+8
             if nine:template=self.nine_templates.get('top_left' if key=='top' else key,self.nine_template)
             if profile==DESKTOP_SIX:template=self.desktop_six_templates.get(key,template)
             if ((visible_y is not None and (y < visible_y[0] or bottom > visible_y[1])) or
@@ -63,10 +74,15 @@ class OpponentDetector:
             roi = canonical[y:bottom, x:right]
             bbox, score = None, 0.0
             candidates=[template]+(self.desktop_six_variants.get(key,[]) if profile==DESKTOP_SIX else [])
+            if profile==NINE:
+                candidates.extend(self.nine_variants.get(key,[]))
             if profile==DESKTOP_SIX and 'pair' in self.desktop_six_templates:
                 # Match only the shared upper strip of both backs. Avatars
                 # and HUDs hide different lower edges in the six-seat client.
                 candidates.append(self.desktop_six_templates['pair'])
+                # Compact client HUDs can cover even this strip's lower edge.
+                # Keep both card borders, but exclude the occluded bottom.
+                candidates.append(self.desktop_six_templates['pair'][:20])
             matches=[]
             for candidate in candidates:
                 if roi.shape[0]>=candidate.shape[0] and roi.shape[1]>=candidate.shape[1]:

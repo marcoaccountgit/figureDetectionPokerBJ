@@ -10,6 +10,85 @@ from card_detector import cv2, np
 
 
 class BrowserCaptureTests(unittest.TestCase):
+    def test_statistics_panel_returns_unknown_opponents_without_inference(self):
+        from pathlib import Path
+        payload=(Path(__file__).parent/'fixtures/nine-statistics-covered.png').read_bytes()
+        headers={'X-Capture-Token':'test-token','X-Capture-Session':'covered-nine'}
+        status,body=self.request('POST','/frame',payload,headers)
+        self.assertEqual(status,200)
+        result=json.loads(body)
+        self.assertFalse(result['alignment_ready'])
+        self.assertEqual(result['table_profile'],'pokerstars-nine')
+        self.assertEqual(result['opponents']['max_opponents'],8)
+        self.assertIsNone(result['opponents']['count'])
+        self.detector.detect.assert_not_called()
+
+    def test_reviewed_compact_hands_recover_missed_deals_and_partial_reads(self):
+        from pathlib import Path
+        from learned_detector import TableCardDetector
+        self.server.RequestHandlerClass = make_handler(TableCardDetector(), 'test-token')
+        headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'reviewed'}
+        cases = [
+            ('compact-ten-nine', ['10D', '9H'], ['3C', 'QC', '8D', '5H', None], 1),
+            # The old turn disappeared, but the new flop is already visible.
+            ('compact-next-flop', ['AS', '9C'], ['5H', '9D', '8D', None, None], 2),
+            ('compact-next-preflop', ['JC', '9D'], [None]*5, 3),
+        ]
+        with patch('browser_capture.perf_counter', side_effect=[i*.04 for i in range(5000)]):
+            for name, hand, board, count in cases:
+                payload = (Path(__file__).parent/'fixtures'/f'{name}.png').read_bytes()
+                for _ in range(12):
+                    status, body = self.request('POST', '/frame', payload, headers)
+                    self.assertEqual(status, 200)
+                    result = json.loads(body)
+                with self.subTest(name=name):
+                    self.assertEqual([c['card'] for c in result['player_hand']], hand)
+                    self.assertEqual([c['card'] for c in result['board']], board)
+                    self.assertEqual(result['hand_cycle']['count'], count)
+                    self.assertTrue(result['card_cache']['inference_skipped'])
+            headers['X-Capture-Session'] = 'partial-four-clubs'
+            payload = (Path(__file__).parent/'fixtures/compact-nine-four.png').read_bytes()
+            for _ in range(12):
+                status, body = self.request('POST', '/frame', payload, headers)
+                self.assertEqual(status, 200)
+                result = json.loads(body)
+            self.assertEqual([c['card'] for c in result['player_hand']], ['9C', '4C'])
+            self.assertEqual([c['card'] for c in result['board']], ['9S', '7H', 'JH', None, None])
+
+    def test_manual_correction_persists_and_new_hand_saves_diagnostics(self):
+        from tempfile import TemporaryDirectory
+        from pathlib import Path
+        from test_live_card_cache import known_flop
+        source, _, _, _, cards, _ = known_flop()
+        self.detector.detect.return_value = dict(cards=cards, processing_ms=1)
+        headers = {'X-Capture-Token': 'test-token', 'X-Capture-Session': 'manual'}
+        def frame():
+            status, body = self.request('POST', '/frame', cv2.imencode('.png', source)[1].tobytes(), headers)
+            self.assertEqual(status, 200)
+            return json.loads(body)
+        def intervene(**action):
+            return self.request('POST', '/intervention', json.dumps(dict(session='manual', hand_id=packet['hand_cycle']['count'], **action)), headers)
+        with TemporaryDirectory() as directory, patch('browser_capture.ROOT', Path(directory)), patch('browser_capture.perf_counter', side_effect=[i*.05 for i in range(3000)]):
+            for _ in range(5):
+                packet = frame()
+            self.assertEqual(intervene(kind='card', group='board', slot=0, card='ZZ')[0], 400)
+            self.assertEqual(intervene(kind='card', group='board', slot=0, card='AH')[0], 200)
+            for _ in range(3):
+                packet = frame()
+                self.assertEqual(packet['board'][0]['card'], 'AH')
+                self.assertTrue(packet['board'][0]['manual'])
+            old_count = packet['hand_cycle']['count']
+            self.assertEqual(intervene(kind='new_hand')[0], 200)
+            packet = frame()
+            self.assertEqual(packet['hand_cycle']['count'], old_count+1)
+            self.assertTrue(packet['hand_cycle']['started'])
+            self.assertFalse(packet['board'][0].get('manual', False))
+            reports = list(Path(directory).rglob('analysis.json'))
+            self.assertEqual(len(reports), 2)
+            for report in reports:
+                self.assertIsNotNone(cv2.imread(str(report.with_name('screenshot.png'))))
+                self.assertIn('before', json.loads(report.read_text(encoding='utf-8')))
+
     def test_fast_new_deal_clears_old_board_without_observing_empty_hero(self):
         from test_live_card_cache import known_flop
         source, game, viewport, _, cards, _ = known_flop()
@@ -76,6 +155,10 @@ class BrowserCaptureTests(unittest.TestCase):
             for _ in range(5):
                 packet = send(source)
                 self.assertFalse(packet['card_cache']['inference_skipped'])
+                recognition_frame = self.detector.detect.call_args.args[0]
+                for card in cards:
+                    a,b,c,d = card['bbox']
+                    self.assertFalse(np.any(recognition_frame[b:d,a:c]))
             self.assertEqual(packet['board'][3]['card'], 'AS')
             packet = send(source)
             self.assertTrue(packet['card_cache']['inference_skipped'])
@@ -90,7 +173,7 @@ class BrowserCaptureTests(unittest.TestCase):
             self.detector.detect.return_value = dict(cards=cards[:3] + [turn], processing_ms=1)
             for _ in range(5):
                 packet = send(folded)
-                self.assertFalse(packet['card_cache']['inference_skipped'])
+                self.assertTrue(packet['card_cache']['inference_skipped'])
             self.assertFalse(packet['hand_cycle']['active'])
             self.assertEqual([c['card'] for c in packet['player_hand']], [None, None])
             new_deal = source.copy()

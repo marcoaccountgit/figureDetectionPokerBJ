@@ -93,13 +93,14 @@ def decode_indices(output, names, frame_shape, scale, left, top):
 
 
 class LearnedCardDetector:
-    def __init__(self, profile='general'):
+    def __init__(self, profile='general', asset_profile=None):
         # Bound CPU parallelism; four threads avoid starving capture/UI while
         # speeding up DNN convolutions on the target laptop.
         cv2.setNumThreads(min(4, os.cpu_count() or 1))
-        model, classes = verified_model_files(profile)
+        asset_profile=asset_profile or profile
+        model, classes = verified_model_files(asset_profile)
         self.profile = profile
-        metadata = model_manifest(profile)
+        metadata = model_manifest(asset_profile)
         self.crop = metadata.get('crop')
         self.crop_reference_size = metadata.get('crop_reference_size')
         symbol_path = metadata.get('symbol_references')
@@ -251,25 +252,47 @@ class LearnedCardDetector:
         native=cv2.resize(frame,(1918,round(frame.shape[0]/scale)))
         boxes=[(696+110*i,397,729+110*i,463) for i in range(5)]
         boxes += [(863,723,895,786),(967,723,999,786)]
-        for box in boxes:
+        for box_index,box in enumerate(boxes):
             x,y,right,bottom=box
             if bottom>native.shape[0]:continue
             bbox=[round(v*scale) for v in box]
             existing=[c for c in cards if overlap(bbox,c['bbox'])>=.3]
             accepted=[c for c in existing if c['accepted']]
-            if accepted and all(c['confidence']>=.85 for c in accepted):continue
+            hero=box_index>=5
+            nine_hero=hero and getattr(self,'table_profile',None)=='pokerstars-nine'
+            if accepted and all(c['confidence']>=.85 for c in accepted) and not nine_hero:continue
             image=native[y:bottom,x:right]
             hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
             if np.mean((hsv[:,:,1]<65)&(hsv[:,:,2]>180))<.5:continue
             reading=self._symbol_reading(image)
+            if reading is None:
+                # A few pixels of registration/interpolation can cut a rank
+                # or the bottom of a spade. Keep the same strong symbol gates
+                # and require agreement from two bounded alternative crops.
+                alternatives=[]
+                for dx,dy in ((-3,-3),(-3,0),(3,-3),(3,0),(0,-3),(-2,-2),(0,-2),(2,-2)):
+                    patch=native[y+dy:bottom+dy,x+dx:right+dx]
+                    if patch.shape!=image.shape:continue
+                    candidate=self._symbol_reading(patch)
+                    if candidate:alternatives.append(candidate)
+                if nine_hero and alternatives and len({c['card'] for c in alternatives})==1:
+                    candidate=alternatives[0]
+                    # Even a single strong contradictory suit reading blocks
+                    # a wrong neural identity from entering permanent memory.
+                    for old in accepted:
+                        if old['rank']==candidate['rank'] and old['suit']!=candidate['suit']:
+                            old.update(accepted=False,card=None,decision_source='conflicting_native_suit')
+                if len(alternatives)>=2 and len({c['card'] for c in alternatives})==1:
+                    reading=dict(max(alternatives,key=lambda c:c['confidence']),crop_consensus=True)
             if reading is None:continue
             if accepted:
                 # A one-pixel-taller neural box can merge the club's lobes.
                 # Cross-check only uncertain suits of the SAME rank against
                 # the reviewed native index; never guess from card duplicates.
-                if reading.get('rank_score',0)>=.9 and reading.get('suit_score',0)>=.95 and reading.get('suit_margin',0)>=.08:
+                consensus=nine_hero and reading.get('crop_consensus')
+                if reading.get('rank_score',0)>=.9 and reading.get('suit_score',0)>=(.9 if consensus else .95) and reading.get('suit_margin',0)>=.08:
                     for old in accepted:
-                        if old['confidence']<.85 and old['rank']==reading['rank'] and old['suit']!=reading['suit']:
+                        if (old['confidence']<.85 or consensus) and old['rank']==reading['rank'] and old['suit']!=reading['suit']:
                             original,confidence=old['card'],old['confidence']
                             old.update(reading,neural_candidate=original,neural_confidence=confidence,
                                        symbol_corrected=True,decision_source='nine_seat_suit_crosscheck')
@@ -373,8 +396,12 @@ class TableCardDetector:
 
     def detect(self,frame):
         model_profile='pokerstars-nine' if self.profile=='pokerstars-desktop-six' else self.profile
+        if self.profile=='pokerstars-desktop-six' and (MODEL_DIR/'pokerstars-desktop-six.manifest.json').is_file():
+            model_profile='pokerstars-desktop-six'
         if model_profile not in self.models:
-            self.models[model_profile]=LearnedCardDetector(model_profile)
+            self.models[model_profile]=(LearnedCardDetector('pokerstars-nine',asset_profile=model_profile)
+                                        if model_profile=='pokerstars-desktop-six' else LearnedCardDetector(model_profile))
+        self.models[model_profile].table_profile=self.profile
         result=self.models[model_profile].detect(frame)
         result['table_profile']=self.profile
         return result

@@ -657,3 +657,8 @@ comprende una revisione preliminare delle letture del bot, esempi a bassa
 risoluzione e un affinamento sui casi limite. Sono inclusi controlli sulla
 fusione dei rilevamenti sovrapposti e sul river nelle finestre piccole.
 Dati e verifiche: [Addestramento desktop 212305](docs/training-desktop-212305.md).
+
+La revisione del video del 9 novembre migliora il riconoscimento degli otto
+avversari, la geometria nelle finestre compatte e i semi delle carte personali.
+Il modello a nove posti viene allenato e verificato separatamente dai pesi
+desktop a sei posti: [Revisione e addestramento 135641](docs/training-nove-posti-135641.md).

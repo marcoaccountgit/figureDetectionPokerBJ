@@ -1,10 +1,10 @@
 from pathlib import Path
 import unittest
 
-from card_detector import cv2
+from card_detector import cv2, np
 from capture_alignment import CaptureAligner
 from hand_counter import player_card_presence
-from live_card_cache import card_inference_needed
+from live_card_cache import card_inference_needed, unconfirmed_card_frame
 from table_profiles import NINE_HERO, desktop_layout
 from temporal_cards import HandCardMemory
 
@@ -28,6 +28,26 @@ def known_flop():
 
 
 class LiveCardCacheTests(unittest.TestCase):
+    def test_missing_old_turn_detects_new_flop_but_not_a_dark_occlusion(self):
+        _, game, _, profile, cards, memory = known_flop()
+        scale = game.shape[1] / 1762
+        cx = 654 + 101*3
+        box = [round(v*scale) for v in (cx-24,365,cx+26,430)]
+        turn = dict(cards[0], card='KH', board_slot=3, bbox=box)
+        memory.cards[('board', 3)] = turn
+        a,b,c,d = box
+        game[b:d,a:c] = 0
+        presence = player_card_presence(game, profile)
+        self.assertFalse(card_inference_needed(game, memory, True, presence, profile)[1].get('board_cleared', False))
+        game[b:d,a:c] = (30,120,30)
+        needed, info = card_inference_needed(game, memory, True, presence, profile)
+        self.assertTrue(needed)
+        self.assertTrue(info['board_cleared'])
+        self.assertIs(unconfirmed_card_frame(game, memory, True, profile, info), game)
+        # Also clear a folded board while one hero identity is still unknown.
+        memory.cards.pop(('player_hand', 1))
+        self.assertTrue(card_inference_needed(game, memory, False, presence, profile)[1]['board_cleared'])
+
     def test_cleared_board_requests_new_cycle_only_with_exposed_felt(self):
         _, game, _, profile, _, memory = known_flop()
         scale = game.shape[1] / 1762
@@ -65,17 +85,50 @@ class LiveCardCacheTests(unittest.TestCase):
             self.assertEqual(info['reason'], 'new_board_card')
             memory.update(dict(cards=[]), dict(active=True, started=False, ended=False))
 
-    def test_new_hand_loss_of_presence_and_showdown_cannot_reuse_cards(self):
+    def test_only_a_new_cycle_invalidates_confirmed_identities(self):
         _, game, _, profile, _, memory = known_flop()
         presence = player_card_presence(game, profile)
         self.assertTrue(card_inference_needed(game, memory, False, presence, profile)[0])
-        self.assertTrue(card_inference_needed(game, memory, True, [dict(present=False)] * 2, profile)[0])
+        self.assertFalse(card_inference_needed(game, memory, True, [dict(present=False)] * 2, profile)[0])
+        self.assertFalse(card_inference_needed(game, memory, True, [dict(present=None)] * 2, profile)[0])
         scale = game.shape[1] / 1762
         x, y, r, b = [round(v * scale) for v in desktop_layout(profile)['backs']['top']]
         game[y:b, x:r] = 255
         needed, info = card_inference_needed(game, memory, True, presence, profile)
-        self.assertTrue(needed)
-        self.assertEqual(info['reason'], 'possible_opponent_showdown')
+        self.assertFalse(needed)
+        self.assertEqual(info['reason'], 'confirmed_slots_unchanged')
+
+    def test_partial_flop_and_occlusion_do_not_reread_locked_slots(self):
+        _, game, _, profile, _, memory = known_flop()
+        memory.cards.pop(('board', 2))
+        presence = player_card_presence(game, profile)
+        self.assertEqual(card_inference_needed(game, memory, True, presence, profile)[1]['new_slot'], 2)
+        scale = game.shape[1] / 1762
+        # A dialog hides a confirmed card; the remaining unknown flop card
+        # still triggers reading, but the known identity remains locked.
+        game[round(365*scale):round(430*scale), round(630*scale):round(680*scale)] = 0
+        info = card_inference_needed(game, memory, True, presence, profile)[1]
+        masked = unconfirmed_card_frame(game, memory, True, profile, info)
+        for group, slot in memory.cards:
+            box = memory.cards[(group,slot)]['bbox']
+            left, top, right, bottom = box
+            self.assertFalse(np.any(masked[top:bottom,left:right]))
+        cx = 654 + 101*2
+        left,top,right,bottom = [round(v*scale) for v in (cx-12,375,cx+12,415)]
+        self.assertTrue(np.array_equal(masked[top:bottom,left:right], game[top:bottom,left:right]))
+        self.assertIs(unconfirmed_card_frame(game, memory, True, profile, {'board_cleared':True}), game)
+
+    def test_new_turn_does_not_expose_confirmed_cards_to_model(self):
+        _, game, _, profile, _, memory = known_flop()
+        scale = game.shape[1] / 1762
+        cx = 654 + 101*3
+        left,top,right,bottom = [round(v*scale) for v in (cx-24,365,cx+26,430)]
+        game[top:bottom,left:right] = 255
+        masked = unconfirmed_card_frame(game, memory, True, profile, {'reason':'new_board_card'})
+        self.assertTrue(np.all(masked[top:bottom,left:right] == 255))
+        for card in memory.cards.values():
+            a,b,c,d = card['bbox']
+            self.assertFalse(np.any(masked[b:d,a:c]))
 
     def test_viewport_resize_preserves_identities_and_reprojects_boxes(self):
         _, game, _, profile, _, memory = known_flop()

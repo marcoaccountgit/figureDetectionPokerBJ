@@ -1,0 +1,415 @@
+{
+  "source": "C:\\Users\\jhonn\\Videos\\Screen Recordings\\Screen Recording 2026-11-09 135641.mp4",
+  "sha256": "ba5ea0288efcfadfb4eea293d924ca2aa99dea895114f98147588c9f776ca8c8",
+  "protocol": "Manual positive labels; old template locates upper 20px of two backs. No threshold reduction. Complete held-out hands excluded.",
+  "references": [
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0000.png",
+      "time": 0,
+      "hand": 1,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1295,
+        177
+      ],
+      "match_score": 0.77305006980896
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_left\\135641-0000.png",
+      "time": 0,
+      "hand": 1,
+      "split": "train",
+      "seat": "lower_left",
+      "location": [
+        355,
+        585
+      ],
+      "match_score": 0.8132312893867493
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0000.png",
+      "time": 0,
+      "hand": 1,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1212,
+        585
+      ],
+      "match_score": 0.7039849758148193
+    },
+    {
+      "file": "assets\\table-nine\\variants\\top_left\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "top_left",
+      "location": [
+        542,
+        81
+      ],
+      "match_score": 0.785269021987915
+    },
+    {
+      "file": "assets\\table-nine\\variants\\top_right\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "top_right",
+      "location": [
+        1029,
+        81
+      ],
+      "match_score": 0.8489368557929993
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_left\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "upper_left",
+      "location": [
+        271,
+        178
+      ],
+      "match_score": 0.7351547479629517
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1297,
+        178
+      ],
+      "match_score": 0.8285441994667053
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_left\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "middle_left",
+      "location": [
+        209,
+        378
+      ],
+      "match_score": 0.7351493239402771
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_right\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "middle_right",
+      "location": [
+        1359,
+        377
+      ],
+      "match_score": 0.7960086464881897
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_left\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "lower_left",
+      "location": [
+        354,
+        586
+      ],
+      "match_score": 0.7959139347076416
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0045.png",
+      "time": 45,
+      "hand": 2,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1214,
+        586
+      ],
+      "match_score": 0.7356714606285095
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0060.png",
+      "time": 60,
+      "hand": 2,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1297,
+        178
+      ],
+      "match_score": 0.8292089104652405
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_left\\135641-0060.png",
+      "time": 60,
+      "hand": 2,
+      "split": "train",
+      "seat": "middle_left",
+      "location": [
+        209,
+        378
+      ],
+      "match_score": 0.7357290387153625
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_right\\135641-0060.png",
+      "time": 60,
+      "hand": 2,
+      "split": "train",
+      "seat": "middle_right",
+      "location": [
+        1359,
+        377
+      ],
+      "match_score": 0.7954466938972473
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_left\\135641-0060.png",
+      "time": 60,
+      "hand": 2,
+      "split": "train",
+      "seat": "lower_left",
+      "location": [
+        354,
+        586
+      ],
+      "match_score": 0.795432448387146
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0060.png",
+      "time": 60,
+      "hand": 2,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1214,
+        586
+      ],
+      "match_score": 0.7356714606285095
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_left\\135641-0205.png",
+      "time": 205,
+      "hand": 4,
+      "split": "train",
+      "seat": "middle_left",
+      "location": [
+        214,
+        376
+      ],
+      "match_score": 0.7460985779762268
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0205.png",
+      "time": 205,
+      "hand": 4,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1213,
+        583
+      ],
+      "match_score": 0.6961874961853027
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_left\\135641-0240.png",
+      "time": 240,
+      "hand": 5,
+      "split": "train",
+      "seat": "upper_left",
+      "location": [
+        276,
+        178
+      ],
+      "match_score": 0.7145195603370667
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0240.png",
+      "time": 240,
+      "hand": 5,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1294,
+        178
+      ],
+      "match_score": 0.7939370274543762
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_right\\135641-0240.png",
+      "time": 240,
+      "hand": 5,
+      "split": "train",
+      "seat": "middle_right",
+      "location": [
+        1355,
+        376
+      ],
+      "match_score": 0.8435826301574707
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0240.png",
+      "time": 240,
+      "hand": 5,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1212,
+        583
+      ],
+      "match_score": 0.7100232243537903
+    },
+    {
+      "file": "assets\\table-nine\\variants\\top_right\\135641-0415.png",
+      "time": 415,
+      "hand": 9,
+      "split": "train",
+      "seat": "top_right",
+      "location": [
+        1028,
+        81
+      ],
+      "match_score": 0.8245885372161865
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_left\\135641-0415.png",
+      "time": 415,
+      "hand": 9,
+      "split": "train",
+      "seat": "upper_left",
+      "location": [
+        272,
+        177
+      ],
+      "match_score": 0.6577481627464294
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0415.png",
+      "time": 415,
+      "hand": 9,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1295,
+        177
+      ],
+      "match_score": 0.7727159261703491
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_left\\135641-0415.png",
+      "time": 415,
+      "hand": 9,
+      "split": "train",
+      "seat": "lower_left",
+      "location": [
+        355,
+        585
+      ],
+      "match_score": 0.8135114908218384
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0415.png",
+      "time": 415,
+      "hand": 9,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1213,
+        585
+      ],
+      "match_score": 0.7207589745521545
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_left\\135641-0550.png",
+      "time": 550,
+      "hand": 10,
+      "split": "train",
+      "seat": "upper_left",
+      "location": [
+        273,
+        177
+      ],
+      "match_score": 0.7403101325035095
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0550.png",
+      "time": 550,
+      "hand": 10,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1294,
+        177
+      ],
+      "match_score": 0.7953541874885559
+    },
+    {
+      "file": "assets\\table-nine\\variants\\top_right\\135641-0600.png",
+      "time": 600,
+      "hand": 11,
+      "split": "train",
+      "seat": "top_right",
+      "location": [
+        1028,
+        82
+      ],
+      "match_score": 0.8262393474578857
+    },
+    {
+      "file": "assets\\table-nine\\variants\\upper_right\\135641-0600.png",
+      "time": 600,
+      "hand": 11,
+      "split": "train",
+      "seat": "upper_right",
+      "location": [
+        1294,
+        178
+      ],
+      "match_score": 0.7888156175613403
+    },
+    {
+      "file": "assets\\table-nine\\variants\\middle_right\\135641-0600.png",
+      "time": 600,
+      "hand": 11,
+      "split": "train",
+      "seat": "middle_right",
+      "location": [
+        1355,
+        377
+      ],
+      "match_score": 0.7891824245452881
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_left\\135641-0600.png",
+      "time": 600,
+      "hand": 11,
+      "split": "train",
+      "seat": "lower_left",
+      "location": [
+        358,
+        584
+      ],
+      "match_score": 0.7841557860374451
+    },
+    {
+      "file": "assets\\table-nine\\variants\\lower_right\\135641-0600.png",
+      "time": 600,
+      "hand": 11,
+      "split": "train",
+      "seat": "lower_right",
+      "location": [
+        1212,
+        584
+      ],
+      "match_score": 0.7178575992584229
+    }
+  ]
+}

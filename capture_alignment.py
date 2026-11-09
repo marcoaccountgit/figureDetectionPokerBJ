@@ -1,6 +1,35 @@
 """Remove near-black browser side bars before applying the calibrated model."""
 from pathlib import Path
+from functools import lru_cache
 from card_detector import cv2, np
+
+
+@lru_cache(maxsize=1)
+def statistics_header():
+    return cv2.imread(str(Path(__file__).parent/'assets/alignment/desktop-statistics-header.png'),cv2.IMREAD_GRAYSCALE)
+
+
+def statistics_overlay(frame):
+    """Recognize the client's statistics panel, which hides several seats."""
+    template=statistics_header()
+    if template is None:return False
+    image=cv2.resize(frame,(960,round(frame.shape[0]*960/frame.shape[1])))
+    gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    search=gray[:min(230,gray.shape[0])]
+    if search.shape[0]<template.shape[0] or search.shape[1]<template.shape[1]:return False
+    # Match the two fixed headings separately: the level number and cursor
+    # between them change, even though the panel still hides the same seats.
+    matches=[]
+    offsets=(30,170,310)
+    for left,right in ((30,90),(170,215),(310,400)):
+        patch=template[6:23,left:right]
+        _,score,_,location=cv2.minMaxLoc(cv2.matchTemplate(search,patch,cv2.TM_CCOEFF_NORMED))
+        matches.append((score,location))
+    for i,(a,(ax,ay)) in enumerate(matches):
+        for j,(b,(bx,by)) in enumerate(matches[i+1:],i+1):
+            if min(a,b)>=.9 and abs((bx-ax)-(offsets[j]-offsets[i]))<=8 and abs(by-ay)<=4:
+                return True
+    return False
 
 
 def align_capture(frame):
@@ -79,6 +108,14 @@ class CaptureAligner:
 
     def align(self, frame):
         from table_profiles import nine_layout_anchor, NINE,is_desktop,desktop_table_viewport,desktop_seat_profile
+        if statistics_overlay(frame):
+            # Hidden seats are unknown, never empty. In particular a fresh
+            # capture must not route this desktop dialog to browser geometry.
+            self.alignment_ready=False
+            if not is_desktop(self.profile):self.profile=NINE
+            self.last_anchor=dict(method='statistics_panel',registered=False,reason='table_occluded')
+            viewport=self.desktop_viewport or (0,0,frame.shape[1],frame.shape[0])
+            return extract_viewport(frame,viewport),viewport
         raw_nine = nine_layout_anchor(frame)
         registration=desktop_table_viewport(frame)
         self.alignment_ready=True

@@ -1,5 +1,7 @@
 """Local browser-tab capture UI; frames stay on the loopback interface."""
 import argparse
+from copy import deepcopy
+from datetime import datetime, timezone
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -16,7 +18,8 @@ from capture_alignment import CaptureAligner, restore_coordinates
 from opponent_detector import OpponentDetector, OpponentTracker
 from hand_counter import HandCounter, player_card_presence
 from poker_advice import analyze_decision
-from live_card_cache import card_inference_needed
+from live_card_cache import card_inference_needed, unconfirmed_card_frame
+from poker_equity import normalize_card, card_code
 
 ROOT = Path(__file__).resolve().parent
 MAX_FRAME = 12 * 1024 * 1024
@@ -32,7 +35,8 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
     opponents = OpponentDetector()
     state = {'session': None, 'viewport': None, 'temporal': live_confirmation(),
              'opponents': OpponentTracker(), 'hands': HandCounter(), 'dealt_seats': [], 'aligner': None,
-             'profile':'pokerstars', 'card_memory': HandCardMemory()}
+             'profile':'pokerstars', 'card_memory': HandCardMemory(), 'overrides': {},
+             'latest_frame': None, 'latest_result': None, 'force_start': False}
 
     class Handler(BaseHTTPRequestHandler):
         def reply(self, status, body, content_type='application/json'):
@@ -51,6 +55,9 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
             self.reply(200, (ROOT / 'browser_ui.html').read_bytes(), 'text/html; charset=utf-8')
 
         def do_POST(self):
+            if self.path == '/intervention' and secrets.compare_digest(self.headers.get('X-Capture-Token', ''), token):
+                self.intervention()
+                return
             if self.path != '/frame' or not secrets.compare_digest(self.headers.get('X-Capture-Token', ''), token):
                 self.reply(403, b'{}')
                 return
@@ -72,14 +79,14 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     profile = state['aligner'].profile
                     if state['session'] != session:
                         state.update(session=session, viewport=viewport, temporal=live_confirmation(),
-                                     opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[], card_memory=HandCardMemory())
+                                     opponents=OpponentTracker(), hands=HandCounter(), dealt_seats=[], card_memory=HandCardMemory(), overrides={}, force_start=False)
                     elif state['viewport'] != viewport or state['profile'] != profile:
                         old_width = state['viewport'][2] - state['viewport'][0]
                         state['card_memory'].rescale(game.shape[1] / old_width)
                         state.update(viewport=viewport, temporal=live_confirmation(), opponents=OpponentTracker())
                         state['hands'].reset_observations()
                         if state['profile'] != profile:
-                            state.update(hands=HandCounter(),dealt_seats=[], card_memory=HandCardMemory())
+                            state.update(hands=HandCounter(),dealt_seats=[], card_memory=HandCardMemory(), overrides={})
                     state['profile'] = profile
                     if isinstance(detector,TableCardDetector):detector.profile=profile
                     aligned = state['aligner'].alignment_ready
@@ -89,7 +96,9 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                         game, state['card_memory'], state['hands'].active, presence, profile)
                     presence_ms = (perf_counter() - presence_start) * 1000
                     if aligned and needed:
-                        result = detector.detect(game)
+                        recognition_frame = unconfirmed_card_frame(
+                            game, state['card_memory'], state['hands'].active, profile, cache_info)
+                        result = detector.detect(recognition_frame)
                     else:
                         result = dict(cards=[], processing_ms=0, scene='card_memory' if aligned else 'alignment_lost')
                     result['card_cache'] = cache_info
@@ -101,11 +110,25 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     hand_start = perf_counter()
                     result['hand_cycle'] = state['hands'].update(
                         presence, raw_hand, perf_counter(), board_cleared=cache_info.get('board_cleared', False))
+                    result['hand_cycle']['board_cleared'] = cache_info.get('board_cleared', False)
+                    if state['force_start']:
+                        result['hand_cycle'].update(started=True, active=True)
+                        state['force_start'] = False
+                    if result['hand_cycle']['started']:
+                        state['overrides'].clear()
+                    if result['hand_cycle']['ended']:
+                        state['overrides'].clear()
                     if result['hand_cycle']['started'] and result['hand_cycle']['count'] > 1:
                         state['temporal'] = live_confirmation()
                     result = state['temporal'].update(result, perf_counter(), game.shape)
                     result = state['card_memory'].update(result, result['hand_cycle'])
                     result = arrange_table(result, game.shape)
+                    for (group, slot), value in state['overrides'].items():
+                        result[group][slot].update(card=value, accepted=True, detected=True, manual=True)
+                        field = 'hand_slot' if group == 'player_hand' else 'board_slot'
+                        for card in result['cards']:
+                            if card.get('table_group') == group and card.get(field) == slot:
+                                card.update(card=value, accepted=True, manual=True)
                     result['hand_cycle']['recognized_cards'] = sum(c['accepted'] for c in result['player_hand'])
                     if result['hand_cycle']['started']:
                         state['opponents'] = OpponentTracker()
@@ -148,9 +171,52 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     result['capture_alignment']['vertical_anchor'] = state['aligner'].last_anchor
                     result['capture_alignment']['ready'] = aligned
                     result['capture_alignment']['profile'] = profile
+                    state['latest_frame'] = frame.copy()
+                    state['latest_result'] = deepcopy(result)
                 self.reply(200, json.dumps(result, allow_nan=False).encode())
             except (ValueError, RuntimeError, cv2.error) as error:
                 self.reply(400, json.dumps({'error': str(error)}).encode())
+
+        def intervention(self):
+            try:
+                size = int(self.headers.get('Content-Length', '0'))
+                if not 0 < size <= 4096:
+                    raise ValueError('Richiesta non valida')
+                action = json.loads(self.rfile.read(size))
+                if not isinstance(action, dict):
+                    raise ValueError('Intervento non valido')
+                with lock:
+                    if (state['latest_result'] is None or action.get('session') != state['session']
+                            or action.get('hand_id') != state['hands'].count):
+                        raise ValueError('La mano è cambiata: ripeti dopo la prossima lettura')
+                    kind = action.get('kind')
+                    if kind == 'card':
+                        group, slot = action.get('group'), action.get('slot')
+                        if group not in ('board', 'player_hand') or type(slot) is not int or not 0 <= slot < (5 if group == 'board' else 2):
+                            raise ValueError('Posizione della carta non valida')
+                        value = card_code(normalize_card(action.get('card'))).upper()
+                        action['card'] = value
+                    elif kind != 'new_hand':
+                        raise ValueError('Intervento non valido')
+                    folder = ROOT / 'artifacts' / 'manual-interventions' / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ') + '-' + secrets.token_hex(3))
+                    folder.mkdir(parents=True)
+                    if not cv2.imwrite(str(folder / 'screenshot.png'), state['latest_frame']):
+                        raise OSError('Salvataggio screenshot non riuscito')
+                    (folder / 'analysis.json').write_text(json.dumps(dict(
+                        timestamp=datetime.now(timezone.utc).isoformat(), action=action,
+                        before=state['latest_result'], overrides=[dict(group=g, slot=s, card=c) for (g,s),c in state['overrides'].items()]
+                    ), ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')
+                    if kind == 'card':
+                        state['overrides'][(group, slot)] = value
+                    else:
+                        state['hands'].count += 1
+                        state['hands'].active = True
+                        state['hands'].reset_observations()
+                        state.update(temporal=live_confirmation(), card_memory=HandCardMemory(),
+                                     opponents=OpponentTracker(), dealt_seats=[], overrides={}, force_start=True)
+                self.reply(200, json.dumps(dict(saved=str(folder.relative_to(ROOT)))).encode())
+            except (ValueError, TypeError, OSError) as error:
+                self.reply(400, json.dumps(dict(error=str(error))).encode())
 
         def log_message(self, format, *args):
             pass

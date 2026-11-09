@@ -99,7 +99,7 @@
     {
       "time": 240,
       "pot": 2362,
-      "button": "upper_left",
+      "button": "middle_left",
       "actions": {
         "upper_left": "check"
       }
@@ -276,6 +276,6 @@
       "lower_left"
     ]
   },
-  "annotation_revision": 2,
-  "review_note": "Pot digits and 810s name/action checked against full-resolution video crops, not thumbnails."
+  "annotation_revision": 3,
+  "review_note": "Pot digits and 810s name/action checked against full-resolution video crops, not thumbnails. On 2026-11-09 the 240s dealer marker was rechecked in the full frame: it is above hunterSauve1959 at middle_left, not the upper_left player showing Check."
 }

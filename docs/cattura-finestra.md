@@ -139,6 +139,13 @@ ora usato solo sul desktop a sei posti. La regione in alto a destra è più
 ampia. Restano invariati soglia di presenza 0,72 e conferma in cinque letture
 su almeno 300 ms. Non vengono dedotti avversari dai nomi o dagli stack.
 
+La diagnosi dell'8 novembre aggiunge una fascia di soli 20 pixel canonici:
+nei client compatti il pannello del giocatore copre anche il fondo del
+riferimento precedente. La fixture `six-four-hud-covered-opponents.png`
+verifica quattro coppie coperte e un posto vuoto a quattro risoluzioni.
+Il caso prima incerto in basso a sinistra supera ora la soglia invariata;
+la verifica delle carte scoperte allo showdown continua a escluderle.
+
 Le fixture `six-five-covered-opponents.jpg` e `six-two-covered-opponents.png`
 conservano rispettivamente l'immagine della diagnosi e la sorgente visibile
 nello screenshot delle 14:30:44. I test verificano cinque e due avversari a
@@ -148,18 +155,21 @@ le carte scoperte allo showdown continuano a non contare come coppie coperte.
 
 ## Riconoscimento su richiesta nella stessa mano
 
-Una volta confermate entrambe le carte personali e un board contiguo di
-0, 3, 4 o 5 carte, il server controlla soltanto la presenza dei volti delle
-carte nelle posizioni attese. Se le posizioni note restano occupate e gli
-slot successivi vuoti, non esegue nuovamente il riconoscimento delle identità.
+Una volta confermate le carte personali, il server controlla soltanto la
+presenza dei volti negli slot ancora sconosciuti. Ogni carta confermata viene
+memorizzata separatamente, anche durante la conferma parziale del flop.
+Se non compaiono carte nuove, non esegue nuovamente il riconoscimento delle identità.
 Fold, call, raise, cambio del giocatore attivo e modifiche dei pulsanti non
 invalidano questa memoria. Avversari e importi continuano a essere osservati.
 
 Un volto in uno slot nuovo riattiva il riconoscitore fino alla conferma:
-un primo tentativo fallito non viene memorizzato come assenza. Perdita della
-presenza delle carte personali, geometria incompleta o possibili carte
-avversarie scoperte richiedono nuovamente il riconoscimento. La fine e
-l'inizio fisico della mano cancellano le identità precedenti. Un cambio di
+un primo tentativo fallito non viene memorizzato come assenza. Il riconoscitore
+riceve un'immagine contenente solo gli slot non confermati: le carte già
+memorizzate sono escluse anche quando arriva il turn o il river.
+Presenze incerte, cambiamenti nei pannelli e carte avversarie scoperte non
+riattivano la lettura delle identità note. Il fold elimina le carte personali
+e conserva il board; il board viene cancellato quando è fisicamente rimosso
+o inizia una nuova mano. Un cambio di
 sessione o profilo le azzera; una variazione della sola area registrata
 mantiene le identità e riproietta le coordinate, evitando nuove conferme
 causate dal ridimensionamento della finestra.
@@ -171,3 +181,11 @@ conferma temporale (`raw_cards` resta vuoto).
 
 Una prova HTTP verifica conferma iniziale, cambiamenti esterni alle carte,
 ridimensionamento, riconoscimento del turn e una nuova mano con carte diverse.
+
+### Correzioni manuali e nuova mano
+
+Durante la scansione, clicca una carta della mano o del tavolo per aprire il selettore visivo. Scegli il valore e il seme con due clic distinti, in qualsiasi ordine: la seconda scelta applica automaticamente la correzione. Il pannello mostra la lettura originale e l?anteprima della selezione. Puoi annullare con la croce o Esc. La carta appare come manuale e viene usata nei calcoli fino alla fine della mano o all?inizio della successiva.
+
+Il pulsante **Nuova mano**, nel pannello delle probabilit?, incrementa il contatore e azzera le conferme, le correzioni e le carte memorizzate. Le carte vengono lette nuovamente dalla sorgente attuale.
+
+Ogni intervento salva automaticamente `screenshot.png` e `analysis.json` in una sottocartella di `artifacts/manual-interventions/`. Il JSON contiene la modifica richiesta, lo stato precedente del bot, le correzioni gi? attive e la data UTC. La cartella ? indicata nell?interfaccia; gli artefatti sono esclusi da Git. Se il salvataggio fallisce, l?intervento non viene applicato e viene mostrato un errore.

@@ -1,7 +1,6 @@
 """Cheap occupancy checks before rerunning card identity recognition."""
 from card_detector import cv2, np
-from opponent_detector import SEATS
-from table_profiles import is_desktop, desktop_layout
+from table_profiles import is_desktop, NINE_HERO
 
 
 def white_fraction(frame, box):
@@ -20,48 +19,70 @@ def card_inference_needed(frame, memory, active, presence, profile):
     """Only skip recognition inside a confirmed hand with complete known slots.
 
     These checks detect card faces, not ranks or suits. An unknown white board
-    slot always requests recognition, including repeated attempts after an OCR
-    miss. Missing/occluded faces and possible showdowns also request recognition.
+    slot always requests recognition, including repeated attempts after a miss.
+    Ambiguous presence does not invalidate a confirmed identity. The hand
+    counter, rather than rank recognition, handles disappearance and new deals.
     """
     info = dict(inference_skipped=False, locked_slots=len(memory.cards))
-    if not active or not all(('player_hand', slot) in memory.cards for slot in range(2)):
-        return True, dict(info, reason='hand_not_confirmed')
-    if len(presence) != 2 or not all(s.get('present') is True for s in presence):
-        return True, dict(info, reason='hand_presence_changed')
+    hero_returned = not active and any(s.get('present') is True for s in presence)
     board = {slot for group, slot in memory.cards if group == 'board'}
-    if len(board) not in (0, 3, 4, 5) or board != set(range(len(board))):
-        return True, dict(info, reason='board_confirmation_pending')
     x, step, y = (654, 101, 395) if is_desktop(profile) else (615, 116, 441)
     # A fast deal can happen between scans: the hero never appears empty.
-    # Require exposed felt across the entire old board, not one OCR miss.
+    # A missing turn/river also proves a street reset if the next flop was
+    # already dealt between scans. Occlusion must never count as exposed felt.
     if len(board) >= 3:
-        cleared = True
+        cleared_slots = set()
         scale = frame.shape[1] / 1762
         for slot in sorted(board):
             cx = x + step * slot
             left, top, right, bottom = [round(v * scale) for v in (cx - 24, y - 30, cx + 26, y + 35)]
             patch = frame[top:bottom, left:right]
             if patch.shape[:2] != (bottom-top, right-left) or not patch.size:
-                cleared = False
-                break
+                continue
             h, s, v = cv2.split(cv2.cvtColor(patch, cv2.COLOR_BGR2HSV))
             felt = np.mean((h > 30) & (h < 100) & (s > 65) & (v > 35))
-            if felt < .6 or np.mean((s < 85) & (v > 170)) > .08:
-                cleared = False
-                break
-        if cleared:
+            if felt >= .6 and np.mean((s < 85) & (v > 170)) <= .08:
+                cleared_slots.add(slot)
+        if cleared_slots == board or any(slot >= 3 for slot in cleared_slots):
             return True, dict(info, reason='board_cleared', board_cleared=True)
+    if hero_returned or (active and not all(('player_hand', slot) in memory.cards for slot in range(2))):
+        return True, dict(info, reason='hand_not_confirmed')
+    if not active and not memory.cards:
+        return True, dict(info, reason='hand_not_confirmed')
     for slot in range(5):
         cx = x + step * slot
         white = white_fraction(frame, (cx - 24, y - 30, cx + 26, y + 35))
-        if white is None or (slot in board and white < .20):
-            return True, dict(info, reason='board_presence_changed')
-        if slot not in board and white >= .20:
+        if slot not in board and white is not None and white >= .20:
             return True, dict(info, reason='new_board_card', new_slot=slot)
-    # Keep reading exposed opponent cards at showdown, even with a locked river.
-    boxes = desktop_layout(profile)['backs'].values() if is_desktop(profile) else [s[2] for s in SEATS]
-    for box in boxes:
-        white = white_fraction(frame, box)
-        if white is not None and white >= .25:
-            return True, dict(info, reason='possible_opponent_showdown')
     return False, dict(info, inference_skipped=True, reason='confirmed_slots_unchanged')
+
+
+def unconfirmed_card_frame(frame, memory, active, profile, cache_info):
+    """Expose only unlocked hero/board slots to the identity recognizer.
+
+    Occupancy, alignment and opponent analysis still use the original image.
+    A new cycle must read the original image even before old memory is cleared.
+    """
+    if not memory.cards or cache_info.get('board_cleared') or (not active and cache_info.get('reason') == 'hand_not_confirmed'):
+        return frame
+    image = np.zeros_like(frame)
+    scale = frame.shape[1] / 1762
+    desktop = is_desktop(profile)
+    x, step, y = (654, 101, 395) if desktop else (615, 116, 441)
+    boxes = [('board', slot, (x + step*slot - 46, y - 65,
+                              x + step*slot + 46, y + 65)) for slot in range(5)]
+    hero = NINE_HERO if desktop else ((648,650,686,746), (688,662,736,760))
+    for slot, (left, top, right, bottom) in enumerate(hero):
+        # Partition adjacent hero indices so an unknown slot cannot expose a
+        # known neighbour. Allow the client's vertical winning-card animation.
+        left_bound = (hero[slot-1][2] + left)/2 if slot else left-20
+        right_bound = (right + hero[slot+1][0])/2 if slot+1 < len(hero) else right+20
+        boxes.append(('player_hand', slot, (left_bound, top-65, right_bound, bottom+65)))
+    for group, slot, box in boxes:
+        if (group, slot) in memory.cards:
+            continue
+        left, top, right, bottom = [round(v*scale) for v in box]
+        left, top = max(0,left), max(0,top)
+        right, bottom = min(frame.shape[1],right), min(frame.shape[0],bottom)
+        image[top:bottom,left:right] = frame[top:bottom,left:right]
+    return image

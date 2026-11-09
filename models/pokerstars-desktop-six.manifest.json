@@ -1,0 +1,28 @@
+{
+  "license": "AGPL-3.0 (Ultralytics derivative)",
+  "symbol_references": "pokerstars-nine-symbols-212305-149ab8d5",
+  "crop": [
+    0.33889468196037537,
+    0.3005008347245409,
+    0.6673618352450469,
+    0.7512520868113522
+  ],
+  "crop_reference_size": [
+    1918,
+    1198
+  ],
+  "profile": "pokerstars-desktop-six",
+  "runtime_profile": "pokerstars-nine",
+  "source_backup": "artifacts\\nine-135641\\previous-model",
+  "source_training_run": "artifacts\\training\\desktop-212305-reviewed-v2",
+  "files": [
+    {
+      "local": "pokerstars-desktop-six.onnx",
+      "sha256": "149ab8d54cca164a5e5bfb5ac5aff753c3e31840c04fe947ea852b7204c7edf6"
+    },
+    {
+      "local": "pokerstars-desktop-six.classes.json",
+      "sha256": "8a2d7e9dacf245aca5ef5a402cb404def919e9994e9142644d80c6d6248ee038"
+    }
+  ]
+}

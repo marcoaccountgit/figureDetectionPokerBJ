@@ -24,6 +24,17 @@ class HandCardMemory:
 
     def __init__(self):
         self.cards = {}
+        self.revalidation_idle = 0
+        self.revalidation_remaining = 0
+        self.replacements = {}
+
+    def invalidate_conflicts(self, conflicts):
+        for conflict in conflicts:
+            for group, slot in conflict['slots']:
+                self.cards.pop((group, slot), None)
+                self.replacements.pop((group, slot), None)
+        if conflicts:
+            self.revalidation_remaining = 8
 
     def rescale(self, factor):
         """A registered viewport resize changes geometry, not card identities."""
@@ -36,9 +47,12 @@ class HandCardMemory:
     def update(self, result, cycle):
         if cycle['started'] or (not cycle['active'] and cycle.get('board_cleared')):
             self.cards.clear()
+            self.replacements.clear()
+            self.revalidation_idle = self.revalidation_remaining = 0
         elif cycle['ended']:
             # Folding removes the hero's cards, not the shared board.
             self.cards = {key: card for key, card in self.cards.items() if key[0] == 'board'}
+            self.replacements.clear()
         if not cycle['active']:
             result = dict(result, cards=[card for card in result['cards']
                                         if card.get('table_group') != 'player_hand'])
@@ -58,10 +72,23 @@ class HandCardMemory:
             if key not in self.cards and card['accepted']:
                 self.cards[key] = dict(card)
             saved = self.cards.get(key)
+            if result.get('card_revalidation') and saved and card['accepted'] and card['card'] != saved['card']:
+                candidate, count = self.replacements.get(key, (None, 0))
+                count = count+1 if candidate == card['card'] else 1
+                self.replacements[key] = (card['card'], count)
+                # The temporal filter has already required five matching raw
+                # observations. Require three accepted readings before replacing.
+                if count >= 3:
+                    self.cards[key] = saved = dict(card, revalidated=True)
+                    self.replacements.pop(key, None)
+            else:
+                self.replacements.pop(key, None)
             current.append(dict(saved, bbox=card['bbox'],
                                 retained=not card['accepted'] or card['card'] != saved['card'])
                            if saved else card)
         current.extend(dict(card, retained=True) for key, card in self.cards.items() if key not in seen)
+        for key in set(self.replacements)-seen:
+            self.replacements.pop(key, None)
         return dict(result, cards=current)
 
 

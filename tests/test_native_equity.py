@@ -68,6 +68,11 @@ class NativeEquityTests(unittest.TestCase):
                         self.assertEqual(metric, uncertainty(totals.sums[i], totals.squares[i], totals.n))
                 for i, metric in enumerate(reference['categories'].values()):
                     self.assertEqual(metric['value'], totals.categories[i] / totals.n)
+                for phase, counts in [('current', totals.threats_now), ('final', totals.threats_final)]:
+                    threats = reference['opponent_threats'][phase]
+                    if threats is not None:
+                        for i, metric in enumerate(threats.values()):
+                            self.assertEqual(metric['value'], counts[i] / totals.n)
 
     def test_native_progress_seed_and_cancellation(self):
         updates = []

@@ -153,6 +153,7 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
     totals = Counter()
     squares = Counter()
     categories = Counter()
+    threats_now, threats_final = Counter(), Counter()
     n = 0
     backend_used = 'python'
 
@@ -170,6 +171,11 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
                     current_label=('Royal Flush' if current == (8,14) else CATEGORIES[current[0]]) if current else None,
                     metrics=metrics, categories={k: uncertainty(categories[i], categories[i], n, exact)
                                                 for i,k in enumerate(CATEGORIES)},
+                    opponent_threats={
+                        'current': {k: uncertainty(threats_now[i], threats_now[i], n, exact)
+                                    for i, k in enumerate(CATEGORIES)} if current else None,
+                        'final': {k: uncertainty(threats_final[i], threats_final[i], n, exact)
+                                  for i, k in enumerate(CATEGORIES)}},
                     simulations=n, requested_simulations=simulations, legal_deals=deals,
                     complete=exact or n == simulations, random_seed=random_seed,
                     processing_ms=round((perf_counter()-start)*1000, 2))
@@ -185,6 +191,9 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
                 totals[key], squares[key] = values.sums[i], values.squares[i]
             for i, value in enumerate(values.categories):
                 categories[i] = value
+            for i in range(9):
+                threats_now[i] = values.threats_now[i]
+                threats_final[i] = values.threats_final[i]
 
         def native_progress(values):
             use_totals(values)
@@ -226,12 +235,16 @@ def calculate_equity(hero_cards, community_cards, opponents_count, simulations=5
                   [current_score(tuple(sorted(hand))) for hand in hands])
         best = max(scores)
         win, lose = final > best, final < best
+        if lose:
+            threats_final[best[0]] += 1
         tie = not win and not lose
         share = 0. if lose else 1/(1+sum(score == final for score in scores))
         values = dict(win=win, lose=lose, tie=tie, equity=share)
         if current:
             current_scores = [current_score(tuple(sorted(hand))) for hand in hands] if missing else scores
             current_best = max(current_scores)
+            if current < current_best:
+                threats_now[current_best[0]] += 1
             values.update(current_strength=current > current_best, currently_behind=current < current_best,
                           current_tie=current == current_best, category_improvement=final[0] > current[0],
                           same_category_value_improvement=final[0] == current[0] and final > current)

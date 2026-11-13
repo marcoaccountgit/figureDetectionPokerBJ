@@ -43,6 +43,23 @@ def arrange_table(result, shape):
                         previous['accepted'], previous.get('confidence', 0)):
                     hand_slots[hand_slot] = card
         cards.append(card)
+    # A deck contains one instance of each identity. Reject both conflicting
+    # slots rather than selecting a winner from confidence alone.
+    identities = {}
+    for c in slots + hand_slots:
+        if c and c['accepted'] and c['card']:
+            code = c['card'].upper().replace('10', 'T')
+            identities.setdefault(code, []).append(c)
+    conflicts = []
+    for code, matching in identities.items():
+        if len(matching) < 2:
+            continue
+        conflicts.append(dict(card=code, slots=[
+            [c['table_group'], c['board_slot'] if c['table_group']=='board' else c['hand_slot']]
+            for c in matching]))
+        for c in cards:
+            if c['table_group'] in ('board','player_hand') and c.get('card') and c['card'].upper().replace('10','T') == code:
+                c.update(accepted=False, card=None, rejection_reason='duplicate_card')
     # Preserve all detections for overlays; order presentation by spatial position.
     cards.sort(key=lambda c: ({'board': 0, 'player_hand': 1, 'other': 2}[c['table_group']],
                               c['board_slot'] if c['board_slot'] is not None else
@@ -56,4 +73,4 @@ def arrange_table(result, shape):
                         detected=c is not None, accepted=bool(c and c['accepted']),
                         bbox=c['bbox'] if c else None)
                    for i, (label, c) in enumerate(zip(('Sinistra', 'Destra'), hand_slots))]
-    return dict(result, cards=cards, board=board, player_hand=player_hand)
+    return dict(result, cards=cards, board=board, player_hand=player_hand, card_conflicts=conflicts)

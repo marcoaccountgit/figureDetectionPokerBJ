@@ -54,6 +54,16 @@ def card_inference_needed(frame, memory, active, presence, profile):
         white = white_fraction(frame, (cx - 24, y - 30, cx + 26, y + 35))
         if slot not in board and white is not None and white >= .20:
             return True, dict(info, reason='new_board_card', new_slot=slot)
+    # Bounded full-frame bursts let a persistent initial misread recover.
+    # Ordinary frames still use the inexpensive occupancy checks.
+    if active and all(s.get('present') is True for s in presence):
+        memory.revalidation_idle += 1
+        if memory.revalidation_idle >= 40:
+            memory.revalidation_remaining = 8
+            memory.revalidation_idle = 0
+        if memory.revalidation_remaining:
+            memory.revalidation_remaining -= 1
+            return True, dict(info, reason='card_revalidation', revalidate=True)
     return False, dict(info, inference_skipped=True, reason='confirmed_slots_unchanged')
 
 
@@ -63,7 +73,7 @@ def unconfirmed_card_frame(frame, memory, active, profile, cache_info):
     Occupancy, alignment and opponent analysis still use the original image.
     A new cycle must read the original image even before old memory is cleared.
     """
-    if not memory.cards or cache_info.get('board_cleared') or (not active and cache_info.get('reason') == 'hand_not_confirmed'):
+    if not memory.cards or cache_info.get('revalidate') or cache_info.get('board_cleared') or (not active and cache_info.get('reason') == 'hand_not_confirmed'):
         return frame
     image = np.zeros_like(frame)
     scale = frame.shape[1] / 1762

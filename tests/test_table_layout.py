@@ -15,6 +15,19 @@ def detection(code, slot, confidence=.9, accepted=True):
 
 
 class TableLayoutTests(unittest.TestCase):
+    def test_conflicting_identities_are_rejected_without_guessing_the_correct_slot(self):
+        for left, right in (('KC','KC'), ('10C','TC')):
+            result = self.arrange([detection(left, 1), detection(right, 2)])
+            self.assertEqual([c['card'] for c in result['board']], [None]*5)
+            self.assertEqual(result['card_conflicts'][0]['slots'], [['board',1],['board',2]])
+            self.assertTrue(all(c['rejection_reason']=='duplicate_card' for c in result['cards']))
+
+    def test_duplicate_between_hand_and_board_is_also_rejected(self):
+        result = self.arrange([detection('AS',0),dict(card='AS',accepted=True,bbox=[648,650,686,746])])
+        self.assertIsNone(result['board'][0]['card'])
+        self.assertIsNone(result['player_hand'][0]['card'])
+        self.assertEqual(len(result['card_conflicts']), 1)
+
     def test_small_desktop_river_survives_scale_drift_but_between_slots_is_rejected(self):
         cards=[dict(card='KC',accepted=True,confidence=.95,bbox=[496,174,512,206])]
         result=arrange_table(dict(cards=cards,profile='pokerstars-nine'),(506,811,3))

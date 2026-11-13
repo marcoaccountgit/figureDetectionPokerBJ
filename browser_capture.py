@@ -102,6 +102,7 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     else:
                         result = dict(cards=[], processing_ms=0, scene='card_memory' if aligned else 'alignment_lost')
                     result['card_cache'] = cache_info
+                    result['card_revalidation'] = cache_info.get('revalidate', False)
                     result['card_cache']['probe_ms'] = round(presence_ms, 3)
                     result['table_profile'] = profile
                     result['alignment_ready'] = aligned
@@ -123,6 +124,7 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                     result = state['temporal'].update(result, perf_counter(), game.shape)
                     result = state['card_memory'].update(result, result['hand_cycle'])
                     result = arrange_table(result, game.shape)
+                    state['card_memory'].invalidate_conflicts(result.get('card_conflicts', []))
                     for (group, slot), value in state['overrides'].items():
                         result[group][slot].update(card=value, accepted=True, detected=True, manual=True)
                         field = 'hand_slot' if group == 'player_hand' else 'board_slot'
@@ -195,6 +197,12 @@ def make_handler(detector, token, table_observer=None, equity_service=None):
                         if group not in ('board', 'player_hand') or type(slot) is not int or not 0 <= slot < (5 if group == 'board' else 2):
                             raise ValueError('Posizione della carta non valida')
                         value = card_code(normalize_card(action.get('card'))).upper()
+                        for other_group in ('board', 'player_hand'):
+                            for other_slot, other in enumerate(state['latest_result'][other_group]):
+                                if (other_group, other_slot) == (group, slot):
+                                    continue
+                                if other.get('accepted') and other.get('card') and normalize_card(other['card']) == normalize_card(value):
+                                    raise ValueError('Questa carta è già presente in un altro posto: correggi prima il duplicato.')
                         action['card'] = value
                     elif kind != 'new_hand':
                         raise ValueError('Intervento non valido')

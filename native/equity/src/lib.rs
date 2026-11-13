@@ -79,6 +79,8 @@ pub struct Totals {
     pub sums: [f64; 10],
     pub squares: [f64; 10],
     pub categories: [u64; 9],
+    pub threats_now: [u64; 9],
+    pub threats_final: [u64; 9],
 }
 
 fn valid(cards: &[u8]) -> bool {
@@ -94,7 +96,7 @@ fn valid(cards: &[u8]) -> bool {
 
 #[no_mangle]
 pub extern "C" fn poker_equity_abi_version() -> u32 {
-    2
+    3
 }
 
 fn pair_strength(pair: &[u8; 2], board: &[u8]) -> u32 {
@@ -310,6 +312,9 @@ fn record(hero: &[u8], board: &[u8], sample: &[u8], opponents: usize, totals: &m
     let mut values = [0.; 10];
     values[0] = (final_score > best) as u8 as f64;
     values[1] = (final_score < best) as u8 as f64;
+    if final_score < best {
+        totals.threats_final[(best >> 20) as usize] += 1;
+    }
     values[2] = (final_score == best) as u8 as f64;
     values[3] = if final_score < best {
         0.
@@ -317,6 +322,9 @@ fn record(hero: &[u8], board: &[u8], sample: &[u8], opponents: usize, totals: &m
         1. / (1 + equals) as f64
     };
     if let Some(now) = current {
+        if now < current_best {
+            totals.threats_now[(current_best >> 20) as usize] += 1;
+        }
         let current_category = now >> 20;
         values[4] = (now > current_best) as u8 as f64;
         values[5] = (now < current_best) as u8 as f64;

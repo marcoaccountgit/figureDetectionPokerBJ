@@ -72,6 +72,7 @@ class BrowserCaptureTests(unittest.TestCase):
             for _ in range(5):
                 packet = frame()
             self.assertEqual(intervene(kind='card', group='board', slot=0, card='ZZ')[0], 400)
+            self.assertEqual(intervene(kind='card', group='board', slot=0, card='JS')[0], 400)
             self.assertEqual(intervene(kind='card', group='board', slot=0, card='AH')[0], 200)
             for _ in range(3):
                 packet = frame()

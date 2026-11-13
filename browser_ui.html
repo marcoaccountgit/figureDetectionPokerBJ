@@ -19,7 +19,13 @@
 .left-column>.panel{flex-shrink:0}#tableObservation{flex:none}#equityPanel{width:100%}#equityPanel>h2{color:#88e2b1}#equityContent{padding-top:10px}.equity-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.equity-controls label{font-size:11px}.equity-controls select,.equity-controls input{background:#101820;color:#edf3f6;border:1px solid #415463;border-radius:4px;padding:4px;max-width:130px}.equity-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;margin:8px 0}.equity-row{display:flex;justify-content:space-between;gap:8px;font-size:11px}.equity-row strong{color:#88e2b1}.equity-row progress{width:60px;height:9px;accent-color:#88e2b1}#equityMeta,#equityState,#equityTiming,#equityNote{font-size:11px;line-height:1.5}#equityState{color:#ffcf70}
 #advicePanel{border-top:1px solid #415463;border-bottom:1px solid #415463;margin:10px 0;padding:10px 0}#adviceTitle{font-weight:650;margin:6px 0;color:#ffcf70}#adviceLimits p{margin-top:6px;color:#ffcf70}#adviceNotes p{margin-top:6px}
 /* Keep live updates inside stable panels instead of resizing the column. */
-#tableObservation{height:360px;min-height:360px;max-height:360px;flex:0 0 360px}
+#tableObservation{display:block;height:auto;min-height:0;max-height:none;flex:0 0 auto}
+#tableObservation>summary{cursor:pointer;font-weight:650;font-size:13px}
+#tableObservation>summary::marker{color:#aebfc9}
+#tableObservation[open]{display:flex;height:360px;min-height:360px;max-height:360px;flex-basis:360px}
+#tableObservation:not([open])>:not(summary){display:none}
+#tableObservation>summary #tableReadStatus{float:right;font-weight:400}
+.table-observation-content{display:flex;flex-direction:column;gap:7px;flex:1;min-height:0}
 #tableObservation>.section-heading,#tableObservation>.table-meta,#tableObservation>.table-footer{flex-shrink:0}
 #tableObservation .seat-table-wrap{scrollbar-gutter:stable}
 #equityPanel{height:620px;min-height:620px;max-height:620px;flex:0 0 620px;display:flex;flex-direction:column}
@@ -33,6 +39,117 @@
 .picker-context{display:flex;gap:16px;align-items:center;margin:20px 0;padding:14px;background:#101b23;border-radius:12px}.picker-preview{display:grid;place-items:center;min-width:64px;height:84px;border-radius:8px;background:#f2f5f3;color:#14202a;font-size:26px;font-weight:700;box-shadow:0 3px 8px #0005}.picker-preview.red{color:#c73549}.picker-context p{line-height:1.6}.picker-label{display:flex;justify-content:space-between;align-items:center;margin:18px 0 9px;font-size:12px;font-weight:650}.picker-label small{font-weight:400;color:#88e2b1}
 .picker-ranks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}.picker-ranks button{height:44px;font-size:17px;font-weight:650;padding:4px}.picker-suits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.picker-suits button{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:70px;padding:9px 4px;background:#edf2ef;color:#14202a}.picker-suits .red{color:#c73549}.picker-suits strong{font-size:27px;line-height:1}.picker-suits span{font-size:11px}.card-picker button[aria-pressed="true"]{border-color:#88e2b1;box-shadow:0 0 0 2px #88e2b1;background:#294b3d;color:#b9ffda}.card-picker button:hover{border-color:#88e2b1;transform:translateY(-1px)}.picker-footer{margin-top:20px;padding-top:14px;border-top:1px solid #30434f;font-size:11px;color:#aebfc9;line-height:1.6}
 </style>
+<style>
+.right-column{grid-template-rows:minmax(130px,1fr) auto auto auto;overflow-y:auto}
+#opponentThreatPanel{width:100%;max-width:700px}
+.threat-table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+.threat-table th,.threat-table td{padding:4px;text-align:right;border-bottom:1px solid #30434f}
+.threat-table th:first-child,.threat-table td:first-child{text-align:left}
+.threat-table td:not(:first-child){color:#88e2b1;font-weight:650}
+#opponentThreatNote,#opponentThreatState{font-size:11px;line-height:1.5;color:#aebfc9}
+/* Desktop overview: cards, decision and opponents share the available height. */
+@media(min-width:981px){
+ body{padding:10px;gap:8px}
+ .dashboard{max-width:none;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr) minmax(0,1fr);gap:8px;align-items:stretch}
+ .left-column{overflow:visible;gap:6px}
+ .cards-overview{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:6px}
+ .cards-overview .section-heading{flex-wrap:wrap;gap:2px}
+ .cards-overview .hand-row{flex-direction:column;gap:4px}
+ .cards-overview .board.hand{width:100%;margin-top:5px}
+ .cards-overview .hand-row>#playerHand{flex:none}
+ .cards-overview .discarded-hand{flex:none;width:100%;max-width:130px;margin:0}
+ .cards-overview .discarded-hand .board{margin-top:2px}
+ .cards-overview .discarded-hand .board-slot{padding:1px}
+ .cards-overview .discarded-hand .board-slot small{display:none}
+ .cards-overview .discarded-hand .board-slot strong{min-height:16px;font-size:13px;margin:0}
+ .cards-overview .discarded-hand>small{font-size:9px}
+ .table-tools{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:6px}
+ .table-tools .opponent-label{gap:6px}.table-tools .opponent-label h2{font-size:10px}
+ .table-tools .opponent-line{gap:4px;flex-wrap:wrap}
+ .table-tools .dropdown>summary{font-size:10px}
+ .panel{padding:8px;border-radius:8px}
+ .right-column{grid-template-rows:minmax(100px,1fr) auto auto auto;gap:6px;overflow:visible}
+ #equityPanel{height:auto;min-height:0;max-height:none;flex:initial}
+ #equityContent{overflow:visible;padding-top:6px;display:flex;flex-direction:column;gap:6px}
+ #newHand{align-self:flex-start;padding:4px 8px}
+ #interventionStatus:empty{display:none}
+ #equityPanel>h2{font-size:12px}
+ .equity-controls{gap:5px;margin:0}.equity-controls label{font-size:11px}
+ .equity-controls select,.equity-controls input{padding:3px}
+ .equity-grid{margin:5px 0;gap:5px 10px}
+ .equity-row{gap:5px;align-items:baseline;line-height:1.3}
+ .equity-row strong{white-space:nowrap;font-variant-numeric:tabular-nums}
+ .equity-row progress{display:none}
+ #equityFinal .equity-row{padding:6px;background:#101b23;border-radius:5px;flex-direction:column;gap:3px}
+ #equityFinal strong{font-size:18px}
+ #equityCurrent{grid-template-columns:1fr}
+ #equityCategories{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #equityCategories .equity-row{flex-direction:column;gap:1px;padding:3px;background:#101b23;border-radius:4px}
+ #equityCategories .equity-row span{font-size:10px}
+ #handProbabilities>h2:not(:first-child){margin-top:8px}
+ #advicePanel{margin:0;padding:8px 0}
+ #adviceNumbers{grid-template-columns:1fr}
+ #betModelNumbers{grid-template-columns:1fr}
+ #equityMeta,#equityTiming,#equityNote,#equityOpponentSource,#betModelState,#adviceMessage,#opponentThreatNote{font-size:10px;line-height:1.35}
+ .board{margin-top:5px;gap:4px}.board-slot{padding:3px}.board-slot strong{font-size:20px;min-height:23px}
+ #board .board-slot strong{font-size:16px;gap:2px}#board .suit-icon{width:13px;height:13px}
+ .board.hand{max-width:180px}.hand-counter strong,#opponentCount{font-size:20px}
+ .discarded-hand{flex-basis:115px}
+ .preview-panel{gap:4px;padding:8px;max-width:none}
+ .preview-caption{font-size:9px}
+ #potPanel{display:grid;grid-template-columns:1fr;gap:3px;max-width:none}
+ .pot-values{justify-content:space-between;gap:10px}.pot-values strong{font-size:23px}.pot-values .secondary strong{font-size:19px}
+ #centerPotByStreet,#potReadStatus{margin:0;font-size:10px}
+ #opponentThreatPanel{max-width:none}.threat-table{margin:5px 0}
+ .threat-table th,.threat-table td{padding:3px 2px;font-size:10px}
+ #opponentThreatState{font-size:10px;line-height:1.35}
+ #tableObservation{position:relative;z-index:35}
+ #tableObservation[open]{display:block;height:auto;min-height:0;max-height:none;flex-basis:auto}
+ #tableObservation[open]>.table-observation-content{position:absolute;left:0;top:calc(100% + 6px);width:min(520px,calc(100vw - 24px));height:min(360px,calc(100dvh - 270px));min-height:160px;padding:10px;background:#18252f;border:1px solid #49606f;border-radius:8px;box-shadow:0 12px 36px #0009}
+ #tableObservation>summary{font-size:12px}
+ .support-bar{max-width:none;margin:0}
+}
+@media(min-width:981px) and (max-height:720px){
+ body{padding:6px;gap:6px}.dashboard{gap:6px}.panel{padding:6px}.left-column,.right-column{gap:4px}
+ h2{font-size:12px}.board-slot strong{font-size:18px;min-height:20px}.board-slot small{font-size:9px}
+ #equityContent{gap:4px}.equity-grid{margin:4px 0;gap:3px 8px}
+ #equityFinal .equity-row{padding:4px}#equityFinal strong{font-size:16px}
+ #handProbabilities>h2:not(:first-child){margin-top:5px}
+ #advicePanel{padding:5px 0}.equity-row{font-size:10px}
+ .threat-table th,.threat-table td{padding:2px}
+ #equityTiming,#equityNote{font-size:9px;line-height:1.25}
+ #equityContent{gap:3px}
+ #equityFinal .equity-row{gap:1px}
+ #handProbabilities>h2:not(:first-child){margin-top:3px}
+}
+@media(min-width:981px) and (max-height:660px){
+ .status-panel{padding:4px 6px}.status-top{gap:4px}.hand-counter{gap:4px;font-size:10px}
+ #status{font-size:10px}.board-slot{padding:2px 1px}.board-slot strong{font-size:16px;gap:2px;min-height:18px}
+ .board-slot .suit-icon{width:13px;height:13px}.cards-overview .section-heading small{font-size:9px}
+ .cards-overview .discarded-hand{display:flex;align-items:center;gap:3px;max-width:none}
+ .cards-overview .discarded-hand>small{max-width:48px;font-size:8px}
+ .cards-overview .discarded-hand .board{margin:0;flex:1;gap:2px}
+ #equityFinal .equity-row{padding:3px}#equityFinal strong{font-size:14px}
+ #equityCategories .equity-row{padding:2px}#equityCategories .equity-row span{font-size:9px}
+ #equityCurrent .equity-row,#equityFinal .equity-row{font-size:9px}
+ #equityContent{gap:2px}#equityPanel>h2{font-size:11px}#adviceNumbers{gap:2px}
+ #equityMeta,#equityOpponentSource,#betModelState,#adviceMessage{font-size:9px}
+ #adviceTitle{font-size:11px;margin:3px 0}#advicePanel{padding:4px 0}
+ #opponentThreatNote{font-size:9px}.threat-table{margin:3px 0}
+ #equityContent summary{font-size:10px}
+ .equity-controls label{font-size:10px}.equity-controls select{font-size:10px}
+ #equityState{font-size:10px}
+}
+@media(min-width:981px) and (max-height:600px){
+ .dashboard{zoom:.88;width:100%;align-self:center}
+}
+@media(max-width:980px){
+ .cards-overview,.table-tools{display:flex;flex-direction:column;gap:8px}
+ #equityPanel{height:auto;min-height:0;max-height:none;flex:none}
+ #equityContent{overflow:visible}
+ .right-column{overflow:visible}
+}
+</style>
 </head>
 <body>
 <header class="app-header"><div class="brand"><h1>Scanner del tavolo</h1><span class="local-tag">Locale</span></div>
@@ -41,13 +158,21 @@
 <main class="dashboard">
 <div class="left-column">
 <section class="panel status-panel" aria-label="Stato della scansione"><div class="status-top"><div class="status-extra"><span id="status" role="status">In attesa di una sorgente</span><details class="dropdown status-details"><summary>Dettagli</summary><div class="popover"><p id="source">Nessuna sorgente selezionata</p><div id="cards">&mdash;</div><p id="metrics"></p></div></details></div><div class="hand-counter">Mani giocate <strong id="handCount" role="status">0</strong></div></div><div id="error" role="alert"></div><p id="alignmentStatus" class="small" role="status" hidden></p></section>
-<section class="panel" aria-label="Board, carte sul tavolo"><div class="section-heading"><h2>Board</h2><small>Flop &middot; Turn &middot; River</small></div><div id="board" class="board" aria-live="polite"></div></section>
+<div class="cards-overview"><section class="panel" aria-label="Board, carte sul tavolo"><div class="section-heading"><h2>Board</h2><small>Flop &middot; Turn &middot; River</small></div><div id="board" class="board" aria-live="polite"></div></section>
 <section class="panel" aria-label="Mano del giocatore"><div class="section-heading"><h2>La tua mano</h2><small>Sinistra &rarr; destra</small></div><div class="hand-row"><div id="playerHand" class="board hand" aria-live="polite"></div><aside id="discardedHandPanel" class="discarded-hand" aria-label="Carte appena scartate" hidden><small>Carte appena scartate</small><div id="discardedHand" class="board hand" aria-live="polite"></div></aside></div></section>
-<section class="panel" aria-label="Avversari nella mano corrente"><div class="opponent-line"><div class="opponent-label"><h2>Avversari nella mano</h2><strong id="opponentCount" role="status">&mdash;</strong></div><details class="dropdown"><summary>Affidabilit&agrave;</summary><div class="popover"><p id="opponentReliabilityValue">Nessuna verifica disponibile</p><div id="opponentState">In attesa di scansione</div><div id="opponentSeats"></div><p class="small" style="margin-top:8px">Conferma con cinque letture consecutive su almeno 300 ms. I posti non visibili restano da verificare.</p></div></details></div></section>
-<section class="panel" id="tableObservation" aria-label="Lettura tavolo"><div class="section-heading"><h2>Lettura tavolo</h2><span id="tableReadStatus">in attesa</span></div>
+</div><div class="table-tools"><section class="panel" aria-label="Avversari nella mano corrente"><div class="opponent-line"><div class="opponent-label"><h2>Avversari nella mano</h2><strong id="opponentCount" role="status">&mdash;</strong></div><details class="dropdown"><summary>Affidabilit&agrave;</summary><div class="popover"><p id="opponentReliabilityValue">Nessuna verifica disponibile</p><div id="opponentState">In attesa di scansione</div><div id="opponentSeats"></div><p class="small" style="margin-top:8px">Conferma con cinque letture consecutive su almeno 300 ms. I posti non visibili restano da verificare.</p></div></details></div></section>
+<details class="panel" id="tableObservation" aria-label="Lettura tavolo"><summary>Lettura tavolo<span id="tableReadStatus">in attesa</span></summary>
+<div class="table-observation-content">
 <div class="table-meta"><span>Bottone: <strong id="dealerSeat">&mdash;</strong></span><span>Posizioni (?) da verificare</span></div>
 <div class="seat-table-wrap"><table class="seat-table"><thead><tr><th>Posto</th><th>Pos.</th><th>Azione</th><th>Stack</th><th>Puntata</th></tr></thead><tbody id="observedSeats"></tbody></table></div>
-<div class="table-footer"><small>Importi nelle unit&agrave; del tavolo</small><details class="dropdown above"><summary>Azioni e pulsanti</summary><div class="popover popover-scroll"><p class="small">Totale: <strong id="observedPot">&mdash;</strong> &middot; Centro: <strong id="collectedPot">&mdash;</strong> &middot; Contributo: <strong id="observedContribution">&mdash;</strong></p><p class="small">Primo totale confermato della fase: <span id="streetPots">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</span></p><p class="small" id="offeredActions"></p><div id="observedEvents"></div></div></details></div></section>
+<div class="table-footer"><small>Importi nelle unit&agrave; del tavolo</small><details class="dropdown above"><summary>Azioni e pulsanti</summary><div class="popover popover-scroll"><p class="small">Totale: <strong id="observedPot">&mdash;</strong> &middot; Centro: <strong id="collectedPot">&mdash;</strong> &middot; Contributo: <strong id="observedContribution">&mdash;</strong></p><p class="small">Primo totale confermato della fase: <span id="streetPots">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</span></p><p class="small" id="offeredActions"></p><div id="observedEvents"></div></div></details></div></div></details>
+</div><section id="handProbabilities" class="panel" aria-label="Probabilità della tua mano">
+<h2>Al confronto finale delle mani</h2><div id="equityFinal" class="equity-grid"></div>
+<h2>Situazione attuale e miglioramento</h2><div id="equityCurrent" class="equity-grid"></div>
+<h2>Distribuzione dei tuoi punti al river</h2><div id="equityCategories" class="equity-grid"></div>
+</section>
+<section id="opponentThreatPanel" class="panel" aria-labelledby="opponentThreatTitle"><h2 id="opponentThreatTitle">Punti avversari che ti battono</h2><p id="opponentThreatState" role="status">In attesa di carte confermate</p><table class="threat-table" hidden id="opponentThreatTable"><thead><tr><th scope="col">Punto migliore avversario</th><th scope="col">Gi&agrave; ora</th><th scope="col">Al river</th></tr></thead><tbody id="opponentThreatRows"></tbody></table><p id="opponentThreatNote"></p></section>
+</div>
 <section id="equityPanel" class="panel" aria-label="Probabilità ed equità della mano"><h2>PROBABILITÀ ED EQUITÀ DELLA MANO</h2><div id="equityContent">
 <button id="newHand" type="button">Nuova mano</button><p id="interventionStatus" class="small" role="status"></p>
 <div class="equity-controls"><label>Calcolo <select id="equityProfile"><option value="FAST">Veloce · 5.000</option><option value="BALANCED">Bilanciato · 50.000</option><option value="ACCURATE">Accurato · 250.000</option></select></label><label><input id="equityManual" type="checkbox">Imposta gli avversari manualmente</label><label id="equityManualField" hidden>Numero di avversari <input id="equityOpponents" type="number" min="1" max="5" step="1" value="1" disabled></label></div>
@@ -57,15 +182,12 @@
 <p id="equityState" role="status">In attesa di carte confermate</p><p id="equityMeta"></p>
 <section id="advicePanel" aria-label="Valutazione probabilistica"><h2>Valutazione della decisione</h2><p id="adviceTitle" role="status">Valutazione in attesa</p><p id="adviceMessage" class="small"></p><div id="adviceNumbers" class="equity-grid"></div><details><summary>Perché: probabilità e ipotesi del modello</summary><div id="adviceFactors" class="equity-grid"></div><div id="adviceNotes" class="small"></div><div id="adviceLimits" class="small"></div></details></section>
 <section aria-label="Confronto sotto ipotesi sulle puntate"><h2>Confronto con le puntate osservate</h2><p id="betModelState" class="small" role="status">In attesa degli importi confermati.</p><div id="betModelNumbers" class="equity-grid"></div><details><summary>Ipotesi fissa e importi usati</summary><p class="small">La probabilità delle carte cambia solo sotto questa ipotesi, non per una regola certa del poker. Nessun profilo dei giocatori o previsione di mosse future.</p><p class="small">Impegno visibile / piatto totale attuale, puntate già incluse: fino al 15%, peso 3; fino a un terzo, peso 6; oltre, peso 10. Il peso riguarda il quarto circa delle combinazioni più forti; le altre mantengono peso 1.</p><p class="small">Dopo il flop conta il punto attuale, senza un trattamento specifico dei progetti. Prima del flop si usa una graduatoria indicativa: coppie, carte alte, stesso seme; solo un rilancio o all-in esplicito attiva i pesi. Il modello non è calibrato su dati di gioco. Gli intervalli descrivono solo l'errore delle simulazioni.</p><div id="betModelSeats" class="small"></div></details></section>
-<h2>Al confronto finale delle mani</h2><div id="equityFinal" class="equity-grid"></div>
-<h2>Situazione attuale e miglioramento</h2><div id="equityCurrent" class="equity-grid"></div>
-<details><summary>Distribuzione categorie finali</summary><div id="equityCategories" class="equity-grid"></div></details>
-<p id="equityTiming"></p><p id="equityNote" class="muted">Modello: tutte le distribuzioni legali delle carte avversarie sono equiprobabili, senza ipotesi sullo stile di gioco. L'intervallo di confidenza al 95% misura l'errore della simulazione Monte Carlo, non la conoscenza delle carte nascoste. Equità riferita a un piatto comune, senza piatti secondari o commissioni.</p>
+<p id="equityTiming"></p><p id="equityNote" class="muted">Mani avversarie legali equiprobabili, senza ipotesi sullo stile di gioco. IC 95%: errore della simulazione, non certezza sulle carte nascoste. Equità su piatto comune, senza piatti secondari o commissioni. Migliorare il punto non equivale a vincere.</p>
 </div></section>
-</div>
 <div class="right-column">
 <section class="panel preview-panel" aria-label="Anteprima della sorgente"><div class="section-heading"><h2>Anteprima</h2><small>Sorgente acquisita</small></div><div id="previewStage" class="preview-stage"><div id="view" class="capture-view"><div id="empty">Scegli una scheda, una finestra o uno schermo per visualizzare l'anteprima.</div><video id="video" muted playsinline></video><canvas id="image" hidden></canvas><canvas id="overlay" hidden></canvas></div></div><p class="preview-caption">Verde: confermato &middot; Giallo: in verifica &middot; Azzurro: carte coperte</p></section>
 <section id="potPanel" class="panel" aria-label="Piatto al centro del tavolo"><div class="pot-values"><div><small>Piatto al centro</small><strong id="centerPotValue" aria-live="polite">&mdash;</strong></div><div class="secondary"><small>Totale tavolo</small><strong id="tablePotValue">&mdash;</strong></div></div><div id="centerPotByStreet">Flop: &mdash; &middot; Turn: &mdash; &middot; River: &mdash;</div><p id="potReadStatus" role="status">In attesa della lettura del tavolo</p></section>
+
 
 
 <div class="support-bar"><details class="dropdown above"><summary>Guida</summary><div class="popover popover-scroll" style="left:0;right:auto"><p>Premi Scegli sorgente: puoi condividere una scheda del browser, una finestra del gioco o uno schermo intero. Per il client desktop scegli Finestra e massimizza il tavolo. Se condividi uno schermo, mantieni il tavolo a tutto schermo e il pannello del bot su un altro monitor o fuori dalla vista del gioco. Il conteggio considera le coppie di carte coperte visibili, non nomi e avatar.</p><p>Il video WebM non contiene audio. Se attiva, la registrazione include i riquadri del bot. Scaricala prima di chiudere la pagina: rimane in memoria fino al download.</p></div></details><details class="dropdown above"><summary>Registrazioni</summary><div id="downloads" class="popover popover-scroll" hidden><strong>Video da scaricare</strong></div></details></div>
@@ -169,8 +291,8 @@ for(const [key,suit] of Object.entries(suits)){
  suit.image=new Image();suit.image.src=suit.url;
 }
 function cardValue(code){
- const fragment=document.createDocumentFragment(), text=document.createElement('span');text.textContent=code;fragment.append(text);
- const suit=suits[code?.slice(-1)];if(suit){const icon=document.createElement('img');icon.src=suit.url;icon.alt=suit.name;icon.className='suit-icon';fragment.append(icon);}return fragment;
+ const fragment=document.createDocumentFragment(), text=document.createElement('span'), suit=suits[code?.slice(-1)];text.textContent=suit?code.slice(0,-1).replace(/^T$/,'10'):code;text.title=code;fragment.append(text);
+ if(suit){const icon=document.createElement('img');icon.src=suit.url;icon.alt=suit.name;icon.className='suit-icon';fragment.append(icon);}return fragment;
 }
 function fail(message){$('error').textContent=message;}
 const equityCategoryLabels={'High Card':'Carta alta','One Pair':'Coppia','Two Pair':'Doppia coppia','Three of a Kind':'Tris','Straight':'Scala','Flush':'Colore','Full House':'Full','Four of a Kind':'Poker','Straight Flush':'Scala colore','Royal Flush':'Scala reale'};
@@ -221,6 +343,7 @@ function renderBetModel(data,advice,betAdvice){
  for(const seat of model.seats||[]){const p=document.createElement('p');p.textContent=seat.label+': '+(seat.commitment==null?'importo non confermato':money(seat.commitment))+(seat.ratio==null?'':' · '+pct(seat.ratio)+' del totale')+' · Peso mani forti '+seat.strong_weight+' · '+seat.note;$('betModelSeats').append(p);}
 }
 function renderEquity(data,advice,betAdvice){
+ renderOpponentThreats(data);
  renderAdvice(advice);
  renderBetModel(data,advice,betAdvice);
  const ready=data?.status==='ready';
@@ -235,7 +358,31 @@ function renderEquity(data,advice,betAdvice){
  for(const [key,label] of [['current_strength','Probabilità di essere già davanti a tutti'],['currently_behind','Probabilità di essere già dietro'],['current_tie','Pareggio attuale al primo posto'],['category_improvement','Probabilità di migliorare la categoria'],['same_category_value_improvement','Valore migliore nella stessa categoria'],['kicker_improvement','Carte di spareggio migliori, punto invariato']])row('equityCurrent',label,data.metrics[key]);
  for(const [label,metric] of Object.entries(data.categories))row('equityCategories',equityCategoryLabels[label]||'Categoria non riconosciuta',metric);
  const eq=data.metrics.equity;
- $('equityTiming').textContent=(data.backend==='rust'?'Motore Rust · ':data.backend==='python'?'Motore Python · ':'')+data.simulations.toLocaleString('it-IT')+' distribuzioni · '+data.processing_ms.toLocaleString('it-IT')+' ms'+(data.cached?' · Risultato salvato':'')+' · Equità, intervallo di confidenza (IC 95%): '+eq.ci95.map(fmt).join(' – ')+' · Errore standard: '+fmt(eq.standard_error)+'. Gli intervalli delle altre metriche si leggono passando il puntatore sui valori. Migliorare le carte di spareggio o il valore della combinazione non equivale a vincere.';
+ $('equityTiming').textContent=(data.backend==='rust'?'Rust · ':data.backend==='python'?'Python · ':'')+data.simulations.toLocaleString('it-IT')+' distribuzioni · '+data.processing_ms.toLocaleString('it-IT')+' ms'+(data.cached?' · In cache':'')+' · Equità IC 95%: '+eq.ci95.map(fmt).join(' – ')+' · Errore standard: '+fmt(eq.standard_error)+'. Altri intervalli: passa sui valori.';
+}
+function renderOpponentThreats(data){
+ const ready=data?.status==='ready'&&data.opponent_threats;
+ $('opponentThreatRows').replaceChildren();$('opponentThreatTable').hidden=!ready;
+ $('opponentThreatNote').textContent='';
+ $('opponentThreatState').textContent=ready?'Contro '+data.opponents_count+' avversari · Tuo punto attuale: '+(equityCategoryLabels[data.current_label]||'in attesa del flop'):(data?.message||'In attesa di carte confermate');
+ if(!ready)return;
+ const format=metric=>{
+  if(!metric)return '—';
+  const value=(100*metric.value).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+  return data.method==='exact'?value:metric.value===0?'0,00%*':'≈ '+value;
+ };
+ const minimum=data.current_category?Object.keys(data.categories).indexOf(data.current_category):0;
+ Object.entries(data.opponent_threats.final).forEach(([category,metric],index)=>{
+  if(index<minimum)return;
+  const tr=document.createElement('tr'),label=document.createElement('th');label.scope='row';label.style.textAlign='left';label.textContent=(equityCategoryLabels[category]||category)+(index===minimum&&data.current_category?' (valore o spareggio superiore)':'');tr.append(label);
+  for(const m of [data.opponent_threats.current?.[category],metric]){
+   const td=document.createElement('td');td.textContent=format(m);if(m)td.title='IC 95%: '+m.ci95.map(v=>(100*v).toFixed(2)+'%').join(' – ');tr.append(td);
+  }
+  $('opponentThreatRows').append(tr);
+ });
+ const tr=document.createElement('tr'),label=document.createElement('th');label.scope='row';label.textContent='Totale: almeno un avversario ti batte';label.style.textAlign='left';tr.append(label);
+ for(const metric of [data.metrics.currently_behind,data.metrics.lose]){const td=document.createElement('td');td.textContent=format(metric);tr.append(td);}$('opponentThreatRows').append(tr);
+ $('opponentThreatNote').textContent='Ogni caso conta solo il punto del migliore avversario che ti batte. Al river considera anche i tuoi miglioramenti; i pareggi sono esclusi. Mani avversarie casuali, compatibili con le carte note. '+(data.method==='exact'?'Calcolo esatto.':data.simulations.toLocaleString('it-IT')+' simulazioni'+(data.complete?' completate.':' · stima in aggiornamento.')+' * Nessun caso osservato: non significa impossibile.');
 }
 for(const id of ['equityProfile','equityManual','equityOpponents','equitySeed','equityBetModel'])$(id).onchange=()=>{renderEquityOpponentSource(equityDetectedOpponents);renderEquity({message:'Impostazioni cambiate: attesa della prossima lettura'});};
 for(const id of ['equityOpponents','equitySeed'])$(id).oninput=$(id).onchange;

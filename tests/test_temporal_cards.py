@@ -17,6 +17,28 @@ def reading(code='AS', box=None, accepted=True):
 
 
 class HandCardMemoryTests(unittest.TestCase):
+    def test_revalidation_requires_three_accepted_readings_and_resets_on_miss(self):
+        memory = HandCardMemory()
+        cycle = dict(active=True, started=False, ended=False)
+        card = dict(reading('KC'), table_group='board', board_slot=1)
+        memory.update(dict(cards=[card]), cycle)
+        corrected = dict(reading('KS'), table_group='board', board_slot=1)
+        def update(c):
+            return memory.update(dict(cards=c, card_revalidation=True), cycle)['cards'][0]['card']
+        self.assertEqual(update([corrected]), 'KC')
+        self.assertEqual(update([corrected]), 'KC')
+        self.assertEqual(update([]), 'KC')
+        for expected in ('KC', 'KC', 'KS'):
+            self.assertEqual(update([corrected]), expected)
+        self.assertTrue(memory.cards[('board', 1)]['revalidated'])
+
+    def test_conflicts_unlock_both_slots_for_new_recognition(self):
+        memory = HandCardMemory()
+        memory.cards = {('board', i):dict(reading('KC')) for i in (1,2)}
+        memory.invalidate_conflicts([dict(card='KC', slots=[['board',1],['board',2]])])
+        self.assertEqual(memory.cards, {})
+        self.assertEqual(memory.revalidation_remaining, 8)
+
     def test_folded_board_memory_ends_when_board_is_physically_cleared(self):
         memory = HandCardMemory()
         card = dict(reading(), table_group='board', board_slot=0)

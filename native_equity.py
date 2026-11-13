@@ -16,7 +16,8 @@ PROGRESS_SAMPLES = (256, 1024, 5000, 10000, 25000, 50000, 100000, 150000, 200000
 
 class Totals(ct.Structure):
     _fields_ = [('n', ct.c_uint64), ('sums', ct.c_double * 10),
-                ('squares', ct.c_double * 10), ('categories', ct.c_uint64 * 9)]
+                ('squares', ct.c_double * 10), ('categories', ct.c_uint64 * 9),
+                ('threats_now', ct.c_uint64 * 9), ('threats_final', ct.c_uint64 * 9)]
 
 
 CALLBACK = ct.CFUNCTYPE(ct.c_int, ct.POINTER(Totals))
@@ -24,9 +25,9 @@ BYTE_POINTER = ct.POINTER(ct.c_uint8)
 
 
 def library_path():
-    name = ('poker_equity_native_v2.dll' if sys.platform == 'win32' else
-            'libpoker_equity_native_v2.dylib' if sys.platform == 'darwin' else
-            'libpoker_equity_native_v2.so')
+    name = ('poker_equity_native_v3.dll' if sys.platform == 'win32' else
+            'libpoker_equity_native_v3.dylib' if sys.platform == 'darwin' else
+            'libpoker_equity_native_v3.so')
     return Path(__file__).resolve().parent / 'native' / 'equity' / 'target' / 'release' / name
 
 
@@ -36,7 +37,7 @@ def load_native():
         library = ct.CDLL(str(library_path()))
         library.poker_equity_abi_version.argtypes = []
         library.poker_equity_abi_version.restype = ct.c_uint32
-        if library.poker_equity_abi_version() != 2:
+        if library.poker_equity_abi_version() != 3:
             return None
         library.poker_simulate.argtypes = [BYTE_POINTER, ct.c_size_t, ct.c_size_t,
                                           ct.c_uint64, ct.c_uint64, CALLBACK, ct.POINTER(Totals)]

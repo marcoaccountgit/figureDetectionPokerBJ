@@ -28,6 +28,18 @@ def known_flop():
 
 
 class LiveCardCacheTests(unittest.TestCase):
+    def test_periodic_revalidation_exposes_locked_cards_in_a_bounded_burst(self):
+        _, game, _, profile, _, memory = known_flop()
+        presence = [dict(present=True)]*2
+        for _ in range(39):
+            self.assertFalse(card_inference_needed(game,memory,True,presence,profile)[0])
+        for _ in range(8):
+            needed, info = card_inference_needed(game,memory,True,presence,profile)
+            self.assertTrue(needed)
+            self.assertTrue(info['revalidate'])
+            self.assertIs(unconfirmed_card_frame(game,memory,True,profile,info),game)
+        self.assertFalse(card_inference_needed(game,memory,True,presence,profile)[0])
+
     def test_missing_old_turn_detects_new_flop_but_not_a_dark_occlusion(self):
         _, game, _, profile, cards, memory = known_flop()
         scale = game.shape[1] / 1762

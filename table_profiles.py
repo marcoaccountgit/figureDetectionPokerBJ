@@ -178,6 +178,27 @@ def desktop_table_viewport(frame):
     for candidate in sorted(candidates,key=lambda c:c[1],reverse=True):
         if any(other is not candidate and max(abs(a-b) for a,b in zip(candidate[0],other[0]))<=tolerance
                for other in candidates):return candidate
+    # Smooth rail patches can have their individual maximum at different
+    # scales. Verify every patch against one shared pose rather than requiring
+    # the independently best poses to coincide.
+    for viewport, score in sorted(candidates, key=lambda c: c[1], reverse=True):
+        scale = (viewport[2]-viewport[0])/1918
+        support = 0
+        for reference, (ax, ay) in desktop_alternative_rails():
+            if reference is None:
+                continue
+            tw, th = round(reference.shape[1]*scale), round(reference.shape[0]*scale)
+            px, py = round(viewport[0]+ax*scale), round(viewport[1]+ay*scale)
+            pad = max(2, round(5*scale))
+            search = gray[max(0,py-pad):min(gray.shape[0],py+th+pad),
+                          max(0,px-pad):min(gray.shape[1],px+tw+pad)]
+            if min(tw, th) < 5 or search.shape[0] < th or search.shape[1] < tw:
+                continue
+            ref = cv2.resize(reference, (tw, th), interpolation=cv2.INTER_AREA if scale<1 else cv2.INTER_LINEAR)
+            if cv2.minMaxLoc(cv2.matchTemplate(search, ref, cv2.TM_CCOEFF_NORMED))[1] >= .9:
+                support += 1
+        if support >= 2:
+            return viewport, score
     return None
 
 
